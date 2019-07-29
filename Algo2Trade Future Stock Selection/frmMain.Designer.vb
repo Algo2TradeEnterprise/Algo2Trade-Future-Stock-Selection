@@ -47,6 +47,7 @@ Partial Class frmMain
         Me.pnlBtn = New System.Windows.Forms.Panel()
         Me.chkbDatePicker = New System.Windows.Forms.CheckBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.chbImmediatePreviousDay = New System.Windows.Forms.CheckBox()
         Me.txtProcedureNumberOfStock = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtMinVolume = New System.Windows.Forms.TextBox()
@@ -57,7 +58,6 @@ Partial Class frmMain
         Me.lblMaxPrice = New System.Windows.Forms.Label()
         Me.txtMinPrice = New System.Windows.Forms.TextBox()
         Me.lblMinPrice = New System.Windows.Forms.Label()
-        Me.chbImmediatePreviousDay = New System.Windows.Forms.CheckBox()
         CType(Me.dgrvMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlInstrumentList.SuspendLayout()
         Me.pnlBtn.SuspendLayout()
@@ -67,46 +67,45 @@ Partial Class frmMain
         'dtpckrToDate
         '
         Me.dtpckrToDate.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpckrToDate.Location = New System.Drawing.Point(202, 10)
-        Me.dtpckrToDate.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.dtpckrToDate.Location = New System.Drawing.Point(269, 12)
+        Me.dtpckrToDate.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.dtpckrToDate.Name = "dtpckrToDate"
-        Me.dtpckrToDate.Size = New System.Drawing.Size(82, 20)
+        Me.dtpckrToDate.Size = New System.Drawing.Size(108, 22)
         Me.dtpckrToDate.TabIndex = 30
         '
         'dtpckrFromDate
         '
         Me.dtpckrFromDate.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpckrFromDate.Location = New System.Drawing.Point(64, 10)
-        Me.dtpckrFromDate.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.dtpckrFromDate.Location = New System.Drawing.Point(85, 12)
+        Me.dtpckrFromDate.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.dtpckrFromDate.Name = "dtpckrFromDate"
-        Me.dtpckrFromDate.Size = New System.Drawing.Size(82, 20)
+        Me.dtpckrFromDate.Size = New System.Drawing.Size(108, 22)
         Me.dtpckrFromDate.TabIndex = 29
         '
         'lblToDate
         '
         Me.lblToDate.AutoSize = True
-        Me.lblToDate.Location = New System.Drawing.Point(152, 13)
-        Me.lblToDate.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblToDate.Location = New System.Drawing.Point(203, 16)
         Me.lblToDate.Name = "lblToDate"
-        Me.lblToDate.Size = New System.Drawing.Size(49, 13)
+        Me.lblToDate.Size = New System.Drawing.Size(63, 17)
         Me.lblToDate.TabIndex = 28
         Me.lblToDate.Text = "To Date:"
         '
         'lblFromDate
         '
         Me.lblFromDate.AutoSize = True
-        Me.lblFromDate.Location = New System.Drawing.Point(5, 13)
-        Me.lblFromDate.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblFromDate.Location = New System.Drawing.Point(7, 16)
         Me.lblFromDate.Name = "lblFromDate"
-        Me.lblFromDate.Size = New System.Drawing.Size(59, 13)
+        Me.lblFromDate.Size = New System.Drawing.Size(78, 17)
         Me.lblFromDate.TabIndex = 27
         Me.lblFromDate.Text = "From Date:"
         '
         'lblProgress
         '
-        Me.lblProgress.Location = New System.Drawing.Point(4, 396)
+        Me.lblProgress.Location = New System.Drawing.Point(5, 487)
+        Me.lblProgress.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblProgress.Name = "lblProgress"
-        Me.lblProgress.Size = New System.Drawing.Size(703, 42)
+        Me.lblProgress.Size = New System.Drawing.Size(937, 52)
         Me.lblProgress.TabIndex = 31
         Me.lblProgress.Text = "Progress Status"
         '
@@ -115,20 +114,22 @@ Partial Class frmMain
         Me.dgrvMain.AllowUserToAddRows = False
         Me.dgrvMain.AllowUserToDeleteRows = False
         Me.dgrvMain.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgrvMain.Location = New System.Drawing.Point(2, 132)
+        Me.dgrvMain.Location = New System.Drawing.Point(3, 162)
+        Me.dgrvMain.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dgrvMain.Name = "dgrvMain"
         Me.dgrvMain.ReadOnly = True
         Me.dgrvMain.RowHeadersVisible = False
         Me.dgrvMain.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgrvMain.Size = New System.Drawing.Size(504, 262)
+        Me.dgrvMain.Size = New System.Drawing.Size(672, 322)
         Me.dgrvMain.TabIndex = 32
         '
         'btnStart
         '
         Me.btnStart.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnStart.Location = New System.Drawing.Point(8, 3)
+        Me.btnStart.Location = New System.Drawing.Point(11, 4)
+        Me.btnStart.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnStart.Name = "btnStart"
-        Me.btnStart.Size = New System.Drawing.Size(89, 31)
+        Me.btnStart.Size = New System.Drawing.Size(119, 38)
         Me.btnStart.TabIndex = 33
         Me.btnStart.Text = "Start"
         Me.btnStart.UseVisualStyleBackColor = True
@@ -136,9 +137,10 @@ Partial Class frmMain
         'btnExport
         '
         Me.btnExport.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnExport.Location = New System.Drawing.Point(22, 40)
+        Me.btnExport.Location = New System.Drawing.Point(29, 49)
+        Me.btnExport.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnExport.Name = "btnExport"
-        Me.btnExport.Size = New System.Drawing.Size(154, 32)
+        Me.btnExport.Size = New System.Drawing.Size(205, 39)
         Me.btnExport.TabIndex = 34
         Me.btnExport.Text = "Export CSV"
         Me.btnExport.UseVisualStyleBackColor = True
@@ -146,9 +148,10 @@ Partial Class frmMain
         'btnStop
         '
         Me.btnStop.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnStop.Location = New System.Drawing.Point(99, 2)
+        Me.btnStop.Location = New System.Drawing.Point(132, 2)
+        Me.btnStop.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnStop.Name = "btnStop"
-        Me.btnStop.Size = New System.Drawing.Size(88, 32)
+        Me.btnStop.Size = New System.Drawing.Size(117, 39)
         Me.btnStop.TabIndex = 35
         Me.btnStop.Text = "Stop"
         Me.btnStop.UseVisualStyleBackColor = True
@@ -159,9 +162,10 @@ Partial Class frmMain
         'lblProcedure
         '
         Me.lblProcedure.AutoSize = True
-        Me.lblProcedure.Location = New System.Drawing.Point(511, 12)
+        Me.lblProcedure.Location = New System.Drawing.Point(681, 15)
+        Me.lblProcedure.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblProcedure.Name = "lblProcedure"
-        Me.lblProcedure.Size = New System.Drawing.Size(59, 13)
+        Me.lblProcedure.Size = New System.Drawing.Size(78, 17)
         Me.lblProcedure.TabIndex = 36
         Me.lblProcedure.Text = "Procedure:"
         '
@@ -170,83 +174,93 @@ Partial Class frmMain
         Me.cmbProcedure.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbProcedure.FormattingEnabled = True
         Me.cmbProcedure.Items.AddRange(New Object() {"ATR Based All Stock", "Trending Stocks", "User Given", "Pre Market Stock"})
-        Me.cmbProcedure.Location = New System.Drawing.Point(571, 9)
+        Me.cmbProcedure.Location = New System.Drawing.Point(761, 11)
+        Me.cmbProcedure.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbProcedure.Name = "cmbProcedure"
-        Me.cmbProcedure.Size = New System.Drawing.Size(136, 21)
+        Me.cmbProcedure.Size = New System.Drawing.Size(180, 24)
         Me.cmbProcedure.TabIndex = 37
         '
         'lblMaxBlankCandlePercentage
         '
         Me.lblMaxBlankCandlePercentage.AutoSize = True
-        Me.lblMaxBlankCandlePercentage.Location = New System.Drawing.Point(134, 37)
+        Me.lblMaxBlankCandlePercentage.Location = New System.Drawing.Point(179, 46)
+        Me.lblMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblMaxBlankCandlePercentage.Name = "lblMaxBlankCandlePercentage"
-        Me.lblMaxBlankCandlePercentage.Size = New System.Drawing.Size(107, 13)
+        Me.lblMaxBlankCandlePercentage.Size = New System.Drawing.Size(140, 17)
         Me.lblMaxBlankCandlePercentage.TabIndex = 38
         Me.lblMaxBlankCandlePercentage.Text = "Max Blank Candle %:"
         '
         'txtMaxBlankCandlePercentage
         '
-        Me.txtMaxBlankCandlePercentage.Location = New System.Drawing.Point(240, 34)
+        Me.txtMaxBlankCandlePercentage.Location = New System.Drawing.Point(320, 42)
+        Me.txtMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtMaxBlankCandlePercentage.Name = "txtMaxBlankCandlePercentage"
-        Me.txtMaxBlankCandlePercentage.Size = New System.Drawing.Size(44, 20)
+        Me.txtMaxBlankCandlePercentage.Size = New System.Drawing.Size(57, 22)
         Me.txtMaxBlankCandlePercentage.TabIndex = 39
         '
         'pnlInstrumentList
         '
         Me.pnlInstrumentList.Controls.Add(Me.txtInstrumentList)
         Me.pnlInstrumentList.Controls.Add(Me.lblInstrumentList)
-        Me.pnlInstrumentList.Location = New System.Drawing.Point(514, 34)
+        Me.pnlInstrumentList.Location = New System.Drawing.Point(685, 42)
+        Me.pnlInstrumentList.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.pnlInstrumentList.Name = "pnlInstrumentList"
-        Me.pnlInstrumentList.Size = New System.Drawing.Size(193, 152)
+        Me.pnlInstrumentList.Size = New System.Drawing.Size(257, 187)
         Me.pnlInstrumentList.TabIndex = 42
         '
         'txtInstrumentList
         '
-        Me.txtInstrumentList.Location = New System.Drawing.Point(6, 23)
+        Me.txtInstrumentList.Location = New System.Drawing.Point(8, 28)
+        Me.txtInstrumentList.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtInstrumentList.Multiline = True
         Me.txtInstrumentList.Name = "txtInstrumentList"
         Me.txtInstrumentList.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.txtInstrumentList.Size = New System.Drawing.Size(184, 126)
+        Me.txtInstrumentList.Size = New System.Drawing.Size(244, 154)
         Me.txtInstrumentList.TabIndex = 41
         '
         'lblInstrumentList
         '
         Me.lblInstrumentList.AutoSize = True
-        Me.lblInstrumentList.Location = New System.Drawing.Point(3, 1)
+        Me.lblInstrumentList.Location = New System.Drawing.Point(4, 1)
+        Me.lblInstrumentList.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblInstrumentList.Name = "lblInstrumentList"
-        Me.lblInstrumentList.Size = New System.Drawing.Size(78, 13)
+        Me.lblInstrumentList.Size = New System.Drawing.Size(104, 17)
         Me.lblInstrumentList.TabIndex = 40
         Me.lblInstrumentList.Text = "Instrument List:"
         '
         'txtNumberOfStock
         '
-        Me.txtNumberOfStock.Location = New System.Drawing.Point(433, 10)
+        Me.txtNumberOfStock.Location = New System.Drawing.Point(577, 12)
+        Me.txtNumberOfStock.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtNumberOfStock.Name = "txtNumberOfStock"
-        Me.txtNumberOfStock.Size = New System.Drawing.Size(73, 20)
+        Me.txtNumberOfStock.Size = New System.Drawing.Size(96, 22)
         Me.txtNumberOfStock.TabIndex = 44
         '
         'lblNumberOfStock
         '
         Me.lblNumberOfStock.AutoSize = True
-        Me.lblNumberOfStock.Location = New System.Drawing.Point(299, 13)
+        Me.lblNumberOfStock.Location = New System.Drawing.Point(399, 16)
+        Me.lblNumberOfStock.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblNumberOfStock.Name = "lblNumberOfStock"
-        Me.lblNumberOfStock.Size = New System.Drawing.Size(133, 13)
+        Me.lblNumberOfStock.Size = New System.Drawing.Size(175, 17)
         Me.lblNumberOfStock.TabIndex = 43
         Me.lblNumberOfStock.Text = "Number Of Stock Per Day:"
         '
         'txtHigherLimitOfMaxBlankCandlePercentage
         '
-        Me.txtHigherLimitOfMaxBlankCandlePercentage.Location = New System.Drawing.Point(464, 34)
+        Me.txtHigherLimitOfMaxBlankCandlePercentage.Location = New System.Drawing.Point(619, 42)
+        Me.txtHigherLimitOfMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtHigherLimitOfMaxBlankCandlePercentage.Name = "txtHigherLimitOfMaxBlankCandlePercentage"
-        Me.txtHigherLimitOfMaxBlankCandlePercentage.Size = New System.Drawing.Size(42, 20)
+        Me.txtHigherLimitOfMaxBlankCandlePercentage.Size = New System.Drawing.Size(55, 22)
         Me.txtHigherLimitOfMaxBlankCandlePercentage.TabIndex = 46
         '
         'lblHigherLimitOfMaxBlankCandlePercentage
         '
         Me.lblHigherLimitOfMaxBlankCandlePercentage.AutoSize = True
-        Me.lblHigherLimitOfMaxBlankCandlePercentage.Location = New System.Drawing.Point(286, 37)
+        Me.lblHigherLimitOfMaxBlankCandlePercentage.Location = New System.Drawing.Point(381, 46)
+        Me.lblHigherLimitOfMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblHigherLimitOfMaxBlankCandlePercentage.Name = "lblHigherLimitOfMaxBlankCandlePercentage"
-        Me.lblHigherLimitOfMaxBlankCandlePercentage.Size = New System.Drawing.Size(179, 13)
+        Me.lblHigherLimitOfMaxBlankCandlePercentage.Size = New System.Drawing.Size(238, 17)
         Me.lblHigherLimitOfMaxBlankCandlePercentage.TabIndex = 45
         Me.lblHigherLimitOfMaxBlankCandlePercentage.Text = "Higher Limit Of Max Blank Candle %:"
         '
@@ -255,25 +269,25 @@ Partial Class frmMain
         Me.pnlBtn.Controls.Add(Me.btnStart)
         Me.pnlBtn.Controls.Add(Me.btnExport)
         Me.pnlBtn.Controls.Add(Me.btnStop)
-        Me.pnlBtn.Location = New System.Drawing.Point(512, 192)
-        Me.pnlBtn.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.pnlBtn.Location = New System.Drawing.Point(683, 236)
+        Me.pnlBtn.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.pnlBtn.Name = "pnlBtn"
-        Me.pnlBtn.Size = New System.Drawing.Size(194, 76)
+        Me.pnlBtn.Size = New System.Drawing.Size(259, 94)
         Me.pnlBtn.TabIndex = 47
         '
         'chkbDatePicker
         '
         Me.chkbDatePicker.AutoSize = True
-        Me.chkbDatePicker.Location = New System.Drawing.Point(8, 36)
+        Me.chkbDatePicker.Location = New System.Drawing.Point(11, 44)
+        Me.chkbDatePicker.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkbDatePicker.Name = "chkbDatePicker"
-        Me.chkbDatePicker.Size = New System.Drawing.Size(122, 17)
+        Me.chkbDatePicker.Size = New System.Drawing.Size(158, 21)
         Me.chkbDatePicker.TabIndex = 48
         Me.chkbDatePicker.Text = "Take Date From File"
         Me.chkbDatePicker.UseVisualStyleBackColor = True
         '
         'GroupBox3
         '
-        Me.GroupBox3.Controls.Add(Me.chbImmediatePreviousDay)
         Me.GroupBox3.Controls.Add(Me.txtProcedureNumberOfStock)
         Me.GroupBox3.Controls.Add(Me.Label1)
         Me.GroupBox3.Controls.Add(Me.txtMinVolume)
@@ -284,115 +298,127 @@ Partial Class frmMain
         Me.GroupBox3.Controls.Add(Me.lblMaxPrice)
         Me.GroupBox3.Controls.Add(Me.txtMinPrice)
         Me.GroupBox3.Controls.Add(Me.lblMinPrice)
-        Me.GroupBox3.Location = New System.Drawing.Point(2, 54)
-        Me.GroupBox3.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.GroupBox3.Controls.Add(Me.chbImmediatePreviousDay)
+        Me.GroupBox3.Location = New System.Drawing.Point(3, 66)
+        Me.GroupBox3.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Padding = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.GroupBox3.Size = New System.Drawing.Size(504, 72)
+        Me.GroupBox3.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.GroupBox3.Size = New System.Drawing.Size(672, 89)
         Me.GroupBox3.TabIndex = 49
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Stock Selection Settings"
         '
+        'chbImmediatePreviousDay
+        '
+        Me.chbImmediatePreviousDay.AutoSize = True
+        Me.chbImmediatePreviousDay.Location = New System.Drawing.Point(486, 59)
+        Me.chbImmediatePreviousDay.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chbImmediatePreviousDay.Name = "chbImmediatePreviousDay"
+        Me.chbImmediatePreviousDay.Size = New System.Drawing.Size(182, 21)
+        Me.chbImmediatePreviousDay.TabIndex = 44
+        Me.chbImmediatePreviousDay.Text = "Immediate Previous Day"
+        Me.chbImmediatePreviousDay.UseVisualStyleBackColor = True
+        '
         'txtProcedureNumberOfStock
         '
-        Me.txtProcedureNumberOfStock.Location = New System.Drawing.Point(301, 46)
+        Me.txtProcedureNumberOfStock.Location = New System.Drawing.Point(401, 57)
+        Me.txtProcedureNumberOfStock.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtProcedureNumberOfStock.Name = "txtProcedureNumberOfStock"
-        Me.txtProcedureNumberOfStock.Size = New System.Drawing.Size(53, 20)
+        Me.txtProcedureNumberOfStock.Size = New System.Drawing.Size(69, 22)
         Me.txtProcedureNumberOfStock.TabIndex = 42
         Me.txtProcedureNumberOfStock.Tag = "Number Of Stock"
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(159, 48)
+        Me.Label1.Location = New System.Drawing.Point(212, 59)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(141, 13)
+        Me.Label1.Size = New System.Drawing.Size(186, 17)
         Me.Label1.TabIndex = 43
         Me.Label1.Text = "Procedure Number Of Stock"
         '
         'txtMinVolume
         '
-        Me.txtMinVolume.Location = New System.Drawing.Point(70, 46)
+        Me.txtMinVolume.Location = New System.Drawing.Point(93, 57)
+        Me.txtMinVolume.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtMinVolume.Name = "txtMinVolume"
-        Me.txtMinVolume.Size = New System.Drawing.Size(84, 20)
+        Me.txtMinVolume.Size = New System.Drawing.Size(111, 22)
         Me.txtMinVolume.TabIndex = 40
         Me.txtMinVolume.Tag = "Min Volume"
         '
         'lblMinVolume
         '
         Me.lblMinVolume.AutoSize = True
-        Me.lblMinVolume.Location = New System.Drawing.Point(4, 48)
+        Me.lblMinVolume.Location = New System.Drawing.Point(5, 59)
+        Me.lblMinVolume.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblMinVolume.Name = "lblMinVolume"
-        Me.lblMinVolume.Size = New System.Drawing.Size(62, 13)
+        Me.lblMinVolume.Size = New System.Drawing.Size(81, 17)
         Me.lblMinVolume.TabIndex = 41
         Me.lblMinVolume.Text = "Min Volume"
         '
         'txtATRPercentage
         '
-        Me.txtATRPercentage.Location = New System.Drawing.Point(358, 21)
+        Me.txtATRPercentage.Location = New System.Drawing.Point(477, 26)
+        Me.txtATRPercentage.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtATRPercentage.Name = "txtATRPercentage"
-        Me.txtATRPercentage.Size = New System.Drawing.Size(86, 20)
+        Me.txtATRPercentage.Size = New System.Drawing.Size(113, 22)
         Me.txtATRPercentage.TabIndex = 38
         Me.txtATRPercentage.Tag = "ATR %"
         '
         'lblATR
         '
         Me.lblATR.AutoSize = True
-        Me.lblATR.Location = New System.Drawing.Point(310, 24)
+        Me.lblATR.Location = New System.Drawing.Point(413, 30)
+        Me.lblATR.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblATR.Name = "lblATR"
-        Me.lblATR.Size = New System.Drawing.Size(40, 13)
+        Me.lblATR.Size = New System.Drawing.Size(52, 17)
         Me.lblATR.TabIndex = 39
         Me.lblATR.Text = "ATR %"
         '
         'txtMaxPrice
         '
-        Me.txtMaxPrice.Location = New System.Drawing.Point(214, 20)
+        Me.txtMaxPrice.Location = New System.Drawing.Point(285, 25)
+        Me.txtMaxPrice.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtMaxPrice.Name = "txtMaxPrice"
-        Me.txtMaxPrice.Size = New System.Drawing.Size(86, 20)
+        Me.txtMaxPrice.Size = New System.Drawing.Size(113, 22)
         Me.txtMaxPrice.TabIndex = 36
         Me.txtMaxPrice.Tag = "Max Price"
         '
         'lblMaxPrice
         '
         Me.lblMaxPrice.AutoSize = True
-        Me.lblMaxPrice.Location = New System.Drawing.Point(156, 23)
+        Me.lblMaxPrice.Location = New System.Drawing.Point(208, 28)
+        Me.lblMaxPrice.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblMaxPrice.Name = "lblMaxPrice"
-        Me.lblMaxPrice.Size = New System.Drawing.Size(54, 13)
+        Me.lblMaxPrice.Size = New System.Drawing.Size(69, 17)
         Me.lblMaxPrice.TabIndex = 37
         Me.lblMaxPrice.Text = "Max Price"
         '
         'txtMinPrice
         '
-        Me.txtMinPrice.Location = New System.Drawing.Point(62, 20)
+        Me.txtMinPrice.Location = New System.Drawing.Point(83, 25)
+        Me.txtMinPrice.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtMinPrice.Name = "txtMinPrice"
-        Me.txtMinPrice.Size = New System.Drawing.Size(86, 20)
+        Me.txtMinPrice.Size = New System.Drawing.Size(113, 22)
         Me.txtMinPrice.TabIndex = 34
         Me.txtMinPrice.Tag = "Min Price"
         '
         'lblMinPrice
         '
         Me.lblMinPrice.AutoSize = True
-        Me.lblMinPrice.Location = New System.Drawing.Point(4, 23)
+        Me.lblMinPrice.Location = New System.Drawing.Point(5, 28)
+        Me.lblMinPrice.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblMinPrice.Name = "lblMinPrice"
-        Me.lblMinPrice.Size = New System.Drawing.Size(51, 13)
+        Me.lblMinPrice.Size = New System.Drawing.Size(66, 17)
         Me.lblMinPrice.TabIndex = 35
         Me.lblMinPrice.Text = "Min Price"
         '
-        'chbImmediatePreviousDay
-        '
-        Me.chbImmediatePreviousDay.AutoSize = True
-        Me.chbImmediatePreviousDay.Location = New System.Drawing.Point(365, 48)
-        Me.chbImmediatePreviousDay.Name = "chbImmediatePreviousDay"
-        Me.chbImmediatePreviousDay.Size = New System.Drawing.Size(140, 17)
-        Me.chbImmediatePreviousDay.TabIndex = 44
-        Me.chbImmediatePreviousDay.Text = "Immediate Previous Day"
-        Me.chbImmediatePreviousDay.UseVisualStyleBackColor = True
-        '
         'frmMain
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(711, 444)
+        Me.ClientSize = New System.Drawing.Size(948, 546)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.chkbDatePicker)
         Me.Controls.Add(Me.pnlBtn)
@@ -412,7 +438,7 @@ Partial Class frmMain
         Me.Controls.Add(Me.lblToDate)
         Me.Controls.Add(Me.lblFromDate)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.MaximizeBox = False
         Me.Name = "frmMain"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

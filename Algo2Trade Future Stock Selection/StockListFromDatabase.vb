@@ -421,7 +421,8 @@ Public Class StockListFromDatabase
                                        ByVal userGivenInstrumentList As Dictionary(Of String, Decimal())) As Task(Of Dictionary(Of String, InstrumentDetails))
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         Dim stockList As Dictionary(Of String, Decimal()) = Nothing
-        If _common.IsTradingDay(Common.DataBaseTable.EOD_Futures, tradingDate) Then
+        Dim isTradingDay As Boolean = Await IsTradableDay(tradingDate).ConfigureAwait(False)
+        If isTradingDay Then
             Select Case procedureToRun
                 Case 0
                     stockList = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
@@ -584,6 +585,20 @@ Public Class StockListFromDatabase
 
     Public Function GetPreviousTradingDay(ByVal tradingDate As Date) As Date
         Return _common.GetPreviousTradingDay(Common.DataBaseTable.EOD_Futures, tradingDate)
+    End Function
+
+    Public Async Function IsTradableDay(ByVal tradingDate As Date) As Task(Of Boolean)
+        Dim ret As Boolean = False
+        Dim historicalCandlesJSONDict As Dictionary(Of String, Object) = Await GetHistoricalCandleStickAsync("1723649", tradingDate, tradingDate, TypeOfData.Intraday).ConfigureAwait(False)
+        _cts.Token.ThrowIfCancellationRequested()
+        If historicalCandlesJSONDict IsNot Nothing AndAlso historicalCandlesJSONDict.Count > 0 Then
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim intradayHistoricalData As Dictionary(Of Date, Payload) = Await GetChartFromHistoricalAsync(historicalCandlesJSONDict, "JINDALSTEL", tradingDate).ConfigureAwait(False)
+            If intradayHistoricalData IsNot Nothing AndAlso intradayHistoricalData.Count > 0 Then
+                ret = True
+            End If
+        End If
+        Return ret
     End Function
 #End Region
 

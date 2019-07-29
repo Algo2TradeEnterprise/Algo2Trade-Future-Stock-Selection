@@ -450,9 +450,9 @@ Public Class frmMain
                                         canceller.Token.ThrowIfCancellationRequested()
                                         Dim stockPayload As Dictionary(Of Date, Payload) = Await stockSelection.GetStockPayload(tradingDate, stockData.Value, imdtPrvsDay).ConfigureAwait(False)
                                         If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
-                                            Dim blankCandlePercentage As Decimal = CalculateBlankVolumePercentage(stockPayload)
-                                            stockData.Value.BlankCandlePercentage = blankCandlePercentage
+                                            stockData.Value.BlankCandlePercentage = CalculateBlankVolumePercentage(stockPayload)
                                         Else
+                                            If Not imdtPrvsDay Then Throw New ApplicationException(String.Format("Check volume checking for {0} on {1}", stockData.Key, tradingDate))
                                             stockData.Value.IsTradable = False
                                             stockData.Value.BlankCandlePercentage = Decimal.MinValue
                                         End If
