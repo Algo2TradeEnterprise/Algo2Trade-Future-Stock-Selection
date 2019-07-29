@@ -210,7 +210,7 @@ Public Class StockListFromDatabase
                     Dim priceFilterdCurrentNFOInstruments As List(Of ActiveInstrumentData) = Nothing
                     For Each runningInstrument In currentNFOInstruments
                         _cts.Token.ThrowIfCancellationRequested()
-                        Dim previousDayPayloads As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.EOD_Futures, runningInstrument.TradingSymbol, previousTradingDay.AddDays(-5), previousTradingDay)
+                        Dim previousDayPayloads As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.EOD_Futures, runningInstrument.TradingSymbol, previousTradingDay.AddDays(-10), previousTradingDay)
                         Dim lastDayPayload As Payload = Nothing
                         If previousDayPayloads IsNot Nothing AndAlso previousDayPayloads.Count > 0 Then
                             lastDayPayload = previousDayPayloads.LastOrDefault.Value
@@ -450,18 +450,21 @@ Public Class StockListFromDatabase
                     If bannedStocks Is Nothing OrElse
                     (bannedStocks IsNot Nothing AndAlso bannedStocks.Count > 0 AndAlso Not bannedStocks.Contains(stock.ToUpper)) Then
                         _cts.Token.ThrowIfCancellationRequested()
-                        Dim tradingSymbol As String = _common.GetCurrentTradingSymbol(Common.DataBaseTable.Intraday_Futures, stock, tradingDate)
-                        _cts.Token.ThrowIfCancellationRequested()
-                        If tradingSymbol IsNot Nothing AndAlso tradingSymbol <> "" Then
+                        Dim instrumentDetails As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.Intraday_Futures, tradingDate, stock)
+                        If instrumentDetails IsNot Nothing Then
+                            Dim tradingSymbol As String = instrumentDetails.Item2
                             _cts.Token.ThrowIfCancellationRequested()
-                            If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
-                            Dim instrumentData As New InstrumentDetails With
+                            If tradingSymbol IsNot Nothing AndAlso tradingSymbol <> "" Then
+                                _cts.Token.ThrowIfCancellationRequested()
+                                If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
+                                Dim instrumentData As New InstrumentDetails With
                                 {.TradingSymbol = tradingSymbol,
                                  .ATRPercentage = stockList(stock)(0),
                                  .LotSize = stockList(stock)(1),
                                  .Supporting1 = If(stockList(stock).Count > 2, stockList(stock)(2), 0),
                                  .Supporting2 = If(stockList(stock).Count > 3, stockList(stock)(3), 0)}
-                            ret.Add(tradingSymbol, instrumentData)
+                                ret.Add(tradingSymbol, instrumentData)
+                            End If
                         End If
                     End If
                 Next
@@ -526,6 +529,7 @@ Public Class StockListFromDatabase
                         _cts.Token.ThrowIfCancellationRequested()
                         If minExpiry.Date < stockList(stock).CurrentContractExpiry.Date AndAlso minExpiry.Date > tradingDate.Date Then
                             _cts.Token.ThrowIfCancellationRequested()
+                            Throw New ApplicationException(String.Format("Check stock {0} on {1}", stockList(stock).TradingSymbol, tradingDate))
                             stockList(stock).IsTradable = False
                             stockList(stock).PreviousContractTradingSymbol = activeInstruments.Find(Function(x)
                                                                                                         Return x.Expiry.Date = minExpiry.Date
@@ -551,7 +555,7 @@ Public Class StockListFromDatabase
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
         Dim ret As Dictionary(Of Date, Payload) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
-        Dim previousTradingDate As Date = _common.GetPreviousTradingDay(Common.DataBaseTable.Intraday_Futures, tradingDate)
+        Dim previousTradingDate As Date = _common.GetPreviousTradingDayOfAnInstrument(Common.DataBaseTable.Intraday_Futures, instrumentData.TradingSymbol, tradingDate)
         _cts.Token.ThrowIfCancellationRequested()
         If instrumentData IsNot Nothing AndAlso instrumentData.IsTradable AndAlso previousTradingDate <> Date.MinValue Then
             If instrumentData.PreviousContractTradingSymbol Is Nothing Then

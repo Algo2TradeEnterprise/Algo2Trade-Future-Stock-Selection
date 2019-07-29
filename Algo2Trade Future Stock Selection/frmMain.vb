@@ -317,6 +317,7 @@ Public Class frmMain
                                     If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
                                         stockData.Value.BlankCandlePercentage = CalculateBlankVolumePercentage(stockPayload)
                                     Else
+                                        Throw New ApplicationException(String.Format("Check volume checking for {0} on {1}", stockData.Key, tradingDate))
                                         stockData.Value.IsTradable = False
                                         stockData.Value.BlankCandlePercentage = Decimal.MinValue
                                     End If
