@@ -273,6 +273,7 @@ Public Class frmMain
             Dim maxBlankCandlePercentage As Decimal = GetTextBoxText_ThreadSafe(txtMaxBlankCandlePercentage)
             Dim higherLimitOfMaxBlankCandlePercentage As Decimal = GetTextBoxText_ThreadSafe(txtHigherLimitOfMaxBlankCandlePercentage)
             Dim numberOfStockPerDay As Decimal = GetTextBoxText_ThreadSafe(txtNumberOfStock)
+            Dim imdtPrvsDay As Boolean = GetCheckBoxChecked_ThreadSafe(chbImmediatePreviousDay)
             If numberOfStockPerDay = 0 Then numberOfStockPerDay = 5000
 
             Dim instrumentNames As String = Nothing
@@ -313,11 +314,11 @@ Public Class frmMain
                             If filteredInstruments IsNot Nothing AndAlso filteredInstruments.Count > 0 Then
                                 For Each stockData In filteredInstruments
                                     canceller.Token.ThrowIfCancellationRequested()
-                                    Dim stockPayload As Dictionary(Of Date, Payload) = Await stockSelection.GetStockPayload(tradingDate, stockData.Value).ConfigureAwait(False)
+                                    Dim stockPayload As Dictionary(Of Date, Payload) = Await stockSelection.GetStockPayload(tradingDate, stockData.Value, imdtPrvsDay).ConfigureAwait(False)
                                     If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
                                         stockData.Value.BlankCandlePercentage = CalculateBlankVolumePercentage(stockPayload)
                                     Else
-                                        Throw New ApplicationException(String.Format("Check volume checking for {0} on {1}", stockData.Key, tradingDate))
+                                        If Not imdtPrvsDay Then Throw New ApplicationException(String.Format("Check volume checking for {0} on {1}", stockData.Key, tradingDate))
                                         stockData.Value.IsTradable = False
                                         stockData.Value.BlankCandlePercentage = Decimal.MinValue
                                     End If
@@ -405,6 +406,7 @@ Public Class frmMain
             Dim maxBlankCandlePercentage As Decimal = GetTextBoxText_ThreadSafe(txtMaxBlankCandlePercentage)
             Dim higherLimitOfMaxBlankCandlePercentage As Decimal = GetTextBoxText_ThreadSafe(txtHigherLimitOfMaxBlankCandlePercentage)
             Dim numberOfStockPerDay As Decimal = GetTextBoxText_ThreadSafe(txtNumberOfStock)
+            Dim imdtPrvsDay As Boolean = GetCheckBoxChecked_ThreadSafe(chbImmediatePreviousDay)
             If numberOfStockPerDay = 0 Then numberOfStockPerDay = 5000
 
             Dim instrumentNames As String = Nothing
@@ -446,7 +448,7 @@ Public Class frmMain
                                 If filteredInstruments IsNot Nothing AndAlso filteredInstruments.Count > 0 Then
                                     For Each stockData In filteredInstruments
                                         canceller.Token.ThrowIfCancellationRequested()
-                                        Dim stockPayload As Dictionary(Of Date, Payload) = Await stockSelection.GetStockPayload(tradingDate, stockData.Value).ConfigureAwait(False)
+                                        Dim stockPayload As Dictionary(Of Date, Payload) = Await stockSelection.GetStockPayload(tradingDate, stockData.Value, imdtPrvsDay).ConfigureAwait(False)
                                         If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
                                             Dim blankCandlePercentage As Decimal = CalculateBlankVolumePercentage(stockPayload)
                                             stockData.Value.BlankCandlePercentage = blankCandlePercentage

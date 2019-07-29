@@ -551,17 +551,32 @@ Public Class StockListFromDatabase
         Return ret
     End Function
 
-    Public Async Function GetStockPayload(ByVal tradingDate As Date, ByVal instrumentData As InstrumentDetails) As Task(Of Dictionary(Of Date, Payload))
+    Public Async Function GetStockPayload(ByVal tradingDate As Date, ByVal instrumentData As InstrumentDetails, ByVal immediatePreviousDay As Boolean) As Task(Of Dictionary(Of Date, Payload))
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
         Dim ret As Dictionary(Of Date, Payload) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
-        Dim previousTradingDate As Date = _common.GetPreviousTradingDayOfAnInstrument(Common.DataBaseTable.Intraday_Futures, instrumentData.TradingSymbol, tradingDate)
         _cts.Token.ThrowIfCancellationRequested()
-        If instrumentData IsNot Nothing AndAlso instrumentData.IsTradable AndAlso previousTradingDate <> Date.MinValue Then
+        If instrumentData IsNot Nothing AndAlso instrumentData.IsTradable Then
             If instrumentData.PreviousContractTradingSymbol Is Nothing Then
-                ret = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, instrumentData.TradingSymbol, previousTradingDate, previousTradingDate)
+                Dim previousTradingDate As Date = Date.MinValue
+                If immediatePreviousDay Then
+                    previousTradingDate = _common.GetPreviousTradingDay(Common.DataBaseTable.Intraday_Futures, tradingDate)
+                Else
+                    previousTradingDate = _common.GetPreviousTradingDayOfAnInstrument(Common.DataBaseTable.Intraday_Futures, instrumentData.TradingSymbol, tradingDate)
+                End If
+                If previousTradingDate <> Date.MinValue Then
+                    ret = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, instrumentData.TradingSymbol, previousTradingDate, previousTradingDate)
+                End If
             Else
-                ret = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, instrumentData.PreviousContractTradingSymbol, previousTradingDate, previousTradingDate)
+                Dim previousTradingDate As Date = Date.MinValue
+                If immediatePreviousDay Then
+                    previousTradingDate = _common.GetPreviousTradingDay(Common.DataBaseTable.Intraday_Futures, tradingDate)
+                Else
+                    previousTradingDate = _common.GetPreviousTradingDayOfAnInstrument(Common.DataBaseTable.Intraday_Futures, instrumentData.PreviousContractTradingSymbol, tradingDate)
+                End If
+                If previousTradingDate <> Date.MinValue Then
+                    ret = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, instrumentData.PreviousContractTradingSymbol, previousTradingDate, previousTradingDate)
+                End If
             End If
         End If
         Return ret
