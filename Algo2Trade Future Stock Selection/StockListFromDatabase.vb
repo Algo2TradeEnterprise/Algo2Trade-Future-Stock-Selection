@@ -397,7 +397,7 @@ Public Class StockListFromDatabase
                     Dim changePer As String = Math.Round(((dt.Rows(i).Item(4) / dt.Rows(i).Item(7)) - 1) * 100, 2)
                     If highATRStockList.ContainsKey(instrumentName) Then
                         If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                        tempStockList.Add(instrumentName, {highATRStockList(instrumentName)(0), highATRStockList(instrumentName)(1), changePer, highATRStockList(instrumentName)(2)})
+                        tempStockList.Add(instrumentName, {highATRStockList(instrumentName)(0), highATRStockList(instrumentName)(1), changePer, dt.Rows(i).Item(7)})
                     End If
                 Next
                 If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
