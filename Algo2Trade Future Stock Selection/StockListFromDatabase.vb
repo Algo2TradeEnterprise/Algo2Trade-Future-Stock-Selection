@@ -482,7 +482,7 @@ Public Class StockListFromDatabase
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         Dim stockList As Dictionary(Of String, Decimal()) = Nothing
         Dim isTradingDay As Boolean = Await IsTradableDay(tradingDate).ConfigureAwait(False)
-        If isTradingDay Then
+        If isTradingDay OrElse tradingDate.Date = Now.Date Then
             Select Case procedureToRun
                 Case 0
                     stockList = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
