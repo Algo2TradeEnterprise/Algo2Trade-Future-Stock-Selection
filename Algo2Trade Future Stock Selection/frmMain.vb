@@ -383,7 +383,7 @@ Public Class frmMain
             SetObjectEnableDisable_ThreadSafe(btnExport, True)
             SetObjectEnableDisable_ThreadSafe(btnStart, True)
             SetObjectEnableDisable_ThreadSafe(btnStop, False)
-            OnHeartbeat(String.Format("Process Complete. Number of records: {0}", dgrvMain.DisplayedRowCount(True)))
+            OnHeartbeat(String.Format("Process Complete. Number of records: {0}", dgrvMain.Rows.Count))
         End Try
     End Function
     Private Async Function StartProcessingFromList() As Task
@@ -517,7 +517,7 @@ Public Class frmMain
             SetObjectEnableDisable_ThreadSafe(btnExport, True)
             SetObjectEnableDisable_ThreadSafe(btnStart, True)
             SetObjectEnableDisable_ThreadSafe(btnStop, False)
-            OnHeartbeat(String.Format("Process Complete. Number of records: {0}", dgrvMain.DisplayedRowCount(True)))
+            OnHeartbeat(String.Format("Process Complete. Number of records: {0}", dgrvMain.Rows.Count))
         End Try
     End Function
     Private Function CalculateBlankVolumePercentage(ByVal inputPayload As Dictionary(Of Date, Payload)) As Decimal
