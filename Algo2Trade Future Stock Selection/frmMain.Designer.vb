@@ -102,6 +102,7 @@ Partial Class frmMain
         '
         'lblProgress
         '
+        Me.lblProgress.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblProgress.Location = New System.Drawing.Point(5, 487)
         Me.lblProgress.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblProgress.Name = "lblProgress"
@@ -113,6 +114,9 @@ Partial Class frmMain
         '
         Me.dgrvMain.AllowUserToAddRows = False
         Me.dgrvMain.AllowUserToDeleteRows = False
+        Me.dgrvMain.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgrvMain.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgrvMain.Location = New System.Drawing.Point(3, 162)
         Me.dgrvMain.Margin = New System.Windows.Forms.Padding(4)
@@ -269,7 +273,7 @@ Partial Class frmMain
         Me.pnlBtn.Controls.Add(Me.btnStart)
         Me.pnlBtn.Controls.Add(Me.btnExport)
         Me.pnlBtn.Controls.Add(Me.btnStop)
-        Me.pnlBtn.Location = New System.Drawing.Point(683, 236)
+        Me.pnlBtn.Location = New System.Drawing.Point(683, 234)
         Me.pnlBtn.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.pnlBtn.Name = "pnlBtn"
         Me.pnlBtn.Size = New System.Drawing.Size(259, 94)
@@ -406,7 +410,7 @@ Partial Class frmMain
         'chbImmediatePreviousDay
         '
         Me.chbImmediatePreviousDay.AutoSize = True
-        Me.chbImmediatePreviousDay.Location = New System.Drawing.Point(486, 59)
+        Me.chbImmediatePreviousDay.Location = New System.Drawing.Point(483, 59)
         Me.chbImmediatePreviousDay.Margin = New System.Windows.Forms.Padding(4)
         Me.chbImmediatePreviousDay.Name = "chbImmediatePreviousDay"
         Me.chbImmediatePreviousDay.Size = New System.Drawing.Size(182, 21)
@@ -439,7 +443,6 @@ Partial Class frmMain
         Me.Controls.Add(Me.lblFromDate)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.MaximizeBox = False
         Me.Name = "frmMain"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Future Stock List"

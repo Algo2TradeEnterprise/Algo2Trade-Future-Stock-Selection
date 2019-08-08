@@ -569,7 +569,7 @@ Public Class frmMain
             pnlBtn.Location = btnLocation
         Else
             SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
-            Dim btnLocation As Point = New Point(512, 58)
+            Dim btnLocation As Point = New Point(512, 55)
             pnlBtn.Location = btnLocation
         End If
     End Sub
