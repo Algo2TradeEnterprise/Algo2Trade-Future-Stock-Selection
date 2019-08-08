@@ -463,7 +463,7 @@ Public Class StockListFromDatabase
             Next
             If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
                 For Each runningStock In tempStockList.OrderByDescending(Function(x)
-                                                                             Return Math.Abs(x.Value(2))
+                                                                             Return x.Value(2)
                                                                          End Function)
                     If ret Is Nothing Then ret = New Dictionary(Of String, Decimal())
                     ret.Add(runningStock.Key, runningStock.Value)
