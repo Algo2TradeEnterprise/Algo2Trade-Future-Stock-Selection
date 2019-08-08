@@ -47,7 +47,6 @@ Partial Class frmMain
         Me.pnlBtn = New System.Windows.Forms.Panel()
         Me.chkbDatePicker = New System.Windows.Forms.CheckBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
-        Me.chbImmediatePreviousDay = New System.Windows.Forms.CheckBox()
         Me.txtProcedureNumberOfStock = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtMinVolume = New System.Windows.Forms.TextBox()
@@ -58,6 +57,7 @@ Partial Class frmMain
         Me.lblMaxPrice = New System.Windows.Forms.Label()
         Me.txtMinPrice = New System.Windows.Forms.TextBox()
         Me.lblMinPrice = New System.Windows.Forms.Label()
+        Me.chbImmediatePreviousDay = New System.Windows.Forms.CheckBox()
         CType(Me.dgrvMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlInstrumentList.SuspendLayout()
         Me.pnlBtn.SuspendLayout()
@@ -115,7 +115,7 @@ Partial Class frmMain
         Me.dgrvMain.AllowUserToDeleteRows = False
         Me.dgrvMain.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgrvMain.Location = New System.Drawing.Point(3, 162)
-        Me.dgrvMain.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dgrvMain.Margin = New System.Windows.Forms.Padding(4)
         Me.dgrvMain.Name = "dgrvMain"
         Me.dgrvMain.ReadOnly = True
         Me.dgrvMain.RowHeadersVisible = False
@@ -127,7 +127,7 @@ Partial Class frmMain
         '
         Me.btnStart.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnStart.Location = New System.Drawing.Point(11, 4)
-        Me.btnStart.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnStart.Margin = New System.Windows.Forms.Padding(4)
         Me.btnStart.Name = "btnStart"
         Me.btnStart.Size = New System.Drawing.Size(119, 38)
         Me.btnStart.TabIndex = 33
@@ -138,7 +138,7 @@ Partial Class frmMain
         '
         Me.btnExport.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnExport.Location = New System.Drawing.Point(29, 49)
-        Me.btnExport.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnExport.Margin = New System.Windows.Forms.Padding(4)
         Me.btnExport.Name = "btnExport"
         Me.btnExport.Size = New System.Drawing.Size(205, 39)
         Me.btnExport.TabIndex = 34
@@ -149,7 +149,7 @@ Partial Class frmMain
         '
         Me.btnStop.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnStop.Location = New System.Drawing.Point(132, 2)
-        Me.btnStop.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnStop.Margin = New System.Windows.Forms.Padding(4)
         Me.btnStop.Name = "btnStop"
         Me.btnStop.Size = New System.Drawing.Size(117, 39)
         Me.btnStop.TabIndex = 35
@@ -173,9 +173,9 @@ Partial Class frmMain
         '
         Me.cmbProcedure.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbProcedure.FormattingEnabled = True
-        Me.cmbProcedure.Items.AddRange(New Object() {"ATR Based All Stock", "Trending Stocks", "User Given", "Pre Market Stock"})
+        Me.cmbProcedure.Items.AddRange(New Object() {"ATR Based All Stock", "Trending Stocks", "User Given", "Pre Market Stock", "Intraday Volume Spike"})
         Me.cmbProcedure.Location = New System.Drawing.Point(761, 11)
-        Me.cmbProcedure.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbProcedure.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbProcedure.Name = "cmbProcedure"
         Me.cmbProcedure.Size = New System.Drawing.Size(180, 24)
         Me.cmbProcedure.TabIndex = 37
@@ -193,7 +193,7 @@ Partial Class frmMain
         'txtMaxBlankCandlePercentage
         '
         Me.txtMaxBlankCandlePercentage.Location = New System.Drawing.Point(320, 42)
-        Me.txtMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4)
         Me.txtMaxBlankCandlePercentage.Name = "txtMaxBlankCandlePercentage"
         Me.txtMaxBlankCandlePercentage.Size = New System.Drawing.Size(57, 22)
         Me.txtMaxBlankCandlePercentage.TabIndex = 39
@@ -203,7 +203,7 @@ Partial Class frmMain
         Me.pnlInstrumentList.Controls.Add(Me.txtInstrumentList)
         Me.pnlInstrumentList.Controls.Add(Me.lblInstrumentList)
         Me.pnlInstrumentList.Location = New System.Drawing.Point(685, 42)
-        Me.pnlInstrumentList.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.pnlInstrumentList.Margin = New System.Windows.Forms.Padding(4)
         Me.pnlInstrumentList.Name = "pnlInstrumentList"
         Me.pnlInstrumentList.Size = New System.Drawing.Size(257, 187)
         Me.pnlInstrumentList.TabIndex = 42
@@ -211,7 +211,7 @@ Partial Class frmMain
         'txtInstrumentList
         '
         Me.txtInstrumentList.Location = New System.Drawing.Point(8, 28)
-        Me.txtInstrumentList.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtInstrumentList.Margin = New System.Windows.Forms.Padding(4)
         Me.txtInstrumentList.Multiline = True
         Me.txtInstrumentList.Name = "txtInstrumentList"
         Me.txtInstrumentList.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
@@ -231,7 +231,7 @@ Partial Class frmMain
         'txtNumberOfStock
         '
         Me.txtNumberOfStock.Location = New System.Drawing.Point(577, 12)
-        Me.txtNumberOfStock.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtNumberOfStock.Margin = New System.Windows.Forms.Padding(4)
         Me.txtNumberOfStock.Name = "txtNumberOfStock"
         Me.txtNumberOfStock.Size = New System.Drawing.Size(96, 22)
         Me.txtNumberOfStock.TabIndex = 44
@@ -249,7 +249,7 @@ Partial Class frmMain
         'txtHigherLimitOfMaxBlankCandlePercentage
         '
         Me.txtHigherLimitOfMaxBlankCandlePercentage.Location = New System.Drawing.Point(619, 42)
-        Me.txtHigherLimitOfMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtHigherLimitOfMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4)
         Me.txtHigherLimitOfMaxBlankCandlePercentage.Name = "txtHigherLimitOfMaxBlankCandlePercentage"
         Me.txtHigherLimitOfMaxBlankCandlePercentage.Size = New System.Drawing.Size(55, 22)
         Me.txtHigherLimitOfMaxBlankCandlePercentage.TabIndex = 46
@@ -279,7 +279,7 @@ Partial Class frmMain
         '
         Me.chkbDatePicker.AutoSize = True
         Me.chkbDatePicker.Location = New System.Drawing.Point(11, 44)
-        Me.chkbDatePicker.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkbDatePicker.Margin = New System.Windows.Forms.Padding(4)
         Me.chkbDatePicker.Name = "chkbDatePicker"
         Me.chkbDatePicker.Size = New System.Drawing.Size(158, 21)
         Me.chkbDatePicker.TabIndex = 48
@@ -308,21 +308,10 @@ Partial Class frmMain
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Stock Selection Settings"
         '
-        'chbImmediatePreviousDay
-        '
-        Me.chbImmediatePreviousDay.AutoSize = True
-        Me.chbImmediatePreviousDay.Location = New System.Drawing.Point(486, 59)
-        Me.chbImmediatePreviousDay.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.chbImmediatePreviousDay.Name = "chbImmediatePreviousDay"
-        Me.chbImmediatePreviousDay.Size = New System.Drawing.Size(182, 21)
-        Me.chbImmediatePreviousDay.TabIndex = 44
-        Me.chbImmediatePreviousDay.Text = "Immediate Previous Day"
-        Me.chbImmediatePreviousDay.UseVisualStyleBackColor = True
-        '
         'txtProcedureNumberOfStock
         '
         Me.txtProcedureNumberOfStock.Location = New System.Drawing.Point(401, 57)
-        Me.txtProcedureNumberOfStock.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtProcedureNumberOfStock.Margin = New System.Windows.Forms.Padding(4)
         Me.txtProcedureNumberOfStock.Name = "txtProcedureNumberOfStock"
         Me.txtProcedureNumberOfStock.Size = New System.Drawing.Size(69, 22)
         Me.txtProcedureNumberOfStock.TabIndex = 42
@@ -341,7 +330,7 @@ Partial Class frmMain
         'txtMinVolume
         '
         Me.txtMinVolume.Location = New System.Drawing.Point(93, 57)
-        Me.txtMinVolume.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtMinVolume.Margin = New System.Windows.Forms.Padding(4)
         Me.txtMinVolume.Name = "txtMinVolume"
         Me.txtMinVolume.Size = New System.Drawing.Size(111, 22)
         Me.txtMinVolume.TabIndex = 40
@@ -360,7 +349,7 @@ Partial Class frmMain
         'txtATRPercentage
         '
         Me.txtATRPercentage.Location = New System.Drawing.Point(477, 26)
-        Me.txtATRPercentage.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtATRPercentage.Margin = New System.Windows.Forms.Padding(4)
         Me.txtATRPercentage.Name = "txtATRPercentage"
         Me.txtATRPercentage.Size = New System.Drawing.Size(113, 22)
         Me.txtATRPercentage.TabIndex = 38
@@ -379,7 +368,7 @@ Partial Class frmMain
         'txtMaxPrice
         '
         Me.txtMaxPrice.Location = New System.Drawing.Point(285, 25)
-        Me.txtMaxPrice.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtMaxPrice.Margin = New System.Windows.Forms.Padding(4)
         Me.txtMaxPrice.Name = "txtMaxPrice"
         Me.txtMaxPrice.Size = New System.Drawing.Size(113, 22)
         Me.txtMaxPrice.TabIndex = 36
@@ -398,7 +387,7 @@ Partial Class frmMain
         'txtMinPrice
         '
         Me.txtMinPrice.Location = New System.Drawing.Point(83, 25)
-        Me.txtMinPrice.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtMinPrice.Margin = New System.Windows.Forms.Padding(4)
         Me.txtMinPrice.Name = "txtMinPrice"
         Me.txtMinPrice.Size = New System.Drawing.Size(113, 22)
         Me.txtMinPrice.TabIndex = 34
@@ -413,6 +402,17 @@ Partial Class frmMain
         Me.lblMinPrice.Size = New System.Drawing.Size(66, 17)
         Me.lblMinPrice.TabIndex = 35
         Me.lblMinPrice.Text = "Min Price"
+        '
+        'chbImmediatePreviousDay
+        '
+        Me.chbImmediatePreviousDay.AutoSize = True
+        Me.chbImmediatePreviousDay.Location = New System.Drawing.Point(486, 59)
+        Me.chbImmediatePreviousDay.Margin = New System.Windows.Forms.Padding(4)
+        Me.chbImmediatePreviousDay.Name = "chbImmediatePreviousDay"
+        Me.chbImmediatePreviousDay.Size = New System.Drawing.Size(182, 21)
+        Me.chbImmediatePreviousDay.TabIndex = 44
+        Me.chbImmediatePreviousDay.Text = "Immediate Previous Day"
+        Me.chbImmediatePreviousDay.UseVisualStyleBackColor = True
         '
         'frmMain
         '
