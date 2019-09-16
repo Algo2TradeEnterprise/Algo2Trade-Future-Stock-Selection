@@ -309,7 +309,7 @@ Public Class StockListFromDatabase
                             If currentTradingSymbol IsNot Nothing Then
                                 Dim lotSize As Integer = _common.GetLotSize(Common.DataBaseTable.EOD_Futures, currentTradingSymbol.Item2, tradingDate)
                                 If ret Is Nothing Then ret = New Dictionary(Of String, String())
-                                ret.Add(runningStock.Key, {runningStock.Value(0), lotSize, runningStock.Value(1)})
+                                ret.Add(runningStock.Key, {runningStock.Value(0), lotSize, runningStock.Value(1), runningStock.Value(2)})
                             End If
                         Next
                     End If
@@ -476,7 +476,7 @@ Public Class StockListFromDatabase
                 If tradingSymbolToken IsNot Nothing Then
                     Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, tradingSymbolToken.Item2, tradingDate.AddDays(-15), tradingDate)
                     If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
-                        Dim previousDayATR As Decimal = highATRStockList(runningStock)(2)
+                        Dim previousDayATR As Decimal = highATRStockList(runningStock)(3)
                         For Each runningPayload In intradayPayload.Keys
                             If runningPayload.Date = tradingDate.Date Then
                                 Dim dayHigh As Decimal = intradayPayload.Values.Max(Function(x)

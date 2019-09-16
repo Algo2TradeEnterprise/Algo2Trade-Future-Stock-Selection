@@ -3,8 +3,8 @@
     Public Property InstrumentIdentifier As Integer
     Public Property ATRPercentage As Decimal
     Public Property LotSize As Integer
-    Public Property Supporting1 As Decimal
-    Public Property Supporting2 As Decimal
+    Public Property Supporting1 As String
+    Public Property Supporting2 As String
     Public Property CurrentContractExpiry As Date
     Public Property PreviousContractTradingSymbol As String
     Public Property PreviousContractExpiry As Date
