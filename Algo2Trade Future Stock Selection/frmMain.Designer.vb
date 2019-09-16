@@ -177,7 +177,7 @@ Partial Class frmMain
         '
         Me.cmbProcedure.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbProcedure.FormattingEnabled = True
-        Me.cmbProcedure.Items.AddRange(New Object() {"ATR Based All Stock", "Trending Stocks", "User Given", "Pre Market Stock", "Intraday Volume Spike"})
+        Me.cmbProcedure.Items.AddRange(New Object() {"ATR Based All Stock", "Trending Stocks", "User Given", "Pre Market Stock", "Intraday Volume Spike", "High Low ATR"})
         Me.cmbProcedure.Location = New System.Drawing.Point(761, 11)
         Me.cmbProcedure.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbProcedure.Name = "cmbProcedure"
