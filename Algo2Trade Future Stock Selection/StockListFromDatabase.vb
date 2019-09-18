@@ -570,7 +570,7 @@ Public Class StockListFromDatabase
                                                                              Return x.Value(2)
                                                                          End Function)
                     If ret Is Nothing Then ret = New Dictionary(Of String, String())
-                    ret.Add(runningStock.Key, {runningStock.Value(0), runningStock.Value(1), runningStock.Value(2)})
+                    ret.Add(runningStock.Key, {runningStock.Value(0), runningStock.Value(1), runningStock.Value(2), runningStock.Value(3)})
                 Next
             End If
         End If
@@ -781,9 +781,9 @@ Public Class StockListFromDatabase
     Public Function CalculatorStoploss(ByVal entryPrice As Decimal, ByVal quantity As Integer, ByVal desiredLossOfTrade As Decimal) As Decimal
         Dim ret As Decimal = entryPrice
         Dim pl As Decimal = Decimal.MaxValue
-        While Not pl < desiredLossOfTrade
+        While Not pl < Math.Abs(desiredLossOfTrade) * -1
             pl = CalculatePL(entryPrice, ret, quantity)
-            If ret < desiredLossOfTrade Then Exit While
+            If ret < Math.Abs(desiredLossOfTrade) * -1 Then Exit While
             ret -= 0.05
         End While
 
