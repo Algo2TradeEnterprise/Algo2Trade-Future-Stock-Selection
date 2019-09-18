@@ -72,6 +72,9 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Calculator\BrokerageAttributes.vb" />
+    <Compile Include="Calculator\BrokerageCalculator.vb" />
+    <Compile Include="Calculator\GlobalVar.vb" />
     <Compile Include="Common.vb" />
     <Compile Include="Entities\Payload.vb" />
     <Compile Include="Indicators\ADX.vb" />
