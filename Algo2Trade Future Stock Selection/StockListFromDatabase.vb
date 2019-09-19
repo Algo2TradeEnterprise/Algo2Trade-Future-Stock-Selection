@@ -534,7 +534,7 @@ Public Class StockListFromDatabase
                 If capital < 10000 Then quanity = 2 * lotSize
                 Dim stoploss As Decimal = CalculatorStoploss(close, quanity, 1000)
                 Dim slPoint As Decimal = close - stoploss
-                If slPoint * 4 <= dayATR / 2 Then
+                If capital <= 25000 AndAlso slPoint * 4 <= dayATR / 2 Then
                     Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Cash, runningStock, tradingDate.AddDays(-15), tradingDate)
                     If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
                         Dim currentDayVolumeSum As Long = 0
