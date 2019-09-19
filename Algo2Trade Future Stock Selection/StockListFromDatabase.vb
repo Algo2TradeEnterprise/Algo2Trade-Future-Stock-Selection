@@ -784,7 +784,7 @@ Public Class StockListFromDatabase
         Dim pl As Decimal = Decimal.MaxValue
         While Not pl < Math.Abs(desiredLossOfTrade) * -1
             pl = CalculatePL(entryPrice, ret, quantity)
-            If ret < Math.Abs(desiredLossOfTrade) * -1 Then Exit While
+            If pl < Math.Abs(desiredLossOfTrade) * -1 Then Exit While
             ret -= 0.05
         End While
 
