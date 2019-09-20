@@ -515,67 +515,67 @@ Public Class StockListFromDatabase
         Return ret
     End Function
 
-    Private Async Function GetIntradayVolumeSpikeWithLowSLStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, String()))
-        Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
-        Dim ret As Dictionary(Of String, String()) = Nothing
-        _cts.Token.ThrowIfCancellationRequested()
-        Dim highATRStockList As Dictionary(Of String, String()) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
-        _cts.Token.ThrowIfCancellationRequested()
-        If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
-            _cts.Token.ThrowIfCancellationRequested()
-            Dim tempStockList As Dictionary(Of String, Decimal()) = Nothing
-            For Each runningStock In highATRStockList.Keys
-                _cts.Token.ThrowIfCancellationRequested()
-                Dim dayATR As Decimal = highATRStockList(runningStock)(3)
-                Dim close As Decimal = highATRStockList(runningStock)(2)
-                Dim lotSize As Integer = highATRStockList(runningStock)(1)
-                Dim capital As Decimal = close * lotSize / 30
-                Dim quanity As Integer = lotSize
-                If capital < 10000 Then quanity = 2 * lotSize
-                Dim stoploss As Decimal = CalculatorStoploss(close, quanity, 1000)
-                Dim slPoint As Decimal = close - stoploss
-                If capital <= 25000 AndAlso slPoint * 4 <= dayATR / 2 Then
-                    Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Cash, runningStock, tradingDate.AddDays(-15), tradingDate)
-                    If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
-                        Dim currentDayVolumeSum As Long = 0
-                        Dim previousDaysVolumeSum As Long = 0
-                        Dim counter As Integer = 0
-                        For Each runningPayload In intradayPayload.Keys.OrderByDescending(Function(x)
-                                                                                              Return x
-                                                                                          End Function)
-                            Dim firstCandle As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 9, 15, 0)
-                            Dim secondCandle As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 9, 16, 0)
-                            If runningPayload.Date = tradingDate.Date Then
-                                If runningPayload = firstCandle OrElse runningPayload = secondCandle Then
-                                    currentDayVolumeSum += intradayPayload(runningPayload).Volume
-                                End If
-                            ElseIf runningPayload.Date < tradingDate.Date Then
-                                If runningPayload = firstCandle OrElse runningPayload = secondCandle Then
-                                    previousDaysVolumeSum += intradayPayload(runningPayload).Volume
-                                    counter += 1
-                                    If counter = 10 Then Exit For
-                                End If
-                            End If
-                        Next
-                        If currentDayVolumeSum <> 0 AndAlso previousDaysVolumeSum <> 0 Then
-                            Dim changePer As Decimal = ((currentDayVolumeSum / (previousDaysVolumeSum / 5)) - 1) * 100
-                            If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                            tempStockList.Add(runningStock, {highATRStockList(runningStock)(0), highATRStockList(runningStock)(1), changePer, slPoint, dayATR})
-                        End If
-                    End If
-                End If
-            Next
-            If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
-                For Each runningStock In tempStockList.OrderByDescending(Function(x)
-                                                                             Return x.Value(2)
-                                                                         End Function)
-                    If ret Is Nothing Then ret = New Dictionary(Of String, String())
-                    ret.Add(runningStock.Key, {runningStock.Value(0), runningStock.Value(1), runningStock.Value(2), runningStock.Value(3), runningStock.Value(4)})
-                Next
-            End If
-        End If
-        Return ret
-    End Function
+    'Private Async Function GetIntradayVolumeSpikeWithLowSLStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, String()))
+    '    Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
+    '    Dim ret As Dictionary(Of String, String()) = Nothing
+    '    _cts.Token.ThrowIfCancellationRequested()
+    '    Dim highATRStockList As Dictionary(Of String, String()) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+    '    _cts.Token.ThrowIfCancellationRequested()
+    '    If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
+    '        _cts.Token.ThrowIfCancellationRequested()
+    '        Dim tempStockList As Dictionary(Of String, Decimal()) = Nothing
+    '        For Each runningStock In highATRStockList.Keys
+    '            _cts.Token.ThrowIfCancellationRequested()
+    '            Dim dayATR As Decimal = highATRStockList(runningStock)(3)
+    '            Dim close As Decimal = highATRStockList(runningStock)(2)
+    '            Dim lotSize As Integer = highATRStockList(runningStock)(1)
+    '            Dim capital As Decimal = close * lotSize / 30
+    '            Dim quanity As Integer = lotSize
+    '            If capital < 10000 Then quanity = 2 * lotSize
+    '            Dim stoploss As Decimal = CalculatorStoploss(close, quanity, 1000)
+    '            Dim slPoint As Decimal = close - stoploss
+    '            If capital <= 25000 AndAlso slPoint * 4 <= dayATR / 2 Then
+    '                Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Cash, runningStock, tradingDate.AddDays(-15), tradingDate)
+    '                If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
+    '                    Dim currentDayVolumeSum As Long = 0
+    '                    Dim previousDaysVolumeSum As Long = 0
+    '                    Dim counter As Integer = 0
+    '                    For Each runningPayload In intradayPayload.Keys.OrderByDescending(Function(x)
+    '                                                                                          Return x
+    '                                                                                      End Function)
+    '                        Dim firstCandle As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 9, 15, 0)
+    '                        Dim secondCandle As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 9, 16, 0)
+    '                        If runningPayload.Date = tradingDate.Date Then
+    '                            If runningPayload = firstCandle OrElse runningPayload = secondCandle Then
+    '                                currentDayVolumeSum += intradayPayload(runningPayload).Volume
+    '                            End If
+    '                        ElseIf runningPayload.Date < tradingDate.Date Then
+    '                            If runningPayload = firstCandle OrElse runningPayload = secondCandle Then
+    '                                previousDaysVolumeSum += intradayPayload(runningPayload).Volume
+    '                                counter += 1
+    '                                If counter = 10 Then Exit For
+    '                            End If
+    '                        End If
+    '                    Next
+    '                    If currentDayVolumeSum <> 0 AndAlso previousDaysVolumeSum <> 0 Then
+    '                        Dim changePer As Decimal = ((currentDayVolumeSum / (previousDaysVolumeSum / 5)) - 1) * 100
+    '                        If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
+    '                        tempStockList.Add(runningStock, {highATRStockList(runningStock)(0), highATRStockList(runningStock)(1), changePer, slPoint, dayATR})
+    '                    End If
+    '                End If
+    '            End If
+    '        Next
+    '        If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
+    '            For Each runningStock In tempStockList.OrderByDescending(Function(x)
+    '                                                                         Return x.Value(2)
+    '                                                                     End Function)
+    '                If ret Is Nothing Then ret = New Dictionary(Of String, String())
+    '                ret.Add(runningStock.Key, {runningStock.Value(0), runningStock.Value(1), runningStock.Value(2), runningStock.Value(3), runningStock.Value(4)})
+    '            Next
+    '        End If
+    '    End If
+    '    Return ret
+    'End Function
 #End Region
 
 #Region "Main Public Function"
@@ -610,8 +610,6 @@ Public Class StockListFromDatabase
                     stockList = Await GetIntradayVolumeSpikeStockDataAsync(tradingDate).ConfigureAwait(False)
                 Case 5
                     stockList = Await GetHighLowATRStockDataAsync(tradingDate).ConfigureAwait(False)
-                Case 6
-                    stockList = Await GetIntradayVolumeSpikeWithLowSLStockDataAsync(tradingDate).ConfigureAwait(False)
             End Select
             _cts.Token.ThrowIfCancellationRequested()
 
@@ -770,28 +768,6 @@ Public Class StockListFromDatabase
             End If
         End If
         Return ret
-    End Function
-
-    Public Function CalculatePL(ByVal buyPrice As Decimal, ByVal sellPrice As Decimal, ByVal quantity As Integer) As Decimal
-        Dim potentialBrokerage As New Calculator.BrokerageAttributes
-        Dim calculator As New Calculator.BrokerageCalculator(_cts)
-        calculator.FO_Futures(buyPrice, sellPrice, quantity, potentialBrokerage)
-        Return potentialBrokerage.NetProfitLoss
-    End Function
-
-    Public Function CalculatorStoploss(ByVal entryPrice As Decimal, ByVal quantity As Integer, ByVal desiredLossOfTrade As Decimal) As Decimal
-        Dim ret As Decimal = entryPrice
-        Dim pl As Decimal = Decimal.MaxValue
-        While Not pl < Math.Abs(desiredLossOfTrade) * -1
-            pl = CalculatePL(entryPrice, ret, quantity)
-            If pl < Math.Abs(desiredLossOfTrade) * -1 Then
-                ret += 0.05
-                Exit While
-            End If
-            ret -= 0.05
-        End While
-
-        Return Math.Round(ret, 2)
     End Function
 #End Region
 
