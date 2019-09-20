@@ -445,7 +445,7 @@ Public Class StockListFromDatabase
                     If currentDayVolumeSum <> 0 AndAlso previousDaysVolumeSum <> 0 Then
                         Dim changePer As Decimal = ((currentDayVolumeSum / (previousDaysVolumeSum / 5)) - 1) * 100
                         If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                        tempStockList.Add(runningStock, {highATRStockList(runningStock)(0), highATRStockList(runningStock)(1), changePer})
+                        tempStockList.Add(runningStock, {highATRStockList(runningStock)(0), highATRStockList(runningStock)(1), changePer, highATRStockList(runningStock)(3)})
                     End If
                 End If
             Next
@@ -454,7 +454,7 @@ Public Class StockListFromDatabase
                                                                              Return x.Value(2)
                                                                          End Function)
                     If ret Is Nothing Then ret = New Dictionary(Of String, String())
-                    ret.Add(runningStock.Key, {runningStock.Value(0), runningStock.Value(1), runningStock.Value(2)})
+                    ret.Add(runningStock.Key, {runningStock.Value(0), runningStock.Value(1), runningStock.Value(2), runningStock.Value(3)})
                 Next
             End If
         End If
