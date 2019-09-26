@@ -203,8 +203,10 @@ Public Class StockListFromDatabase
                     Dim currentIntrument As ActiveInstrumentData = runningIntruments.ToList.Find(Function(y)
                                                                                                      Return y.Expiry.Date = minExpiry.Date
                                                                                                  End Function)
-                    If currentNFOInstruments Is Nothing Then currentNFOInstruments = New List(Of ActiveInstrumentData)
-                    currentNFOInstruments.Add(currentIntrument)
+                    If currentIntrument IsNot Nothing Then
+                        If currentNFOInstruments Is Nothing Then currentNFOInstruments = New List(Of ActiveInstrumentData)
+                        currentNFOInstruments.Add(currentIntrument)
+                    End If
                 Next
                 If currentNFOInstruments IsNot Nothing AndAlso currentNFOInstruments.Count > 0 Then
                     Dim priceFilterdCurrentNFOInstruments As List(Of ActiveInstrumentData) = Nothing
