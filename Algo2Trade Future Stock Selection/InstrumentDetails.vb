@@ -3,6 +3,11 @@
     Public Property InstrumentIdentifier As Integer
     Public Property ATRPercentage As Decimal
     Public Property LotSize As Integer
+    Public Property DayATR As Decimal
+    Public Property PreviousDayOpen As Decimal
+    Public Property PreviousDayLow As Decimal
+    Public Property PreviousDayHigh As Decimal
+    Public Property PreviousDayClose As Decimal
     Public Property Supporting1 As String
     Public Property Supporting2 As String
     Public Property Supporting3 As String

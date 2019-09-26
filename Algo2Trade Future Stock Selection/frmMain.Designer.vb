@@ -103,7 +103,7 @@ Partial Class frmMain
         'lblProgress
         '
         Me.lblProgress.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblProgress.Location = New System.Drawing.Point(5, 487)
+        Me.lblProgress.Location = New System.Drawing.Point(5, 494)
         Me.lblProgress.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblProgress.Name = "lblProgress"
         Me.lblProgress.Size = New System.Drawing.Size(937, 52)
@@ -124,7 +124,7 @@ Partial Class frmMain
         Me.dgrvMain.ReadOnly = True
         Me.dgrvMain.RowHeadersVisible = False
         Me.dgrvMain.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgrvMain.Size = New System.Drawing.Size(672, 322)
+        Me.dgrvMain.Size = New System.Drawing.Size(676, 329)
         Me.dgrvMain.TabIndex = 32
         '
         'btnStart
@@ -177,7 +177,7 @@ Partial Class frmMain
         '
         Me.cmbProcedure.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbProcedure.FormattingEnabled = True
-        Me.cmbProcedure.Items.AddRange(New Object() {"ATR Based All Stock", "Trending Stocks", "User Given", "Pre Market Stock", "Intraday Volume Spike", "High Low ATR"})
+        Me.cmbProcedure.Items.AddRange(New Object() {"User Given", "ATR Based All Stock", "Pre Market Stock", "Intraday Volume Spike", "High Low ATR"})
         Me.cmbProcedure.Location = New System.Drawing.Point(761, 11)
         Me.cmbProcedure.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbProcedure.Name = "cmbProcedure"
@@ -422,7 +422,7 @@ Partial Class frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(948, 546)
+        Me.ClientSize = New System.Drawing.Size(952, 553)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.chkbDatePicker)
         Me.Controls.Add(Me.pnlBtn)

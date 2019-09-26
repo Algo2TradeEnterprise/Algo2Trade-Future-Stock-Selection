@@ -264,6 +264,11 @@ Public Class frmMain
             mainDataTable.Columns.Add("Lot Size")
             mainDataTable.Columns.Add("ATR %")
             mainDataTable.Columns.Add("Blank Candle %")
+            mainDataTable.Columns.Add("Day ATR")
+            mainDataTable.Columns.Add("Previous Day Open")
+            mainDataTable.Columns.Add("Previous Day Low")
+            mainDataTable.Columns.Add("Previous Day High")
+            mainDataTable.Columns.Add("Previous Day Close")
             mainDataTable.Columns.Add("Supporting1")
             mainDataTable.Columns.Add("Supporting2")
             mainDataTable.Columns.Add("Supporting3")
@@ -339,6 +344,11 @@ Public Class frmMain
                                         row("Lot Size") = stockData.Value.LotSize
                                         row("ATR %") = stockData.Value.ATRPercentage
                                         row("Blank Candle %") = stockData.Value.BlankCandlePercentage
+                                        row("Day ATR") = stockData.Value.DayATR
+                                        row("Previous Day Open") = stockData.Value.PreviousDayOpen
+                                        row("Previous Day Low") = stockData.Value.PreviousDayLow
+                                        row("Previous Day High") = stockData.Value.PreviousDayHigh
+                                        row("Previous Day Close") = stockData.Value.PreviousDayClose
                                         row("Supporting1") = stockData.Value.Supporting1
                                         row("Supporting2") = stockData.Value.Supporting2
                                         row("Supporting3") = stockData.Value.Supporting3
@@ -566,7 +576,7 @@ Public Class frmMain
 
     Private Sub cmbProcedure_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbProcedure.SelectedIndexChanged
         Dim index As Integer = GetComboBoxIndex_ThreadSafe(cmbProcedure)
-        If index = 2 Then
+        If index = 0 Then
             SetObjectVisible_ThreadSafe(pnlInstrumentList, True)
             Dim btnLocation As Point = New Point(512, 192)
             pnlBtn.Location = btnLocation
