@@ -727,6 +727,9 @@ Public Class StockListFromDatabase
                                                                                                         Return x.Expiry.Date = minExpiry.Date
                                                                                                     End Function).TradingSymbol
                             stockList(stock).PreviousContractExpiry = minExpiry
+                        ElseIf minExpiry.Date < stockList(stock).CurrentContractExpiry.Date AndAlso minExpiry.Date < tradingDate.Date Then
+                            stockList(stock).IsTradable = True
+                            _cts.Token.ThrowIfCancellationRequested()
                         End If
                     End If
                     ret = stockList
