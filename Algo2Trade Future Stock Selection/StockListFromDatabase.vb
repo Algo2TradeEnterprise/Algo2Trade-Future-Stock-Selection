@@ -197,7 +197,7 @@ Public Class StockListFromDatabase
                                                                                                              Return x.RawInstrumentName = runningInstrument.RawInstrumentName
                                                                                                          End Function)
                     Dim minExpiry As Date = runningIntruments.Min(Function(x)
-                                                                      If x.Expiry.Date = Now.Date Then
+                                                                      If x.Expiry.Date <= Now.Date Then
                                                                           Return Date.MaxValue
                                                                       Else
                                                                           Return x.Expiry
