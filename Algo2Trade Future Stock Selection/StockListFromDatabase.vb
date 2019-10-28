@@ -527,6 +527,71 @@ Public Class StockListFromDatabase
         Return ret
     End Function
 
+    Private Async Function GetLowSLATRStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
+        Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
+        Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
+        _cts.Token.ThrowIfCancellationRequested()
+
+
+        Dim maxSLAmount As Decimal = -1000
+        Dim minimumCapitalPerStock As Decimal = 15000
+        Dim atrMultiplier As Decimal = 1 / 3
+
+
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        _cts.Token.ThrowIfCancellationRequested()
+        If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim tempStockList As Dictionary(Of String, String()) = Nothing
+            For Each runningStock In highATRStockList.Keys
+                _cts.Token.ThrowIfCancellationRequested()
+                Dim tradingSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.Intraday_Futures, tradingDate, runningStock)
+                If tradingSymbolToken IsNot Nothing Then
+                    Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, tradingSymbolToken.Item2, tradingDate.AddDays(-15), tradingDate)
+                    If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
+                        Dim ATRPayload As Dictionary(Of Date, Decimal) = Nothing
+                        Indicator.ATR.CalculateATR(14, intradayPayload, ATRPayload)
+
+                        Dim firstCandleOfTheDay As Boolean = True
+                        Dim lotSize As Integer = Integer.MinValue
+                        Dim quantity As Integer = Integer.MinValue
+                        Dim buffer As Decimal = Decimal.MinValue
+                        For Each runningPayload In intradayPayload.Keys
+                            If runningPayload.Date = tradingDate.Date Then
+                                If firstCandleOfTheDay Then
+                                    lotSize = _common.GetLotSize(Common.DataBaseTable.Intraday_Futures, intradayPayload(runningPayload).TradingSymbol, runningPayload.Date)
+                                    quantity = CalculateQuantityFromInvestment(lotSize, minimumCapitalPerStock, intradayPayload(runningPayload).Open, True)
+                                    buffer = CalculateBuffer(intradayPayload(runningPayload).Open, Utilities.Numbers.NumberManipulation.RoundOfType.Floor)
+                                End If
+                                If intradayPayload(runningPayload).Volume >= intradayPayload(runningPayload).PreviousCandlePayload.Volume * 90 / 100 Then
+                                    If intradayPayload(runningPayload).CandleRange > ATRPayload(runningPayload) * atrMultiplier Then
+                                        Dim pl As Decimal = CalculatePL(intradayPayload(runningPayload).TradingSymbol, intradayPayload(runningPayload).High + buffer, intradayPayload(runningPayload).Low - buffer, quantity, lotSize)
+                                        If pl >= maxSLAmount Then
+                                            If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
+                                            tempStockList.Add(runningStock, {highATRStockList(runningStock).ATRPercentage, runningPayload.ToString("HH:mm:ss")})
+                                            Exit For
+                                        End If
+                                    End If
+                                End If
+                                firstCandleOfTheDay = False
+                            End If
+                        Next
+                    End If
+                End If
+            Next
+            If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
+                For Each runningStock In tempStockList.OrderByDescending(Function(x)
+                                                                             Return CDbl(x.Value(0))
+                                                                         End Function)
+                    If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
+                    highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(1)
+                    ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
+                Next
+            End If
+        End If
+        Return ret
+    End Function
+
     'Private Async Function GetIntradayVolumeSpikeWithLowSLStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, String()))
     '    Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
     '    Dim ret As Dictionary(Of String, String()) = Nothing
@@ -620,6 +685,8 @@ Public Class StockListFromDatabase
                     stockList = Await GetIntradayVolumeSpikeStockDataAsync(tradingDate).ConfigureAwait(False)
                 Case 4
                     stockList = Await GetHighLowATRStockDataAsync(tradingDate).ConfigureAwait(False)
+                Case 5
+                    stockList = Await GetLowSLATRStockDataAsync(tradingDate).ConfigureAwait(False)
             End Select
             _cts.Token.ThrowIfCancellationRequested()
 
@@ -786,6 +853,37 @@ Public Class StockListFromDatabase
             End If
         End If
         Return ret
+    End Function
+
+    Public Function CalculatePL(ByVal stockName As String, ByVal buyPrice As Decimal, ByVal sellPrice As Decimal, ByVal quantity As Integer, ByVal lotSize As Integer) As Decimal
+        Dim potentialBrokerage As New Calculator.BrokerageAttributes
+        Dim calculator As New Calculator.BrokerageCalculator(_cts)
+
+        'calculator.Intraday_Equity(buyPrice, sellPrice, quantity, potentialBrokerage)
+        'calculator.Currency_Futures(buyPrice, sellPrice, quantity / lotSize, potentialBrokerage)
+        'calculator.Commodity_MCX(stockName, buyPrice, sellPrice, quantity / lotSize, potentialBrokerage)
+        calculator.FO_Futures(buyPrice, sellPrice, quantity, potentialBrokerage)
+
+        Return potentialBrokerage.NetProfitLoss
+    End Function
+
+    Public Function CalculateBuffer(ByVal price As Decimal, ByVal floorOrCeiling As Utilities.Numbers.RoundOfType) As Decimal
+        Dim bufferPrice As Decimal = Nothing
+        'Assuming 1% target, we can afford to have buffer as 2.5% of that 1% target
+        bufferPrice = Utilities.Numbers.NumberManipulation.ConvertFloorCeling(price * 0.01 * 0.025, 0.05, floorOrCeiling)
+        Return bufferPrice
+    End Function
+
+    Public Function CalculateQuantityFromInvestment(ByVal lotSize As Integer, ByVal totalInvestment As Decimal, ByVal stockPrice As Decimal, ByVal allowIncreaseCapital As Boolean) As Integer
+        Dim quantity As Integer = lotSize
+        Dim quantityMultiplier As Integer = 1
+        If allowIncreaseCapital Then
+            quantityMultiplier = Math.Ceiling(totalInvestment / (quantity * stockPrice / 30))
+        Else
+            quantityMultiplier = Math.Floor(totalInvestment / (quantity * stockPrice / 30))
+        End If
+        If quantityMultiplier = 0 Then quantityMultiplier = 1
+        Return quantity * quantityMultiplier
     End Function
 #End Region
 
