@@ -592,6 +592,99 @@ Public Class StockListFromDatabase
         Return ret
     End Function
 
+    Private Async Function GetHighVolumeInsideBarHLStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
+        Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
+        If highVolumeInsideBarHLUserInputs Is Nothing Then Throw New ApplicationException("HighVolumeInsideBarHL Settings not implemented properly")
+        Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
+        _cts.Token.ThrowIfCancellationRequested()
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        _cts.Token.ThrowIfCancellationRequested()
+        If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim tempStockList As Dictionary(Of String, String()) = Nothing
+            For Each runningStock In highATRStockList.Keys
+                _cts.Token.ThrowIfCancellationRequested()
+                Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Cash, runningStock, tradingDate.AddDays(-15), tradingDate)
+                If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
+                    Dim signalTimes As List(Of Date) = Nothing
+                    Dim currentTradingSymbolWithToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.Intraday_Futures, tradingDate, runningStock)
+                    If currentTradingSymbolWithToken IsNot Nothing Then
+                        Dim futureIntradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, currentTradingSymbolWithToken.Item2, tradingDate.AddDays(-15), tradingDate)
+                        If futureIntradayPayload IsNot Nothing AndAlso futureIntradayPayload.Count > 0 Then
+                            Dim ATRPayload As Dictionary(Of Date, Decimal) = Nothing
+                            Indicator.ATR.CalculateATR(14, futureIntradayPayload, ATRPayload)
+                            For Each runningPayload In futureIntradayPayload.Values
+                                If runningPayload.PayloadDate.Date = tradingDate.Date Then
+                                    If runningPayload.PreviousCandlePayload.PreviousCandlePayload.PayloadDate.Date = tradingDate.Date Then
+                                        If IsInsideBar(runningPayload) OrElse IsInsideBar(runningPayload.PreviousCandlePayload) Then
+                                            Dim highestHigh As Decimal = Math.Max(runningPayload.High, Math.Max(runningPayload.PreviousCandlePayload.High, runningPayload.PreviousCandlePayload.PreviousCandlePayload.High))
+                                            Dim lowestLow As Decimal = Math.Min(runningPayload.Low, Math.Min(runningPayload.PreviousCandlePayload.Low, runningPayload.PreviousCandlePayload.PreviousCandlePayload.Low))
+                                            If (highestHigh - lowestLow) <= Math.Round(ATRPayload(runningPayload.PayloadDate), 2) Then
+                                                If signalTimes Is Nothing Then signalTimes = New List(Of Date)
+                                                signalTimes.Add(runningPayload.PayloadDate)
+                                            End If
+                                        End If
+                                    End If
+                                End If
+                            Next
+                        End If
+                    End If
+
+                    If signalTimes IsNot Nothing AndAlso signalTimes.Count > 0 Then
+                        For Each runningSignalTime In signalTimes
+                            Dim signalCheckStartTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 9, 15, 0)
+                            Dim signalCheckEndTime As Date = runningSignalTime.AddMinutes(-3)
+                            Dim currentDayVolumeSum As Long = 0
+                            Dim previousDaysVolumeSum As Long = 0
+                            Dim counter As Integer = 0
+                            Dim lastCalculatedDate As Date = Date.MinValue
+                            For Each runningPayload In intradayPayload.Keys.OrderByDescending(Function(x)
+                                                                                                  Return x
+                                                                                              End Function)
+                                Dim signalStart As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, signalCheckStartTime.Hour, signalCheckStartTime.Minute, signalCheckStartTime.Second)
+                                Dim signalEnd As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, signalCheckEndTime.Hour, signalCheckEndTime.Minute, signalCheckEndTime.Second)
+                                If runningPayload.Date = tradingDate.Date Then
+                                    If runningPayload >= signalStart AndAlso runningPayload <= signalEnd Then
+                                        currentDayVolumeSum += intradayPayload(runningPayload).Volume
+                                    End If
+                                ElseIf runningPayload.Date < tradingDate.Date Then
+                                    If highVolumeInsideBarHLUserInputs.CheckEODVolume Then
+                                        signalEnd = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 15, 29, 0)
+                                    End If
+                                    If runningPayload >= signalStart AndAlso runningPayload <= signalEnd Then
+                                        If lastCalculatedDate.Date <> runningPayload.Date Then
+                                            lastCalculatedDate = runningPayload
+                                            counter += 1
+                                            If counter = 5 + 1 Then Exit For
+                                        End If
+                                        previousDaysVolumeSum += intradayPayload(runningPayload).Volume
+                                    End If
+                                End If
+                            Next
+                            If currentDayVolumeSum <> 0 AndAlso previousDaysVolumeSum <> 0 Then
+                                Dim changePer As Decimal = ((currentDayVolumeSum / (previousDaysVolumeSum / 5)) - 1) * 100
+                                If currentDayVolumeSum > (previousDaysVolumeSum / 5) * highVolumeInsideBarHLUserInputs.Previous5DaysAvgVolumePercentage / 100 Then
+                                    If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
+                                    tempStockList.Add(runningStock, {changePer, runningSignalTime.ToString("HH:mm:ss")})
+                                    Exit For
+                                End If
+                            End If
+                        Next
+                    End If
+                End If
+            Next
+            If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
+                For Each runningStock In tempStockList
+                    If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
+                    highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
+                    highATRStockList(runningStock.Key).Supporting2 = runningStock.Value(1)
+                    ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
+                Next
+            End If
+        End If
+        Return ret
+    End Function
+
     'Private Async Function GetIntradayVolumeSpikeWithLowSLStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, String()))
     '    Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
     '    Dim ret As Dictionary(Of String, String()) = Nothing
@@ -687,6 +780,8 @@ Public Class StockListFromDatabase
                     stockList = Await GetHighLowATRStockDataAsync(tradingDate).ConfigureAwait(False)
                 Case 5
                     stockList = Await GetLowSLATRStockDataAsync(tradingDate).ConfigureAwait(False)
+                Case 6
+                    stockList = Await GetHighVolumeInsideBarHLStockDataAsync(tradingDate).ConfigureAwait(False)
             End Select
             _cts.Token.ThrowIfCancellationRequested()
 
@@ -854,8 +949,10 @@ Public Class StockListFromDatabase
         End If
         Return ret
     End Function
+#End Region
 
-    Public Function CalculatePL(ByVal stockName As String, ByVal buyPrice As Decimal, ByVal sellPrice As Decimal, ByVal quantity As Integer, ByVal lotSize As Integer) As Decimal
+#Region "Supporting Private Functions"
+    Private Function CalculatePL(ByVal stockName As String, ByVal buyPrice As Decimal, ByVal sellPrice As Decimal, ByVal quantity As Integer, ByVal lotSize As Integer) As Decimal
         Dim potentialBrokerage As New Calculator.BrokerageAttributes
         Dim calculator As New Calculator.BrokerageCalculator(_cts)
 
@@ -867,14 +964,14 @@ Public Class StockListFromDatabase
         Return potentialBrokerage.NetProfitLoss
     End Function
 
-    Public Function CalculateBuffer(ByVal price As Decimal, ByVal floorOrCeiling As Utilities.Numbers.RoundOfType) As Decimal
+    Private Function CalculateBuffer(ByVal price As Decimal, ByVal floorOrCeiling As Utilities.Numbers.RoundOfType) As Decimal
         Dim bufferPrice As Decimal = Nothing
         'Assuming 1% target, we can afford to have buffer as 2.5% of that 1% target
         bufferPrice = Utilities.Numbers.NumberManipulation.ConvertFloorCeling(price * 0.01 * 0.025, 0.05, floorOrCeiling)
         Return bufferPrice
     End Function
 
-    Public Function CalculateQuantityFromInvestment(ByVal lotSize As Integer, ByVal totalInvestment As Decimal, ByVal stockPrice As Decimal, ByVal allowIncreaseCapital As Boolean) As Integer
+    Private Function CalculateQuantityFromInvestment(ByVal lotSize As Integer, ByVal totalInvestment As Decimal, ByVal stockPrice As Decimal, ByVal allowIncreaseCapital As Boolean) As Integer
         Dim quantity As Integer = lotSize
         Dim quantityMultiplier As Integer = 1
         If allowIncreaseCapital Then
@@ -885,6 +982,25 @@ Public Class StockListFromDatabase
         If quantityMultiplier = 0 Then quantityMultiplier = 1
         Return quantity * quantityMultiplier
     End Function
+
+    Private Function IsInsideBar(ByVal candle As Payload) As Boolean
+        Dim ret As Boolean = False
+        If candle IsNot Nothing AndAlso candle.PreviousCandlePayload IsNot Nothing Then
+            If candle.High <= candle.PreviousCandlePayload.High AndAlso candle.Low >= candle.PreviousCandlePayload.Low Then
+                ret = True
+            End If
+        End If
+        Return ret
+    End Function
+#End Region
+
+#Region "Supporting Public Class"
+    Public highVolumeInsideBarHLUserInputs As HighVolumeInsideBarHLSettings = Nothing
+    Public Class HighVolumeInsideBarHLSettings
+        Public CheckVolumeTillSignalTime As Boolean
+        Public CheckEODVolume As Boolean
+        Public Previous5DaysAvgVolumePercentage As Decimal
+    End Class
 #End Region
 
 #Region "IDisposable Support"

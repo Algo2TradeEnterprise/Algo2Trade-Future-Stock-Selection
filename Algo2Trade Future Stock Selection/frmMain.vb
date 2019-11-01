@@ -174,6 +174,18 @@ Public Class frmMain
         End If
     End Function
 
+    Delegate Function GetRadioButtonChecked_Delegate(ByVal [radioButton] As RadioButton) As Boolean
+    Public Function GetRadioButtonChecked_ThreadSafe(ByVal [radioButton] As RadioButton) As Boolean
+        ' InvokeRequired required compares the thread ID of the calling thread to the thread ID of the creating thread.  
+        ' If these threads are different, it returns true.  
+        If [radioButton].InvokeRequired Then
+            Dim MyDelegate As New GetRadioButtonChecked_Delegate(AddressOf GetRadioButtonChecked_ThreadSafe)
+            Return Me.Invoke(MyDelegate, New Object() {[radioButton]})
+        Else
+            Return [radioButton].Checked
+        End If
+    End Function
+
     Delegate Sub SetDatagridBindDatatable_Delegate(ByVal [datagrid] As DataGridView, ByVal [table] As DataTable)
     Public Sub SetDatagridBindDatatable_ThreadSafe(ByVal [datagrid] As DataGridView, ByVal [table] As DataTable)
         ' InvokeRequired required compares the thread ID of the calling thread to the thread ID of the creating thread.  
@@ -300,6 +312,16 @@ Public Class frmMain
             Dim tradingDate As Date = startDate
             Using stockSelection As New StockListFromDatabase(canceller)
                 AddHandler stockSelection.Heartbeat, AddressOf OnHeartbeat
+
+                Select Case procedureToRun
+                    Case 6
+                        stockSelection.highVolumeInsideBarHLUserInputs = New StockListFromDatabase.HighVolumeInsideBarHLSettings With {
+                            .CheckVolumeTillSignalTime = GetRadioButtonChecked_ThreadSafe(rdbSignalTime),
+                            .CheckEODVolume = GetRadioButtonChecked_ThreadSafe(rdbEOD),
+                            .Previous5DaysAvgVolumePercentage = GetTextBoxText_ThreadSafe(txtPreviousDaysVolumePercentage)
+                        }
+                End Select
+
                 While tradingDate <= endDate
                     _bannedStockFileName = Path.Combine(My.Application.Info.DirectoryPath, String.Format("Bannned Stocks {0}.csv", tradingDate.ToString("ddMMyyyy")))
                     For Each runningFile In Directory.GetFiles(My.Application.Info.DirectoryPath, "Bannned Stocks *.csv")
@@ -577,10 +599,19 @@ Public Class frmMain
     Private Sub cmbProcedure_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbProcedure.SelectedIndexChanged
         Dim index As Integer = GetComboBoxIndex_ThreadSafe(cmbProcedure)
         If index = 0 Then
+            SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
             SetObjectVisible_ThreadSafe(pnlInstrumentList, True)
             Dim btnLocation As Point = New Point(512, 192)
             pnlBtn.Location = btnLocation
+        ElseIf index = 6 Then
+            rdbSignalTime.Checked = True
+            txtPreviousDaysVolumePercentage.Text = 100
+            SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, True)
+            SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+            Dim btnLocation As Point = New Point(512, 128)
+            pnlBtn.Location = btnLocation
         Else
+            SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
             SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
             Dim btnLocation As Point = New Point(512, 55)
             pnlBtn.Location = btnLocation

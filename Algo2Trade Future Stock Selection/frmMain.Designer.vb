@@ -58,10 +58,16 @@ Partial Class frmMain
         Me.txtMinPrice = New System.Windows.Forms.TextBox()
         Me.lblMinPrice = New System.Windows.Forms.Label()
         Me.chbImmediatePreviousDay = New System.Windows.Forms.CheckBox()
+        Me.pnlHighVolumeInsidebatHLSettings = New System.Windows.Forms.Panel()
+        Me.rdbSignalTime = New System.Windows.Forms.RadioButton()
+        Me.rdbEOD = New System.Windows.Forms.RadioButton()
+        Me.lblVoumePercentage = New System.Windows.Forms.Label()
+        Me.txtPreviousDaysVolumePercentage = New System.Windows.Forms.TextBox()
         CType(Me.dgrvMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlInstrumentList.SuspendLayout()
         Me.pnlBtn.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
+        Me.pnlHighVolumeInsidebatHLSettings.SuspendLayout()
         Me.SuspendLayout()
         '
         'dtpckrToDate
@@ -177,7 +183,7 @@ Partial Class frmMain
         '
         Me.cmbProcedure.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbProcedure.FormattingEnabled = True
-        Me.cmbProcedure.Items.AddRange(New Object() {"User Given", "ATR Based All Stock", "Pre Market Stock", "Intraday Volume Spike Stock", "High Low ATR Stock", "Low SL ATR Stock"})
+        Me.cmbProcedure.Items.AddRange(New Object() {"User Given", "ATR Based All Stock", "Pre Market Stock", "Intraday Volume Spike Stock", "High Low ATR Stock", "Low SL ATR Stock", "High Volume Insidebar HL"})
         Me.cmbProcedure.Location = New System.Drawing.Point(761, 11)
         Me.cmbProcedure.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbProcedure.Name = "cmbProcedure"
@@ -418,11 +424,61 @@ Partial Class frmMain
         Me.chbImmediatePreviousDay.Text = "Immediate Previous Day"
         Me.chbImmediatePreviousDay.UseVisualStyleBackColor = True
         '
+        'pnlHighVolumeInsidebatHLSettings
+        '
+        Me.pnlHighVolumeInsidebatHLSettings.Controls.Add(Me.txtPreviousDaysVolumePercentage)
+        Me.pnlHighVolumeInsidebatHLSettings.Controls.Add(Me.lblVoumePercentage)
+        Me.pnlHighVolumeInsidebatHLSettings.Controls.Add(Me.rdbEOD)
+        Me.pnlHighVolumeInsidebatHLSettings.Controls.Add(Me.rdbSignalTime)
+        Me.pnlHighVolumeInsidebatHLSettings.Location = New System.Drawing.Point(683, 59)
+        Me.pnlHighVolumeInsidebatHLSettings.Name = "pnlHighVolumeInsidebatHLSettings"
+        Me.pnlHighVolumeInsidebatHLSettings.Size = New System.Drawing.Size(259, 91)
+        Me.pnlHighVolumeInsidebatHLSettings.TabIndex = 50
+        '
+        'rdbSignalTime
+        '
+        Me.rdbSignalTime.AutoSize = True
+        Me.rdbSignalTime.Location = New System.Drawing.Point(8, 8)
+        Me.rdbSignalTime.Name = "rdbSignalTime"
+        Me.rdbSignalTime.Size = New System.Drawing.Size(219, 21)
+        Me.rdbSignalTime.TabIndex = 0
+        Me.rdbSignalTime.TabStop = True
+        Me.rdbSignalTime.Text = "Check Volume Till Signal Time"
+        Me.rdbSignalTime.UseVisualStyleBackColor = True
+        '
+        'rdbEOD
+        '
+        Me.rdbEOD.AutoSize = True
+        Me.rdbEOD.Location = New System.Drawing.Point(8, 32)
+        Me.rdbEOD.Name = "rdbEOD"
+        Me.rdbEOD.Size = New System.Drawing.Size(153, 21)
+        Me.rdbEOD.TabIndex = 1
+        Me.rdbEOD.TabStop = True
+        Me.rdbEOD.Text = "Check EOD Volume"
+        Me.rdbEOD.UseVisualStyleBackColor = True
+        '
+        'lblVoumePercentage
+        '
+        Me.lblVoumePercentage.AutoSize = True
+        Me.lblVoumePercentage.Location = New System.Drawing.Point(5, 60)
+        Me.lblVoumePercentage.Name = "lblVoumePercentage"
+        Me.lblVoumePercentage.Size = New System.Drawing.Size(182, 17)
+        Me.lblVoumePercentage.TabIndex = 2
+        Me.lblVoumePercentage.Text = "Previous 5 Days Volume %:"
+        '
+        'txtPreviousDaysVolumePercentage
+        '
+        Me.txtPreviousDaysVolumePercentage.Location = New System.Drawing.Point(184, 57)
+        Me.txtPreviousDaysVolumePercentage.Name = "txtPreviousDaysVolumePercentage"
+        Me.txtPreviousDaysVolumePercentage.Size = New System.Drawing.Size(67, 22)
+        Me.txtPreviousDaysVolumePercentage.TabIndex = 3
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(952, 553)
+        Me.Controls.Add(Me.pnlHighVolumeInsidebatHLSettings)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.chkbDatePicker)
         Me.Controls.Add(Me.pnlBtn)
@@ -452,6 +508,8 @@ Partial Class frmMain
         Me.pnlBtn.ResumeLayout(False)
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox3.PerformLayout()
+        Me.pnlHighVolumeInsidebatHLSettings.ResumeLayout(False)
+        Me.pnlHighVolumeInsidebatHLSettings.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -492,4 +550,9 @@ Partial Class frmMain
     Friend WithEvents txtMinPrice As TextBox
     Friend WithEvents lblMinPrice As Label
     Friend WithEvents chbImmediatePreviousDay As CheckBox
+    Friend WithEvents pnlHighVolumeInsidebatHLSettings As Panel
+    Friend WithEvents rdbEOD As RadioButton
+    Friend WithEvents rdbSignalTime As RadioButton
+    Friend WithEvents lblVoumePercentage As Label
+    Friend WithEvents txtPreviousDaysVolumePercentage As TextBox
 End Class
