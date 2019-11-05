@@ -59,10 +59,10 @@ Partial Class frmMain
         Me.lblMinPrice = New System.Windows.Forms.Label()
         Me.chbImmediatePreviousDay = New System.Windows.Forms.CheckBox()
         Me.pnlHighVolumeInsidebatHLSettings = New System.Windows.Forms.Panel()
-        Me.rdbSignalTime = New System.Windows.Forms.RadioButton()
-        Me.rdbEOD = New System.Windows.Forms.RadioButton()
-        Me.lblVoumePercentage = New System.Windows.Forms.Label()
         Me.txtPreviousDaysVolumePercentage = New System.Windows.Forms.TextBox()
+        Me.lblVoumePercentage = New System.Windows.Forms.Label()
+        Me.rdbEOD = New System.Windows.Forms.RadioButton()
+        Me.rdbSignalTime = New System.Windows.Forms.RadioButton()
         CType(Me.dgrvMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlInstrumentList.SuspendLayout()
         Me.pnlBtn.SuspendLayout()
@@ -183,7 +183,7 @@ Partial Class frmMain
         '
         Me.cmbProcedure.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbProcedure.FormattingEnabled = True
-        Me.cmbProcedure.Items.AddRange(New Object() {"User Given", "ATR Based All Stock", "Pre Market Stock", "Intraday Volume Spike Stock", "High Low ATR Stock", "Low SL ATR Stock", "High Volume Insidebar HL"})
+        Me.cmbProcedure.Items.AddRange(New Object() {"User Given", "ATR Based All Stock", "Pre Market Stock", "Intraday Volume Spike Stock", "High Low ATR Stock", "Low SL ATR Stock", "High Volume Insidebar HL", "OHL ATR Stock"})
         Me.cmbProcedure.Location = New System.Drawing.Point(761, 11)
         Me.cmbProcedure.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbProcedure.Name = "cmbProcedure"
@@ -435,16 +435,21 @@ Partial Class frmMain
         Me.pnlHighVolumeInsidebatHLSettings.Size = New System.Drawing.Size(259, 91)
         Me.pnlHighVolumeInsidebatHLSettings.TabIndex = 50
         '
-        'rdbSignalTime
+        'txtPreviousDaysVolumePercentage
         '
-        Me.rdbSignalTime.AutoSize = True
-        Me.rdbSignalTime.Location = New System.Drawing.Point(8, 8)
-        Me.rdbSignalTime.Name = "rdbSignalTime"
-        Me.rdbSignalTime.Size = New System.Drawing.Size(219, 21)
-        Me.rdbSignalTime.TabIndex = 0
-        Me.rdbSignalTime.TabStop = True
-        Me.rdbSignalTime.Text = "Check Volume Till Signal Time"
-        Me.rdbSignalTime.UseVisualStyleBackColor = True
+        Me.txtPreviousDaysVolumePercentage.Location = New System.Drawing.Point(184, 57)
+        Me.txtPreviousDaysVolumePercentage.Name = "txtPreviousDaysVolumePercentage"
+        Me.txtPreviousDaysVolumePercentage.Size = New System.Drawing.Size(67, 22)
+        Me.txtPreviousDaysVolumePercentage.TabIndex = 3
+        '
+        'lblVoumePercentage
+        '
+        Me.lblVoumePercentage.AutoSize = True
+        Me.lblVoumePercentage.Location = New System.Drawing.Point(5, 60)
+        Me.lblVoumePercentage.Name = "lblVoumePercentage"
+        Me.lblVoumePercentage.Size = New System.Drawing.Size(182, 17)
+        Me.lblVoumePercentage.TabIndex = 2
+        Me.lblVoumePercentage.Text = "Previous 5 Days Volume %:"
         '
         'rdbEOD
         '
@@ -457,21 +462,16 @@ Partial Class frmMain
         Me.rdbEOD.Text = "Check EOD Volume"
         Me.rdbEOD.UseVisualStyleBackColor = True
         '
-        'lblVoumePercentage
+        'rdbSignalTime
         '
-        Me.lblVoumePercentage.AutoSize = True
-        Me.lblVoumePercentage.Location = New System.Drawing.Point(5, 60)
-        Me.lblVoumePercentage.Name = "lblVoumePercentage"
-        Me.lblVoumePercentage.Size = New System.Drawing.Size(182, 17)
-        Me.lblVoumePercentage.TabIndex = 2
-        Me.lblVoumePercentage.Text = "Previous 5 Days Volume %:"
-        '
-        'txtPreviousDaysVolumePercentage
-        '
-        Me.txtPreviousDaysVolumePercentage.Location = New System.Drawing.Point(184, 57)
-        Me.txtPreviousDaysVolumePercentage.Name = "txtPreviousDaysVolumePercentage"
-        Me.txtPreviousDaysVolumePercentage.Size = New System.Drawing.Size(67, 22)
-        Me.txtPreviousDaysVolumePercentage.TabIndex = 3
+        Me.rdbSignalTime.AutoSize = True
+        Me.rdbSignalTime.Location = New System.Drawing.Point(8, 8)
+        Me.rdbSignalTime.Name = "rdbSignalTime"
+        Me.rdbSignalTime.Size = New System.Drawing.Size(219, 21)
+        Me.rdbSignalTime.TabIndex = 0
+        Me.rdbSignalTime.TabStop = True
+        Me.rdbSignalTime.Text = "Check Volume Till Signal Time"
+        Me.rdbSignalTime.UseVisualStyleBackColor = True
         '
         'frmMain
         '

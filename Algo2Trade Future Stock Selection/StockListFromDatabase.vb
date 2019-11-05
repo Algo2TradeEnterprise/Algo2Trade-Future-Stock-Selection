@@ -685,6 +685,46 @@ Public Class StockListFromDatabase
         Return ret
     End Function
 
+    Private Async Function GetOHLATRStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
+        Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
+        Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
+        _cts.Token.ThrowIfCancellationRequested()
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        _cts.Token.ThrowIfCancellationRequested()
+        If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim tempStockList As Dictionary(Of String, String()) = Nothing
+            Dim previousTradingDay As Date = _common.GetPreviousTradingDay(Common.DataBaseTable.EOD_Futures, tradingDate)
+            For Each runningStock In highATRStockList.Keys
+                _cts.Token.ThrowIfCancellationRequested()
+                Dim eodPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Cash, runningStock, previousTradingDay, previousTradingDay)
+                If eodPayload IsNot Nothing AndAlso eodPayload.Count > 0 Then
+                    Dim open As Decimal = eodPayload.FirstOrDefault.Value.Open
+                    Dim low As Decimal = eodPayload.FirstOrDefault.Value.Low
+                    Dim high As Decimal = eodPayload.FirstOrDefault.Value.High
+                    Dim direction As String = Nothing
+                    If open = low Then
+                        direction = "BUY"
+                    ElseIf open = high Then
+                        direction = "SELL"
+                    End If
+                    If direction IsNot Nothing Then
+                        If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
+                        tempStockList.Add(runningStock, {direction})
+                    End If
+                End If
+            Next
+            If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
+                For Each runningStock In tempStockList
+                    If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
+                    highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(1)
+                    ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
+                Next
+            End If
+        End If
+        Return ret
+    End Function
+
     'Private Async Function GetIntradayVolumeSpikeWithLowSLStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, String()))
     '    Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
     '    Dim ret As Dictionary(Of String, String()) = Nothing
@@ -782,6 +822,8 @@ Public Class StockListFromDatabase
                     stockList = Await GetLowSLATRStockDataAsync(tradingDate).ConfigureAwait(False)
                 Case 6
                     stockList = Await GetHighVolumeInsideBarHLStockDataAsync(tradingDate).ConfigureAwait(False)
+                Case 7
+                    stockList = Await GetOHLATRStockDataAsync(tradingDate).ConfigureAwait(False)
             End Select
             _cts.Token.ThrowIfCancellationRequested()
 
