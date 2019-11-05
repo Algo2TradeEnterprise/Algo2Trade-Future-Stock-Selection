@@ -717,7 +717,7 @@ Public Class StockListFromDatabase
             If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
                 For Each runningStock In tempStockList
                     If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
-                    highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(1)
+                    highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
                     ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
                 Next
             End If
