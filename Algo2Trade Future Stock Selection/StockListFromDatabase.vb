@@ -697,7 +697,7 @@ Public Class StockListFromDatabase
             Dim previousTradingDay As Date = _common.GetPreviousTradingDay(Common.DataBaseTable.EOD_Futures, tradingDate)
             For Each runningStock In highATRStockList.Keys
                 _cts.Token.ThrowIfCancellationRequested()
-                Dim eodPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Cash, runningStock, previousTradingDay, previousTradingDay)
+                Dim eodPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.EOD_Cash, runningStock, previousTradingDay, previousTradingDay)
                 If eodPayload IsNot Nothing AndAlso eodPayload.Count > 0 Then
                     Dim open As Decimal = eodPayload.FirstOrDefault.Value.Open
                     Dim low As Decimal = eodPayload.FirstOrDefault.Value.Low
