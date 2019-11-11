@@ -45,7 +45,6 @@ Partial Class frmMain
         Me.txtHigherLimitOfMaxBlankCandlePercentage = New System.Windows.Forms.TextBox()
         Me.lblHigherLimitOfMaxBlankCandlePercentage = New System.Windows.Forms.Label()
         Me.pnlBtn = New System.Windows.Forms.Panel()
-        Me.chkbDatePicker = New System.Windows.Forms.CheckBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.txtProcedureNumberOfStock = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -58,6 +57,10 @@ Partial Class frmMain
         Me.txtMinPrice = New System.Windows.Forms.TextBox()
         Me.lblMinPrice = New System.Windows.Forms.Label()
         Me.chbImmediatePreviousDay = New System.Windows.Forms.CheckBox()
+        Me.lblDescription = New System.Windows.Forms.Label()
+        Me.pnlIntradayVolumeSpikeSettings = New System.Windows.Forms.Panel()
+        Me.dtpkrChkTime = New System.Windows.Forms.DateTimePicker()
+        Me.Label3 = New System.Windows.Forms.Label()
         Me.pnlHighVolumeInsidebatHLSettings = New System.Windows.Forms.Panel()
         Me.txtPreviousDaysVolumePercentage = New System.Windows.Forms.TextBox()
         Me.lblVoumePercentage = New System.Windows.Forms.Label()
@@ -67,6 +70,7 @@ Partial Class frmMain
         Me.pnlInstrumentList.SuspendLayout()
         Me.pnlBtn.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
+        Me.pnlIntradayVolumeSpikeSettings.SuspendLayout()
         Me.pnlHighVolumeInsidebatHLSettings.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -109,10 +113,10 @@ Partial Class frmMain
         'lblProgress
         '
         Me.lblProgress.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblProgress.Location = New System.Drawing.Point(5, 494)
+        Me.lblProgress.Location = New System.Drawing.Point(5, 579)
         Me.lblProgress.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblProgress.Name = "lblProgress"
-        Me.lblProgress.Size = New System.Drawing.Size(937, 52)
+        Me.lblProgress.Size = New System.Drawing.Size(1203, 52)
         Me.lblProgress.TabIndex = 31
         Me.lblProgress.Text = "Progress Status"
         '
@@ -130,7 +134,7 @@ Partial Class frmMain
         Me.dgrvMain.ReadOnly = True
         Me.dgrvMain.RowHeadersVisible = False
         Me.dgrvMain.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgrvMain.Size = New System.Drawing.Size(676, 329)
+        Me.dgrvMain.Size = New System.Drawing.Size(1205, 358)
         Me.dgrvMain.TabIndex = 32
         '
         'btnStart
@@ -193,7 +197,7 @@ Partial Class frmMain
         'lblMaxBlankCandlePercentage
         '
         Me.lblMaxBlankCandlePercentage.AutoSize = True
-        Me.lblMaxBlankCandlePercentage.Location = New System.Drawing.Point(179, 46)
+        Me.lblMaxBlankCandlePercentage.Location = New System.Drawing.Point(5, 46)
         Me.lblMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblMaxBlankCandlePercentage.Name = "lblMaxBlankCandlePercentage"
         Me.lblMaxBlankCandlePercentage.Size = New System.Drawing.Size(140, 17)
@@ -202,7 +206,7 @@ Partial Class frmMain
         '
         'txtMaxBlankCandlePercentage
         '
-        Me.txtMaxBlankCandlePercentage.Location = New System.Drawing.Point(320, 42)
+        Me.txtMaxBlankCandlePercentage.Location = New System.Drawing.Point(146, 42)
         Me.txtMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4)
         Me.txtMaxBlankCandlePercentage.Name = "txtMaxBlankCandlePercentage"
         Me.txtMaxBlankCandlePercentage.Size = New System.Drawing.Size(57, 22)
@@ -212,10 +216,10 @@ Partial Class frmMain
         '
         Me.pnlInstrumentList.Controls.Add(Me.txtInstrumentList)
         Me.pnlInstrumentList.Controls.Add(Me.lblInstrumentList)
-        Me.pnlInstrumentList.Location = New System.Drawing.Point(685, 42)
+        Me.pnlInstrumentList.Location = New System.Drawing.Point(255, 188)
         Me.pnlInstrumentList.Margin = New System.Windows.Forms.Padding(4)
         Me.pnlInstrumentList.Name = "pnlInstrumentList"
-        Me.pnlInstrumentList.Size = New System.Drawing.Size(257, 187)
+        Me.pnlInstrumentList.Size = New System.Drawing.Size(257, 113)
         Me.pnlInstrumentList.TabIndex = 42
         '
         'txtInstrumentList
@@ -225,7 +229,7 @@ Partial Class frmMain
         Me.txtInstrumentList.Multiline = True
         Me.txtInstrumentList.Name = "txtInstrumentList"
         Me.txtInstrumentList.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.txtInstrumentList.Size = New System.Drawing.Size(244, 154)
+        Me.txtInstrumentList.Size = New System.Drawing.Size(244, 72)
         Me.txtInstrumentList.TabIndex = 41
         '
         'lblInstrumentList
@@ -258,7 +262,7 @@ Partial Class frmMain
         '
         'txtHigherLimitOfMaxBlankCandlePercentage
         '
-        Me.txtHigherLimitOfMaxBlankCandlePercentage.Location = New System.Drawing.Point(619, 42)
+        Me.txtHigherLimitOfMaxBlankCandlePercentage.Location = New System.Drawing.Point(445, 42)
         Me.txtHigherLimitOfMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4)
         Me.txtHigherLimitOfMaxBlankCandlePercentage.Name = "txtHigherLimitOfMaxBlankCandlePercentage"
         Me.txtHigherLimitOfMaxBlankCandlePercentage.Size = New System.Drawing.Size(55, 22)
@@ -267,7 +271,7 @@ Partial Class frmMain
         'lblHigherLimitOfMaxBlankCandlePercentage
         '
         Me.lblHigherLimitOfMaxBlankCandlePercentage.AutoSize = True
-        Me.lblHigherLimitOfMaxBlankCandlePercentage.Location = New System.Drawing.Point(381, 46)
+        Me.lblHigherLimitOfMaxBlankCandlePercentage.Location = New System.Drawing.Point(207, 46)
         Me.lblHigherLimitOfMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblHigherLimitOfMaxBlankCandlePercentage.Name = "lblHigherLimitOfMaxBlankCandlePercentage"
         Me.lblHigherLimitOfMaxBlankCandlePercentage.Size = New System.Drawing.Size(238, 17)
@@ -279,22 +283,11 @@ Partial Class frmMain
         Me.pnlBtn.Controls.Add(Me.btnStart)
         Me.pnlBtn.Controls.Add(Me.btnExport)
         Me.pnlBtn.Controls.Add(Me.btnStop)
-        Me.pnlBtn.Location = New System.Drawing.Point(683, 234)
+        Me.pnlBtn.Location = New System.Drawing.Point(949, 30)
         Me.pnlBtn.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.pnlBtn.Name = "pnlBtn"
         Me.pnlBtn.Size = New System.Drawing.Size(259, 94)
         Me.pnlBtn.TabIndex = 47
-        '
-        'chkbDatePicker
-        '
-        Me.chkbDatePicker.AutoSize = True
-        Me.chkbDatePicker.Location = New System.Drawing.Point(11, 44)
-        Me.chkbDatePicker.Margin = New System.Windows.Forms.Padding(4)
-        Me.chkbDatePicker.Name = "chkbDatePicker"
-        Me.chkbDatePicker.Size = New System.Drawing.Size(158, 21)
-        Me.chkbDatePicker.TabIndex = 48
-        Me.chkbDatePicker.Text = "Take Date From File"
-        Me.chkbDatePicker.UseVisualStyleBackColor = True
         '
         'GroupBox3
         '
@@ -424,40 +417,76 @@ Partial Class frmMain
         Me.chbImmediatePreviousDay.Text = "Immediate Previous Day"
         Me.chbImmediatePreviousDay.UseVisualStyleBackColor = True
         '
+        'lblDescription
+        '
+        Me.lblDescription.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblDescription.Location = New System.Drawing.Point(5, 524)
+        Me.lblDescription.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblDescription.Name = "lblDescription"
+        Me.lblDescription.Size = New System.Drawing.Size(1203, 52)
+        Me.lblDescription.TabIndex = 50
+        Me.lblDescription.Text = "Description"
+        '
+        'pnlIntradayVolumeSpikeSettings
+        '
+        Me.pnlIntradayVolumeSpikeSettings.Controls.Add(Me.dtpkrChkTime)
+        Me.pnlIntradayVolumeSpikeSettings.Controls.Add(Me.Label3)
+        Me.pnlIntradayVolumeSpikeSettings.Location = New System.Drawing.Point(519, 189)
+        Me.pnlIntradayVolumeSpikeSettings.Name = "pnlIntradayVolumeSpikeSettings"
+        Me.pnlIntradayVolumeSpikeSettings.Size = New System.Drawing.Size(257, 91)
+        Me.pnlIntradayVolumeSpikeSettings.TabIndex = 52
+        '
+        'dtpkrChkTime
+        '
+        Me.dtpkrChkTime.Format = System.Windows.Forms.DateTimePickerFormat.Time
+        Me.dtpkrChkTime.Location = New System.Drawing.Point(118, 11)
+        Me.dtpkrChkTime.Name = "dtpkrChkTime"
+        Me.dtpkrChkTime.Size = New System.Drawing.Size(110, 22)
+        Me.dtpkrChkTime.TabIndex = 5
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(8, 12)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(108, 17)
+        Me.Label3.TabIndex = 4
+        Me.Label3.Text = "Check Till Time:"
+        '
         'pnlHighVolumeInsidebatHLSettings
         '
         Me.pnlHighVolumeInsidebatHLSettings.Controls.Add(Me.txtPreviousDaysVolumePercentage)
         Me.pnlHighVolumeInsidebatHLSettings.Controls.Add(Me.lblVoumePercentage)
         Me.pnlHighVolumeInsidebatHLSettings.Controls.Add(Me.rdbEOD)
         Me.pnlHighVolumeInsidebatHLSettings.Controls.Add(Me.rdbSignalTime)
-        Me.pnlHighVolumeInsidebatHLSettings.Location = New System.Drawing.Point(683, 59)
+        Me.pnlHighVolumeInsidebatHLSettings.Location = New System.Drawing.Point(782, 188)
         Me.pnlHighVolumeInsidebatHLSettings.Name = "pnlHighVolumeInsidebatHLSettings"
-        Me.pnlHighVolumeInsidebatHLSettings.Size = New System.Drawing.Size(259, 91)
-        Me.pnlHighVolumeInsidebatHLSettings.TabIndex = 50
+        Me.pnlHighVolumeInsidebatHLSettings.Size = New System.Drawing.Size(257, 91)
+        Me.pnlHighVolumeInsidebatHLSettings.TabIndex = 53
         '
         'txtPreviousDaysVolumePercentage
         '
-        Me.txtPreviousDaysVolumePercentage.Location = New System.Drawing.Point(184, 57)
+        Me.txtPreviousDaysVolumePercentage.Location = New System.Drawing.Point(184, 59)
         Me.txtPreviousDaysVolumePercentage.Name = "txtPreviousDaysVolumePercentage"
         Me.txtPreviousDaysVolumePercentage.Size = New System.Drawing.Size(67, 22)
-        Me.txtPreviousDaysVolumePercentage.TabIndex = 3
+        Me.txtPreviousDaysVolumePercentage.TabIndex = 7
         '
         'lblVoumePercentage
         '
         Me.lblVoumePercentage.AutoSize = True
-        Me.lblVoumePercentage.Location = New System.Drawing.Point(5, 60)
+        Me.lblVoumePercentage.Location = New System.Drawing.Point(5, 62)
         Me.lblVoumePercentage.Name = "lblVoumePercentage"
         Me.lblVoumePercentage.Size = New System.Drawing.Size(182, 17)
-        Me.lblVoumePercentage.TabIndex = 2
+        Me.lblVoumePercentage.TabIndex = 6
         Me.lblVoumePercentage.Text = "Previous 5 Days Volume %:"
         '
         'rdbEOD
         '
         Me.rdbEOD.AutoSize = True
-        Me.rdbEOD.Location = New System.Drawing.Point(8, 32)
+        Me.rdbEOD.Location = New System.Drawing.Point(8, 34)
         Me.rdbEOD.Name = "rdbEOD"
         Me.rdbEOD.Size = New System.Drawing.Size(153, 21)
-        Me.rdbEOD.TabIndex = 1
+        Me.rdbEOD.TabIndex = 5
         Me.rdbEOD.TabStop = True
         Me.rdbEOD.Text = "Check EOD Volume"
         Me.rdbEOD.UseVisualStyleBackColor = True
@@ -465,10 +494,10 @@ Partial Class frmMain
         'rdbSignalTime
         '
         Me.rdbSignalTime.AutoSize = True
-        Me.rdbSignalTime.Location = New System.Drawing.Point(8, 8)
+        Me.rdbSignalTime.Location = New System.Drawing.Point(8, 10)
         Me.rdbSignalTime.Name = "rdbSignalTime"
         Me.rdbSignalTime.Size = New System.Drawing.Size(219, 21)
-        Me.rdbSignalTime.TabIndex = 0
+        Me.rdbSignalTime.TabIndex = 4
         Me.rdbSignalTime.TabStop = True
         Me.rdbSignalTime.Text = "Check Volume Till Signal Time"
         Me.rdbSignalTime.UseVisualStyleBackColor = True
@@ -477,10 +506,12 @@ Partial Class frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(952, 553)
+        Me.ClientSize = New System.Drawing.Size(1213, 636)
         Me.Controls.Add(Me.pnlHighVolumeInsidebatHLSettings)
+        Me.Controls.Add(Me.pnlIntradayVolumeSpikeSettings)
+        Me.Controls.Add(Me.lblProgress)
+        Me.Controls.Add(Me.lblDescription)
         Me.Controls.Add(Me.GroupBox3)
-        Me.Controls.Add(Me.chkbDatePicker)
         Me.Controls.Add(Me.pnlBtn)
         Me.Controls.Add(Me.txtHigherLimitOfMaxBlankCandlePercentage)
         Me.Controls.Add(Me.lblHigherLimitOfMaxBlankCandlePercentage)
@@ -492,7 +523,6 @@ Partial Class frmMain
         Me.Controls.Add(Me.cmbProcedure)
         Me.Controls.Add(Me.lblProcedure)
         Me.Controls.Add(Me.dgrvMain)
-        Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.dtpckrToDate)
         Me.Controls.Add(Me.dtpckrFromDate)
         Me.Controls.Add(Me.lblToDate)
@@ -508,6 +538,8 @@ Partial Class frmMain
         Me.pnlBtn.ResumeLayout(False)
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox3.PerformLayout()
+        Me.pnlIntradayVolumeSpikeSettings.ResumeLayout(False)
+        Me.pnlIntradayVolumeSpikeSettings.PerformLayout()
         Me.pnlHighVolumeInsidebatHLSettings.ResumeLayout(False)
         Me.pnlHighVolumeInsidebatHLSettings.PerformLayout()
         Me.ResumeLayout(False)
@@ -537,7 +569,6 @@ Partial Class frmMain
     Friend WithEvents txtHigherLimitOfMaxBlankCandlePercentage As TextBox
     Friend WithEvents lblHigherLimitOfMaxBlankCandlePercentage As Label
     Friend WithEvents pnlBtn As Panel
-    Friend WithEvents chkbDatePicker As CheckBox
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents txtProcedureNumberOfStock As TextBox
     Friend WithEvents Label1 As Label
@@ -550,9 +581,13 @@ Partial Class frmMain
     Friend WithEvents txtMinPrice As TextBox
     Friend WithEvents lblMinPrice As Label
     Friend WithEvents chbImmediatePreviousDay As CheckBox
+    Friend WithEvents lblDescription As Label
+    Friend WithEvents pnlIntradayVolumeSpikeSettings As Panel
+    Friend WithEvents dtpkrChkTime As DateTimePicker
+    Friend WithEvents Label3 As Label
     Friend WithEvents pnlHighVolumeInsidebatHLSettings As Panel
+    Friend WithEvents txtPreviousDaysVolumePercentage As TextBox
+    Friend WithEvents lblVoumePercentage As Label
     Friend WithEvents rdbEOD As RadioButton
     Friend WithEvents rdbSignalTime As RadioButton
-    Friend WithEvents lblVoumePercentage As Label
-    Friend WithEvents txtPreviousDaysVolumePercentage As TextBox
 End Class

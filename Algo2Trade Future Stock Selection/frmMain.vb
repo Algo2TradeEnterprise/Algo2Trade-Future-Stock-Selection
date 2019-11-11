@@ -222,7 +222,6 @@ Public Class frmMain
     Private canceller As CancellationTokenSource
     Private _bannedStockFileName As String
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
         SetObjectEnableDisable_ThreadSafe(btnStop, False)
         SetObjectEnableDisable_ThreadSafe(btnExport, False)
         If My.Settings.StartDate <> Date.MinValue Then dtpckrFromDate.Value = My.Settings.StartDate
@@ -258,12 +257,12 @@ Public Class frmMain
         My.Settings.PotentialAmount = txtMinVolume.Text
         My.Settings.ATRPercentage = txtATRPercentage.Text
         My.Settings.Save()
-        Dim dateFromFile As Boolean = GetCheckBoxChecked_ThreadSafe(chkbDatePicker)
-        If dateFromFile Then
-            Await Task.Run(AddressOf StartProcessingFromList).ConfigureAwait(False)
-        Else
-            Await Task.Run(AddressOf StartProcessing).ConfigureAwait(False)
-        End If
+        'Dim dateFromFile As Boolean = GetCheckBoxChecked_ThreadSafe(chkbDatePicker)
+        'If dateFromFile Then
+        '    Await Task.Run(AddressOf StartProcessingFromList).ConfigureAwait(False)
+        'Else
+        Await Task.Run(AddressOf StartProcessing).ConfigureAwait(False)
+        'End If
     End Sub
 
     Private Async Function StartProcessing() As Task
@@ -296,7 +295,7 @@ Public Class frmMain
 
             Dim instrumentNames As String = Nothing
             Dim instrumentList As Dictionary(Of String, Decimal()) = Nothing
-            If procedureToRun = 2 Then
+            If procedureToRun = 0 Then
                 instrumentNames = GetTextBoxText_ThreadSafe(txtInstrumentList)
                 Dim instruments() As String = instrumentNames.Trim.Split(vbCrLf)
                 For Each runningInstrument In instruments
@@ -598,23 +597,55 @@ Public Class frmMain
 
     Private Sub cmbProcedure_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbProcedure.SelectedIndexChanged
         Dim index As Integer = GetComboBoxIndex_ThreadSafe(cmbProcedure)
-        If index = 0 Then
-            SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
-            SetObjectVisible_ThreadSafe(pnlInstrumentList, True)
-            Dim btnLocation As Point = New Point(512, 192)
-            pnlBtn.Location = btnLocation
-        ElseIf index = 6 Then
-            rdbSignalTime.Checked = True
-            txtPreviousDaysVolumePercentage.Text = 100
-            SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, True)
-            SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
-            Dim btnLocation As Point = New Point(512, 128)
-            pnlBtn.Location = btnLocation
-        Else
-            SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
-            SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
-            Dim btnLocation As Point = New Point(512, 55)
-            pnlBtn.Location = btnLocation
-        End If
+        Select Case index
+            Case 0
+                Dim pnlLocation As Point = New Point(510, 40)
+                pnlInstrumentList.Location = pnlLocation
+                SetObjectVisible_ThreadSafe(pnlInstrumentList, True)
+                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                lblDescription.Text = String.Format("Return the user given stocklist with proper lotsize and volume filter")
+            Case 1
+                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                lblDescription.Text = String.Format("Return High ATR Stocks between price range which are greater than ATR% and satisfies the volume criteria")
+            Case 2
+                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                lblDescription.Text = String.Format("Return ATR Stocks with Pre market change% and previous close")
+            Case 3
+                Dim pnlLocation As Point = New Point(510, 50)
+                pnlIntradayVolumeSpikeSettings.Location = pnlLocation
+                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, True)
+                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                lblDescription.Text = String.Format("Return ATR stocks with volume change% till checking time compare to Previous 5 days average volume till checking time")
+            Case 4
+                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                lblDescription.Text = String.Format("")
+            Case 5
+                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                lblDescription.Text = String.Format("")
+            Case 6
+                Dim pnlLocation As Point = New Point(510, 50)
+                pnlHighVolumeInsidebatHLSettings.Location = pnlLocation
+                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, True)
+                lblDescription.Text = String.Format("")
+            Case 7
+                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                lblDescription.Text = String.Format("Return ATR Stocks where previous day Open=High or Open=Low")
+            Case Else
+                Throw New NotImplementedException()
+        End Select
     End Sub
 End Class

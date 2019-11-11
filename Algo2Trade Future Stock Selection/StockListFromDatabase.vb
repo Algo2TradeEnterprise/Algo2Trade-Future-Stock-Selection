@@ -421,6 +421,7 @@ Public Class StockListFromDatabase
 
     Private Async Function GetIntradayVolumeSpikeStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
+        If intradayVolumeSpikeUserInputs Is Nothing Then Throw New ApplicationException("IntradayVolumeSpike Settings not implemented properly")
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
         Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
@@ -432,23 +433,54 @@ Public Class StockListFromDatabase
                 _cts.Token.ThrowIfCancellationRequested()
                 Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Cash, runningStock, tradingDate.AddDays(-15), tradingDate)
                 If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
+                    'Dim currentDayVolumeSum As Long = 0
+                    'Dim previousDaysVolumeSum As Long = 0
+                    'Dim counter As Integer = 0
+                    'For Each runningPayload In intradayPayload.Keys.OrderByDescending(Function(x)
+                    '                                                                      Return x
+                    '                                                                  End Function)
+                    '    Dim firstCandle As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 9, 15, 0)
+                    '    Dim secondCandle As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 9, 16, 0)
+                    '    If runningPayload.Date = tradingDate.Date Then
+                    '        If runningPayload = firstCandle OrElse runningPayload = secondCandle Then
+                    '            currentDayVolumeSum += intradayPayload(runningPayload).Volume
+                    '        End If
+                    '    ElseIf runningPayload.Date < tradingDate.Date Then
+                    '        If runningPayload = firstCandle OrElse runningPayload = secondCandle Then
+                    '            previousDaysVolumeSum += intradayPayload(runningPayload).Volume
+                    '            counter += 1
+                    '            If counter = 10 Then Exit For
+                    '        End If
+                    '    End If
+                    'Next
+
+
+                    Dim signalCheckStartTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 9, 15, 0)
+                    Dim signalCheckEndTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day,
+                                                              intradayVolumeSpikeUserInputs.CheckingTime.Hour,
+                                                              intradayVolumeSpikeUserInputs.CheckingTime.Minute,
+                                                              intradayVolumeSpikeUserInputs.CheckingTime.Second)
                     Dim currentDayVolumeSum As Long = 0
                     Dim previousDaysVolumeSum As Long = 0
                     Dim counter As Integer = 0
+                    Dim lastCalculatedDate As Date = Date.MinValue
                     For Each runningPayload In intradayPayload.Keys.OrderByDescending(Function(x)
                                                                                           Return x
                                                                                       End Function)
-                        Dim firstCandle As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 9, 15, 0)
-                        Dim secondCandle As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 9, 16, 0)
+                        Dim signalStart As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, signalCheckStartTime.Hour, signalCheckStartTime.Minute, signalCheckStartTime.Second)
+                        Dim signalEnd As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, signalCheckEndTime.Hour, signalCheckEndTime.Minute, signalCheckEndTime.Second)
                         If runningPayload.Date = tradingDate.Date Then
-                            If runningPayload = firstCandle OrElse runningPayload = secondCandle Then
+                            If runningPayload >= signalStart AndAlso runningPayload <= signalEnd Then
                                 currentDayVolumeSum += intradayPayload(runningPayload).Volume
                             End If
                         ElseIf runningPayload.Date < tradingDate.Date Then
-                            If runningPayload = firstCandle OrElse runningPayload = secondCandle Then
+                            If runningPayload >= signalStart AndAlso runningPayload <= signalEnd Then
+                                If lastCalculatedDate.Date <> runningPayload.Date Then
+                                    lastCalculatedDate = runningPayload
+                                    counter += 1
+                                    If counter = 5 + 1 Then Exit For
+                                End If
                                 previousDaysVolumeSum += intradayPayload(runningPayload).Volume
-                                counter += 1
-                                If counter = 10 Then Exit For
                             End If
                         End If
                     Next
@@ -506,7 +538,7 @@ Public Class StockListFromDatabase
                                                                                    End Function)
                                 If dayHigh - dayLow >= previousDayATR * 85 / 100 Then
                                     If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
-                                    tempStockList.Add(runningStock, {highATRStockList(runningStock).ATRPercentage, runningPayload.ToShortTimeString})
+                                    tempStockList.Add(runningStock, {highATRStockList(runningStock).ATRPercentage, runningPayload.ToString("HH:mm:ss")})
                                     Exit For
                                 End If
                             End If
@@ -1042,6 +1074,11 @@ Public Class StockListFromDatabase
         Public CheckVolumeTillSignalTime As Boolean
         Public CheckEODVolume As Boolean
         Public Previous5DaysAvgVolumePercentage As Decimal
+    End Class
+
+    Public intradayVolumeSpikeUserInputs As IntradayVolumeSpikeSettings = Nothing
+    Public Class IntradayVolumeSpikeSettings
+        Public CheckingTime As Date
     End Class
 #End Region
 
