@@ -443,6 +443,7 @@ Partial Class frmMain
         Me.dtpkrChkTime.Name = "dtpkrChkTime"
         Me.dtpkrChkTime.Size = New System.Drawing.Size(110, 22)
         Me.dtpkrChkTime.TabIndex = 5
+        Me.dtpkrChkTime.Value = New Date(2019, 12, 8, 0, 0, 0, 0)
         '
         'Label3
         '

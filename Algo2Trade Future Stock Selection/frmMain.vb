@@ -313,6 +313,10 @@ Public Class frmMain
                 AddHandler stockSelection.Heartbeat, AddressOf OnHeartbeat
 
                 Select Case procedureToRun
+                    Case 3
+                        stockSelection.intradayVolumeSpikeUserInputs = New StockListFromDatabase.IntradayVolumeSpikeSettings With {
+                            .CheckingTime = dtpkrChkTime.Value
+                        }
                     Case 6
                         stockSelection.highVolumeInsideBarHLUserInputs = New StockListFromDatabase.HighVolumeInsideBarHLSettings With {
                             .CheckVolumeTillSignalTime = GetRadioButtonChecked_ThreadSafe(rdbSignalTime),
@@ -618,6 +622,9 @@ Public Class frmMain
             Case 3
                 Dim pnlLocation As Point = New Point(510, 50)
                 pnlIntradayVolumeSpikeSettings.Location = pnlLocation
+
+                dtpkrChkTime.Value = New Date(Now.Year, Now.Month, Now.Day, 9, 16, 0)
+
                 SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, True)
                 SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
@@ -635,6 +642,10 @@ Public Class frmMain
             Case 6
                 Dim pnlLocation As Point = New Point(510, 50)
                 pnlHighVolumeInsidebatHLSettings.Location = pnlLocation
+
+                rdbSignalTime.Checked = True
+                txtPreviousDaysVolumePercentage.Text = 100
+
                 SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
                 SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, True)
