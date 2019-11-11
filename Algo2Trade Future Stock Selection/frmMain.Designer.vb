@@ -191,7 +191,7 @@ Partial Class frmMain
         Me.cmbProcedure.Location = New System.Drawing.Point(761, 11)
         Me.cmbProcedure.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbProcedure.Name = "cmbProcedure"
-        Me.cmbProcedure.Size = New System.Drawing.Size(180, 24)
+        Me.cmbProcedure.Size = New System.Drawing.Size(437, 24)
         Me.cmbProcedure.TabIndex = 37
         '
         'lblMaxBlankCandlePercentage
@@ -283,7 +283,7 @@ Partial Class frmMain
         Me.pnlBtn.Controls.Add(Me.btnStart)
         Me.pnlBtn.Controls.Add(Me.btnExport)
         Me.pnlBtn.Controls.Add(Me.btnStop)
-        Me.pnlBtn.Location = New System.Drawing.Point(949, 30)
+        Me.pnlBtn.Location = New System.Drawing.Point(949, 56)
         Me.pnlBtn.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.pnlBtn.Name = "pnlBtn"
         Me.pnlBtn.Size = New System.Drawing.Size(259, 94)
