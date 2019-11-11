@@ -317,12 +317,12 @@ Public Class frmMain
                         stockSelection.intradayVolumeSpikeUserInputs = New StockListFromDatabase.IntradayVolumeSpikeSettings With {
                             .CheckingTime = dtpkrChkTime.Value
                         }
-                    Case 6
-                        stockSelection.highVolumeInsideBarHLUserInputs = New StockListFromDatabase.HighVolumeInsideBarHLSettings With {
-                            .CheckVolumeTillSignalTime = GetRadioButtonChecked_ThreadSafe(rdbSignalTime),
-                            .CheckEODVolume = GetRadioButtonChecked_ThreadSafe(rdbEOD),
-                            .Previous5DaysAvgVolumePercentage = GetTextBoxText_ThreadSafe(txtPreviousDaysVolumePercentage)
-                        }
+                        'Case 6
+                        '    stockSelection.highVolumeInsideBarHLUserInputs = New StockListFromDatabase.HighVolumeInsideBarHLSettings With {
+                        '        .CheckVolumeTillSignalTime = GetRadioButtonChecked_ThreadSafe(rdbSignalTime),
+                        '        .CheckEODVolume = GetRadioButtonChecked_ThreadSafe(rdbEOD),
+                        '        .Previous5DaysAvgVolumePercentage = GetTextBoxText_ThreadSafe(txtPreviousDaysVolumePercentage)
+                        '    }
                 End Select
 
                 While tradingDate <= endDate
@@ -630,27 +630,27 @@ Public Class frmMain
                 SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
                 lblDescription.Text = String.Format("Return ATR stocks with volume change% till checking time compare to Previous 5 days average volume till checking time")
             Case 4
-                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
-                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
-                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
-                lblDescription.Text = String.Format("")
-            Case 5
-                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
-                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
-                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
-                lblDescription.Text = String.Format("")
-            Case 6
-                Dim pnlLocation As Point = New Point(510, 50)
-                pnlHighVolumeInsidebatHLSettings.Location = pnlLocation
+                '    SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                '    SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                '    SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                '    lblDescription.Text = String.Format("")
+                'Case 5
+                '    SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                '    SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                '    SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                '    lblDescription.Text = String.Format("")
+                'Case 6
+                '    Dim pnlLocation As Point = New Point(510, 50)
+                '    pnlHighVolumeInsidebatHLSettings.Location = pnlLocation
 
-                rdbSignalTime.Checked = True
-                txtPreviousDaysVolumePercentage.Text = 100
+                '    rdbSignalTime.Checked = True
+                '    txtPreviousDaysVolumePercentage.Text = 100
 
-                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
-                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
-                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, True)
-                lblDescription.Text = String.Format("")
-            Case 7
+                '    SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                '    SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                '    SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, True)
+                '    lblDescription.Text = String.Format("")
+                'Case 7
                 SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
                 SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
