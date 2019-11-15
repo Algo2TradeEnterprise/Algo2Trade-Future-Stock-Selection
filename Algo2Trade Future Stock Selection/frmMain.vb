@@ -230,7 +230,7 @@ Public Class frmMain
         txtMaxBlankCandlePercentage.Text = My.Settings.MaxBlankCandlePercentage
         txtInstrumentList.Text = My.Settings.InstrumentList
         txtNumberOfStock.Text = My.Settings.NumberOfStockPerDay
-        txtHigherLimitOfMaxBlankCandlePercentage.Text = My.Settings.HigherLimitOfMaxBlankCandlePercentage
+        cmbStockType.SelectedIndex = My.Settings.StockType
         txtProcedureNumberOfStock.Text = My.Settings.ProcedureNumberOfRecords
         txtMinPrice.Text = My.Settings.MinClose
         txtMaxPrice.Text = My.Settings.MaxClose
@@ -249,7 +249,7 @@ Public Class frmMain
         My.Settings.ComboBoxIndex = cmbProcedure.SelectedIndex
         My.Settings.MaxBlankCandlePercentage = txtMaxBlankCandlePercentage.Text
         My.Settings.InstrumentList = txtInstrumentList.Text
-        My.Settings.HigherLimitOfMaxBlankCandlePercentage = txtHigherLimitOfMaxBlankCandlePercentage.Text
+        My.Settings.StockType = cmbStockType.SelectedIndex
         My.Settings.NumberOfStockPerDay = txtNumberOfStock.Text
         My.Settings.ProcedureNumberOfRecords = txtProcedureNumberOfStock.Text
         My.Settings.MinClose = txtMinPrice.Text
@@ -288,10 +288,26 @@ Public Class frmMain
             Dim endDate As Date = GetDateTimePickerValue_ThreadSafe(dtpckrToDate)
             Dim procedureToRun As Integer = GetComboBoxIndex_ThreadSafe(cmbProcedure)
             Dim maxBlankCandlePercentage As Decimal = GetTextBoxText_ThreadSafe(txtMaxBlankCandlePercentage)
-            Dim higherLimitOfMaxBlankCandlePercentage As Decimal = GetTextBoxText_ThreadSafe(txtHigherLimitOfMaxBlankCandlePercentage)
+            Dim stockType As Integer = GetComboBoxIndex_ThreadSafe(cmbStockType)
             Dim numberOfStockPerDay As Decimal = GetTextBoxText_ThreadSafe(txtNumberOfStock)
             Dim imdtPrvsDay As Boolean = GetCheckBoxChecked_ThreadSafe(chbImmediatePreviousDay)
             If numberOfStockPerDay = 0 Then numberOfStockPerDay = 5000
+            Dim intradayTable As Common.DataBaseTable = Common.DataBaseTable.Intraday_Futures
+            Dim eodTable As Common.DataBaseTable = Common.DataBaseTable.EOD_Futures
+            Select Case stockType
+                Case 0
+                    intradayTable = Common.DataBaseTable.Intraday_Cash
+                    eodTable = Common.DataBaseTable.EOD_Cash
+                Case 1
+                    intradayTable = Common.DataBaseTable.Intraday_Commodity
+                    eodTable = Common.DataBaseTable.EOD_Commodity
+                Case 2
+                    intradayTable = Common.DataBaseTable.Intraday_Currency
+                    eodTable = Common.DataBaseTable.EOD_Currency
+                Case 3
+                    intradayTable = Common.DataBaseTable.Intraday_Futures
+                    eodTable = Common.DataBaseTable.EOD_Futures
+            End Select
 
             Dim instrumentNames As String = Nothing
             Dim instrumentList As Dictionary(Of String, Decimal()) = Nothing
@@ -309,7 +325,7 @@ Public Class frmMain
             End If
 
             Dim tradingDate As Date = startDate
-            Using stockSelection As New StockListFromDatabase(canceller)
+            Using stockSelection As New StockListFromDatabase(canceller, intradayTable, eodTable)
                 AddHandler stockSelection.Heartbeat, AddressOf OnHeartbeat
 
                 Select Case procedureToRun
@@ -381,32 +397,32 @@ Public Class frmMain
                                         stockCounter += 1
                                         If stockCounter = numberOfStockPerDay Then Exit For
                                     Next
-                                    If stockCounter < numberOfStockPerDay Then
-                                        Dim stocksLessThanHigherLimitOfMaxBlankCandlePercentage As IEnumerable(Of KeyValuePair(Of String, InstrumentDetails)) =
-                                            filteredInstruments.Where(Function(x)
-                                                                          Return x.Value.BlankCandlePercentage > maxBlankCandlePercentage AndAlso
-                                                                          x.Value.BlankCandlePercentage <= higherLimitOfMaxBlankCandlePercentage AndAlso
-                                                                          x.Value.IsTradable = True
-                                                                      End Function)
-                                        If stocksLessThanHigherLimitOfMaxBlankCandlePercentage IsNot Nothing AndAlso stocksLessThanHigherLimitOfMaxBlankCandlePercentage.Count > 0 Then
-                                            For Each stockData In stocksLessThanHigherLimitOfMaxBlankCandlePercentage.OrderBy(Function(y)
-                                                                                                                                  Return y.Value.BlankCandlePercentage
-                                                                                                                              End Function)
-                                                Dim row As DataRow = mainDataTable.NewRow
-                                                row("Date") = tradingDate.ToShortDateString
-                                                row("Trading Symbol") = stockData.Value.TradingSymbol
-                                                row("Lot Size") = stockData.Value.LotSize
-                                                row("ATR %") = stockData.Value.ATRPercentage
-                                                row("Blank Candle %") = stockData.Value.BlankCandlePercentage
-                                                row("Supporting1") = stockData.Value.Supporting1
-                                                row("Supporting2") = stockData.Value.Supporting2
-                                                row("Supporting3") = stockData.Value.Supporting3
-                                                mainDataTable.Rows.Add(row)
-                                                stockCounter += 1
-                                                If stockCounter = numberOfStockPerDay Then Exit For
-                                            Next
-                                        End If
-                                    End If
+                                    'If stockCounter < numberOfStockPerDay Then
+                                    '    Dim stocksLessThanHigherLimitOfMaxBlankCandlePercentage As IEnumerable(Of KeyValuePair(Of String, InstrumentDetails)) =
+                                    '        filteredInstruments.Where(Function(x)
+                                    '                                      Return x.Value.BlankCandlePercentage > maxBlankCandlePercentage AndAlso
+                                    '                                      x.Value.BlankCandlePercentage <= higherLimitOfMaxBlankCandlePercentage AndAlso
+                                    '                                      x.Value.IsTradable = True
+                                    '                                  End Function)
+                                    '    If stocksLessThanHigherLimitOfMaxBlankCandlePercentage IsNot Nothing AndAlso stocksLessThanHigherLimitOfMaxBlankCandlePercentage.Count > 0 Then
+                                    '        For Each stockData In stocksLessThanHigherLimitOfMaxBlankCandlePercentage.OrderBy(Function(y)
+                                    '                                                                                              Return y.Value.BlankCandlePercentage
+                                    '                                                                                          End Function)
+                                    '            Dim row As DataRow = mainDataTable.NewRow
+                                    '            row("Date") = tradingDate.ToShortDateString
+                                    '            row("Trading Symbol") = stockData.Value.TradingSymbol
+                                    '            row("Lot Size") = stockData.Value.LotSize
+                                    '            row("ATR %") = stockData.Value.ATRPercentage
+                                    '            row("Blank Candle %") = stockData.Value.BlankCandlePercentage
+                                    '            row("Supporting1") = stockData.Value.Supporting1
+                                    '            row("Supporting2") = stockData.Value.Supporting2
+                                    '            row("Supporting3") = stockData.Value.Supporting3
+                                    '            mainDataTable.Rows.Add(row)
+                                    '            stockCounter += 1
+                                    '            If stockCounter = numberOfStockPerDay Then Exit For
+                                    '        Next
+                                    '    End If
+                                    'End If
                                 End If
                             End If
                         End If
@@ -424,140 +440,140 @@ Public Class frmMain
             OnHeartbeat(String.Format("Process Complete. Number of records: {0}", dgrvMain.Rows.Count))
         End Try
     End Function
-    Private Async Function StartProcessingFromList() As Task
-        Dim mainDataTable As DataTable = Nothing
-        Try
-            canceller = New CancellationTokenSource
-            mainDataTable = New DataTable
-            mainDataTable.Columns.Add("Date")
-            mainDataTable.Columns.Add("Trading Symbol")
-            mainDataTable.Columns.Add("Lot Size")
-            mainDataTable.Columns.Add("ATR %")
-            mainDataTable.Columns.Add("Blank Candle %")
-            mainDataTable.Columns.Add("Supporting1")
-            mainDataTable.Columns.Add("Supporting2")
+    'Private Async Function StartProcessingFromList() As Task
+    '    Dim mainDataTable As DataTable = Nothing
+    '    Try
+    '        canceller = New CancellationTokenSource
+    '        mainDataTable = New DataTable
+    '        mainDataTable.Columns.Add("Date")
+    '        mainDataTable.Columns.Add("Trading Symbol")
+    '        mainDataTable.Columns.Add("Lot Size")
+    '        mainDataTable.Columns.Add("ATR %")
+    '        mainDataTable.Columns.Add("Blank Candle %")
+    '        mainDataTable.Columns.Add("Supporting1")
+    '        mainDataTable.Columns.Add("Supporting2")
 
-            Dim dateListFilePath As String = Path.Combine(My.Application.Info.DirectoryPath, "Date List.txt")
-            Dim allDates As String() = File.ReadAllLines(dateListFilePath)
+    '        Dim dateListFilePath As String = Path.Combine(My.Application.Info.DirectoryPath, "Date List.txt")
+    '        Dim allDates As String() = File.ReadAllLines(dateListFilePath)
 
-            Dim procedureToRun As Integer = GetComboBoxIndex_ThreadSafe(cmbProcedure)
-            Dim maxBlankCandlePercentage As Decimal = GetTextBoxText_ThreadSafe(txtMaxBlankCandlePercentage)
-            Dim higherLimitOfMaxBlankCandlePercentage As Decimal = GetTextBoxText_ThreadSafe(txtHigherLimitOfMaxBlankCandlePercentage)
-            Dim numberOfStockPerDay As Decimal = GetTextBoxText_ThreadSafe(txtNumberOfStock)
-            Dim imdtPrvsDay As Boolean = GetCheckBoxChecked_ThreadSafe(chbImmediatePreviousDay)
-            If numberOfStockPerDay = 0 Then numberOfStockPerDay = 5000
+    '        Dim procedureToRun As Integer = GetComboBoxIndex_ThreadSafe(cmbProcedure)
+    '        Dim maxBlankCandlePercentage As Decimal = GetTextBoxText_ThreadSafe(txtMaxBlankCandlePercentage)
+    '        Dim higherLimitOfMaxBlankCandlePercentage As Decimal = GetTextBoxText_ThreadSafe(txtHigherLimitOfMaxBlankCandlePercentage)
+    '        Dim numberOfStockPerDay As Decimal = GetTextBoxText_ThreadSafe(txtNumberOfStock)
+    '        Dim imdtPrvsDay As Boolean = GetCheckBoxChecked_ThreadSafe(chbImmediatePreviousDay)
+    '        If numberOfStockPerDay = 0 Then numberOfStockPerDay = 5000
 
-            Dim instrumentNames As String = Nothing
-            Dim instrumentList As Dictionary(Of String, Decimal()) = Nothing
-            If procedureToRun = 2 Then
-                instrumentNames = GetTextBoxText_ThreadSafe(txtInstrumentList)
-                Dim instruments() As String = instrumentNames.Trim.Split(vbCrLf)
-                For Each runningInstrument In instruments
-                    Dim instrument As String = runningInstrument.Trim
-                    If instrumentList Is Nothing Then instrumentList = New Dictionary(Of String, Decimal())
-                    instrumentList.Add(instrument.Trim.ToUpper, {0, 0})
-                Next
-                If instrumentList Is Nothing OrElse instrumentList.Count = 0 Then
-                    Throw New ApplicationException("No instrument available in user given list")
-                End If
-            End If
+    '        Dim instrumentNames As String = Nothing
+    '        Dim instrumentList As Dictionary(Of String, Decimal()) = Nothing
+    '        If procedureToRun = 2 Then
+    '            instrumentNames = GetTextBoxText_ThreadSafe(txtInstrumentList)
+    '            Dim instruments() As String = instrumentNames.Trim.Split(vbCrLf)
+    '            For Each runningInstrument In instruments
+    '                Dim instrument As String = runningInstrument.Trim
+    '                If instrumentList Is Nothing Then instrumentList = New Dictionary(Of String, Decimal())
+    '                instrumentList.Add(instrument.Trim.ToUpper, {0, 0})
+    '            Next
+    '            If instrumentList Is Nothing OrElse instrumentList.Count = 0 Then
+    '                Throw New ApplicationException("No instrument available in user given list")
+    '            End If
+    '        End If
 
-            If allDates IsNot Nothing AndAlso allDates.Count > 0 Then
-                Using stockSelection As New StockListFromDatabase(canceller)
-                    AddHandler stockSelection.Heartbeat, AddressOf OnHeartbeat
-                    For Each runningDate In allDates
-                        Dim tradingDate As Date = Date.Parse(runningDate.Trim.Split(vbTab)(0))
-                        _bannedStockFileName = Path.Combine(My.Application.Info.DirectoryPath, String.Format("Bannned Stocks {0}.csv", tradingDate.ToString("ddMMyyyy")))
-                        For Each runningFile In Directory.GetFiles(My.Application.Info.DirectoryPath, "Bannned Stocks *.csv")
-                            If Not runningFile.Contains(tradingDate.ToString("ddMMyyyy")) Then File.Delete(runningFile)
-                        Next
-                        Dim bannedStockList As List(Of String) = Nothing
-                        Using bannedStock As New BannedStockDataFetcher(_bannedStockFileName, canceller)
-                            AddHandler bannedStock.Heartbeat, AddressOf OnHeartbeat
-                            bannedStockList = Await bannedStock.GetBannedStocksData(tradingDate).ConfigureAwait(False)
-                        End Using
-                        Dim stockList As Dictionary(Of String, InstrumentDetails) = Await stockSelection.GetStockData(tradingDate, procedureToRun, bannedStockList, instrumentList).ConfigureAwait(False)
-                        If stockList IsNot Nothing AndAlso stockList.Count > 0 Then
-                            Dim activeInstrumentData As Dictionary(Of String, InstrumentDetails) = Await stockSelection.GetActiveInstrumentData(tradingDate, stockList).ConfigureAwait(False)
-                            If activeInstrumentData IsNot Nothing AndAlso activeInstrumentData.Count > 0 Then
-                                Dim filteredInstruments As IEnumerable(Of KeyValuePair(Of String, InstrumentDetails)) = activeInstrumentData.Where(Function(x)
-                                                                                                                                                       Return x.Value.IsTradable = True
-                                                                                                                                                   End Function)
-                                If filteredInstruments IsNot Nothing AndAlso filteredInstruments.Count > 0 Then
-                                    For Each stockData In filteredInstruments
-                                        canceller.Token.ThrowIfCancellationRequested()
-                                        Dim stockPayload As Dictionary(Of Date, Payload) = Await stockSelection.GetStockPayload(tradingDate, stockData.Value, imdtPrvsDay).ConfigureAwait(False)
-                                        If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
-                                            stockData.Value.BlankCandlePercentage = CalculateBlankVolumePercentage(stockPayload)
-                                        Else
-                                            If Not imdtPrvsDay Then Throw New ApplicationException(String.Format("Check volume checking for {0} on {1}", stockData.Key, tradingDate))
-                                            stockData.Value.IsTradable = False
-                                            stockData.Value.BlankCandlePercentage = Decimal.MinValue
-                                        End If
-                                    Next
-                                    Dim stocksLessThanMaxBlankCandlePercentage As IEnumerable(Of KeyValuePair(Of String, InstrumentDetails)) =
-                                    filteredInstruments.Where(Function(x)
-                                                                  Return x.Value.BlankCandlePercentage <> Decimal.MinValue AndAlso
-                                                                  x.Value.BlankCandlePercentage <= maxBlankCandlePercentage AndAlso
-                                                                  x.Value.IsTradable = True
-                                                              End Function)
-                                    If stocksLessThanMaxBlankCandlePercentage IsNot Nothing AndAlso stocksLessThanMaxBlankCandlePercentage.Count > 0 Then
-                                        Dim stockCounter As Integer = 0
-                                        For Each stockData In stocksLessThanMaxBlankCandlePercentage
-                                            Dim row As DataRow = mainDataTable.NewRow
-                                            row("Date") = tradingDate.ToShortDateString
-                                            row("Trading Symbol") = stockData.Value.TradingSymbol
-                                            row("Lot Size") = stockData.Value.LotSize
-                                            row("ATR %") = stockData.Value.ATRPercentage
-                                            row("Blank Candle %") = stockData.Value.BlankCandlePercentage
-                                            row("Supporting1") = stockData.Value.Supporting1
-                                            row("Supporting2") = stockData.Value.Supporting2
-                                            mainDataTable.Rows.Add(row)
-                                            stockCounter += 1
-                                            If stockCounter = numberOfStockPerDay Then Exit For
-                                        Next
-                                        If stockCounter < numberOfStockPerDay Then
-                                            Dim stocksLessThanHigherLimitOfMaxBlankCandlePercentage As IEnumerable(Of KeyValuePair(Of String, InstrumentDetails)) =
-                                            filteredInstruments.Where(Function(x)
-                                                                          Return x.Value.BlankCandlePercentage > maxBlankCandlePercentage AndAlso
-                                                                          x.Value.BlankCandlePercentage <= higherLimitOfMaxBlankCandlePercentage AndAlso
-                                                                          x.Value.IsTradable = True
-                                                                      End Function)
-                                            If stocksLessThanHigherLimitOfMaxBlankCandlePercentage IsNot Nothing AndAlso stocksLessThanHigherLimitOfMaxBlankCandlePercentage.Count > 0 Then
-                                                For Each stockData In stocksLessThanHigherLimitOfMaxBlankCandlePercentage.OrderBy(Function(y)
-                                                                                                                                      Return y.Value.BlankCandlePercentage
-                                                                                                                                  End Function)
-                                                    Dim row As DataRow = mainDataTable.NewRow
-                                                    row("Date") = tradingDate.ToShortDateString
-                                                    row("Trading Symbol") = stockData.Value.TradingSymbol
-                                                    row("Lot Size") = stockData.Value.LotSize
-                                                    row("ATR %") = stockData.Value.ATRPercentage
-                                                    row("Blank Candle %") = stockData.Value.BlankCandlePercentage
-                                                    row("Supporting1") = stockData.Value.Supporting1
-                                                    row("Supporting2") = stockData.Value.Supporting2
-                                                    mainDataTable.Rows.Add(row)
-                                                    stockCounter += 1
-                                                    If stockCounter = numberOfStockPerDay Then Exit For
-                                                Next
-                                            End If
-                                        End If
-                                    End If
-                                End If
-                            End If
-                        End If
-                    Next
-                End Using
-            End If
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Future Stock List Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Finally
-            SetDatagridBindDatatable_ThreadSafe(dgrvMain, mainDataTable)
-            SetObjectEnableDisable_ThreadSafe(btnExport, True)
-            SetObjectEnableDisable_ThreadSafe(btnStart, True)
-            SetObjectEnableDisable_ThreadSafe(btnStop, False)
-            OnHeartbeat(String.Format("Process Complete. Number of records: {0}", dgrvMain.Rows.Count))
-        End Try
-    End Function
+    '        If allDates IsNot Nothing AndAlso allDates.Count > 0 Then
+    '            Using stockSelection As New StockListFromDatabase(canceller)
+    '                AddHandler stockSelection.Heartbeat, AddressOf OnHeartbeat
+    '                For Each runningDate In allDates
+    '                    Dim tradingDate As Date = Date.Parse(runningDate.Trim.Split(vbTab)(0))
+    '                    _bannedStockFileName = Path.Combine(My.Application.Info.DirectoryPath, String.Format("Bannned Stocks {0}.csv", tradingDate.ToString("ddMMyyyy")))
+    '                    For Each runningFile In Directory.GetFiles(My.Application.Info.DirectoryPath, "Bannned Stocks *.csv")
+    '                        If Not runningFile.Contains(tradingDate.ToString("ddMMyyyy")) Then File.Delete(runningFile)
+    '                    Next
+    '                    Dim bannedStockList As List(Of String) = Nothing
+    '                    Using bannedStock As New BannedStockDataFetcher(_bannedStockFileName, canceller)
+    '                        AddHandler bannedStock.Heartbeat, AddressOf OnHeartbeat
+    '                        bannedStockList = Await bannedStock.GetBannedStocksData(tradingDate).ConfigureAwait(False)
+    '                    End Using
+    '                    Dim stockList As Dictionary(Of String, InstrumentDetails) = Await stockSelection.GetStockData(tradingDate, procedureToRun, bannedStockList, instrumentList).ConfigureAwait(False)
+    '                    If stockList IsNot Nothing AndAlso stockList.Count > 0 Then
+    '                        Dim activeInstrumentData As Dictionary(Of String, InstrumentDetails) = Await stockSelection.GetActiveInstrumentData(tradingDate, stockList).ConfigureAwait(False)
+    '                        If activeInstrumentData IsNot Nothing AndAlso activeInstrumentData.Count > 0 Then
+    '                            Dim filteredInstruments As IEnumerable(Of KeyValuePair(Of String, InstrumentDetails)) = activeInstrumentData.Where(Function(x)
+    '                                                                                                                                                   Return x.Value.IsTradable = True
+    '                                                                                                                                               End Function)
+    '                            If filteredInstruments IsNot Nothing AndAlso filteredInstruments.Count > 0 Then
+    '                                For Each stockData In filteredInstruments
+    '                                    canceller.Token.ThrowIfCancellationRequested()
+    '                                    Dim stockPayload As Dictionary(Of Date, Payload) = Await stockSelection.GetStockPayload(tradingDate, stockData.Value, imdtPrvsDay).ConfigureAwait(False)
+    '                                    If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
+    '                                        stockData.Value.BlankCandlePercentage = CalculateBlankVolumePercentage(stockPayload)
+    '                                    Else
+    '                                        If Not imdtPrvsDay Then Throw New ApplicationException(String.Format("Check volume checking for {0} on {1}", stockData.Key, tradingDate))
+    '                                        stockData.Value.IsTradable = False
+    '                                        stockData.Value.BlankCandlePercentage = Decimal.MinValue
+    '                                    End If
+    '                                Next
+    '                                Dim stocksLessThanMaxBlankCandlePercentage As IEnumerable(Of KeyValuePair(Of String, InstrumentDetails)) =
+    '                                filteredInstruments.Where(Function(x)
+    '                                                              Return x.Value.BlankCandlePercentage <> Decimal.MinValue AndAlso
+    '                                                              x.Value.BlankCandlePercentage <= maxBlankCandlePercentage AndAlso
+    '                                                              x.Value.IsTradable = True
+    '                                                          End Function)
+    '                                If stocksLessThanMaxBlankCandlePercentage IsNot Nothing AndAlso stocksLessThanMaxBlankCandlePercentage.Count > 0 Then
+    '                                    Dim stockCounter As Integer = 0
+    '                                    For Each stockData In stocksLessThanMaxBlankCandlePercentage
+    '                                        Dim row As DataRow = mainDataTable.NewRow
+    '                                        row("Date") = tradingDate.ToShortDateString
+    '                                        row("Trading Symbol") = stockData.Value.TradingSymbol
+    '                                        row("Lot Size") = stockData.Value.LotSize
+    '                                        row("ATR %") = stockData.Value.ATRPercentage
+    '                                        row("Blank Candle %") = stockData.Value.BlankCandlePercentage
+    '                                        row("Supporting1") = stockData.Value.Supporting1
+    '                                        row("Supporting2") = stockData.Value.Supporting2
+    '                                        mainDataTable.Rows.Add(row)
+    '                                        stockCounter += 1
+    '                                        If stockCounter = numberOfStockPerDay Then Exit For
+    '                                    Next
+    '                                    If stockCounter < numberOfStockPerDay Then
+    '                                        Dim stocksLessThanHigherLimitOfMaxBlankCandlePercentage As IEnumerable(Of KeyValuePair(Of String, InstrumentDetails)) =
+    '                                        filteredInstruments.Where(Function(x)
+    '                                                                      Return x.Value.BlankCandlePercentage > maxBlankCandlePercentage AndAlso
+    '                                                                      x.Value.BlankCandlePercentage <= higherLimitOfMaxBlankCandlePercentage AndAlso
+    '                                                                      x.Value.IsTradable = True
+    '                                                                  End Function)
+    '                                        If stocksLessThanHigherLimitOfMaxBlankCandlePercentage IsNot Nothing AndAlso stocksLessThanHigherLimitOfMaxBlankCandlePercentage.Count > 0 Then
+    '                                            For Each stockData In stocksLessThanHigherLimitOfMaxBlankCandlePercentage.OrderBy(Function(y)
+    '                                                                                                                                  Return y.Value.BlankCandlePercentage
+    '                                                                                                                              End Function)
+    '                                                Dim row As DataRow = mainDataTable.NewRow
+    '                                                row("Date") = tradingDate.ToShortDateString
+    '                                                row("Trading Symbol") = stockData.Value.TradingSymbol
+    '                                                row("Lot Size") = stockData.Value.LotSize
+    '                                                row("ATR %") = stockData.Value.ATRPercentage
+    '                                                row("Blank Candle %") = stockData.Value.BlankCandlePercentage
+    '                                                row("Supporting1") = stockData.Value.Supporting1
+    '                                                row("Supporting2") = stockData.Value.Supporting2
+    '                                                mainDataTable.Rows.Add(row)
+    '                                                stockCounter += 1
+    '                                                If stockCounter = numberOfStockPerDay Then Exit For
+    '                                            Next
+    '                                        End If
+    '                                    End If
+    '                                End If
+    '                            End If
+    '                        End If
+    '                    End If
+    '                Next
+    '            End Using
+    '        End If
+    '    Catch ex As Exception
+    '        MessageBox.Show(ex.Message, "Future Stock List Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+    '    Finally
+    '        SetDatagridBindDatatable_ThreadSafe(dgrvMain, mainDataTable)
+    '        SetObjectEnableDisable_ThreadSafe(btnExport, True)
+    '        SetObjectEnableDisable_ThreadSafe(btnStart, True)
+    '        SetObjectEnableDisable_ThreadSafe(btnStop, False)
+    '        OnHeartbeat(String.Format("Process Complete. Number of records: {0}", dgrvMain.Rows.Count))
+    '    End Try
+    'End Function
     Private Function CalculateBlankVolumePercentage(ByVal inputPayload As Dictionary(Of Date, Payload)) As Decimal
         Dim ret As Decimal = Decimal.MinValue
         If inputPayload IsNot Nothing AndAlso inputPayload.Count > 0 Then

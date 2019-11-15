@@ -199,12 +199,12 @@ Namespace My
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
-        Public Property HigherLimitOfMaxBlankCandlePercentage() As Decimal
+        Public Property StockType() As Integer
             Get
-                Return CType(Me("HigherLimitOfMaxBlankCandlePercentage"),Decimal)
+                Return CType(Me("StockType"),Integer)
             End Get
             Set
-                Me("HigherLimitOfMaxBlankCandlePercentage") = value
+                Me("StockType") = value
             End Set
         End Property
     End Class

@@ -42,8 +42,6 @@ Partial Class frmMain
         Me.lblInstrumentList = New System.Windows.Forms.Label()
         Me.txtNumberOfStock = New System.Windows.Forms.TextBox()
         Me.lblNumberOfStock = New System.Windows.Forms.Label()
-        Me.txtHigherLimitOfMaxBlankCandlePercentage = New System.Windows.Forms.TextBox()
-        Me.lblHigherLimitOfMaxBlankCandlePercentage = New System.Windows.Forms.Label()
         Me.pnlBtn = New System.Windows.Forms.Panel()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.txtProcedureNumberOfStock = New System.Windows.Forms.TextBox()
@@ -66,6 +64,8 @@ Partial Class frmMain
         Me.lblVoumePercentage = New System.Windows.Forms.Label()
         Me.rdbEOD = New System.Windows.Forms.RadioButton()
         Me.rdbSignalTime = New System.Windows.Forms.RadioButton()
+        Me.cmbStockType = New System.Windows.Forms.ComboBox()
+        Me.Label2 = New System.Windows.Forms.Label()
         CType(Me.dgrvMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlInstrumentList.SuspendLayout()
         Me.pnlBtn.SuspendLayout()
@@ -128,13 +128,13 @@ Partial Class frmMain
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgrvMain.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgrvMain.Location = New System.Drawing.Point(3, 162)
+        Me.dgrvMain.Location = New System.Drawing.Point(3, 170)
         Me.dgrvMain.Margin = New System.Windows.Forms.Padding(4)
         Me.dgrvMain.Name = "dgrvMain"
         Me.dgrvMain.ReadOnly = True
         Me.dgrvMain.RowHeadersVisible = False
         Me.dgrvMain.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgrvMain.Size = New System.Drawing.Size(1205, 358)
+        Me.dgrvMain.Size = New System.Drawing.Size(1205, 350)
         Me.dgrvMain.TabIndex = 32
         '
         'btnStart
@@ -176,7 +176,7 @@ Partial Class frmMain
         'lblProcedure
         '
         Me.lblProcedure.AutoSize = True
-        Me.lblProcedure.Location = New System.Drawing.Point(681, 15)
+        Me.lblProcedure.Location = New System.Drawing.Point(686, 15)
         Me.lblProcedure.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblProcedure.Name = "lblProcedure"
         Me.lblProcedure.Size = New System.Drawing.Size(78, 17)
@@ -188,16 +188,16 @@ Partial Class frmMain
         Me.cmbProcedure.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbProcedure.FormattingEnabled = True
         Me.cmbProcedure.Items.AddRange(New Object() {"User Given", "ATR Based All Stock", "Pre Market Stock", "Intraday Volume Spike Stock", "OHL ATR Stock"})
-        Me.cmbProcedure.Location = New System.Drawing.Point(761, 11)
+        Me.cmbProcedure.Location = New System.Drawing.Point(765, 11)
         Me.cmbProcedure.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbProcedure.Name = "cmbProcedure"
-        Me.cmbProcedure.Size = New System.Drawing.Size(437, 24)
+        Me.cmbProcedure.Size = New System.Drawing.Size(433, 24)
         Me.cmbProcedure.TabIndex = 37
         '
         'lblMaxBlankCandlePercentage
         '
         Me.lblMaxBlankCandlePercentage.AutoSize = True
-        Me.lblMaxBlankCandlePercentage.Location = New System.Drawing.Point(5, 46)
+        Me.lblMaxBlankCandlePercentage.Location = New System.Drawing.Point(6, 50)
         Me.lblMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblMaxBlankCandlePercentage.Name = "lblMaxBlankCandlePercentage"
         Me.lblMaxBlankCandlePercentage.Size = New System.Drawing.Size(140, 17)
@@ -206,7 +206,7 @@ Partial Class frmMain
         '
         'txtMaxBlankCandlePercentage
         '
-        Me.txtMaxBlankCandlePercentage.Location = New System.Drawing.Point(146, 42)
+        Me.txtMaxBlankCandlePercentage.Location = New System.Drawing.Point(147, 46)
         Me.txtMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4)
         Me.txtMaxBlankCandlePercentage.Name = "txtMaxBlankCandlePercentage"
         Me.txtMaxBlankCandlePercentage.Size = New System.Drawing.Size(57, 22)
@@ -260,24 +260,6 @@ Partial Class frmMain
         Me.lblNumberOfStock.TabIndex = 43
         Me.lblNumberOfStock.Text = "Number Of Stock Per Day:"
         '
-        'txtHigherLimitOfMaxBlankCandlePercentage
-        '
-        Me.txtHigherLimitOfMaxBlankCandlePercentage.Location = New System.Drawing.Point(445, 42)
-        Me.txtHigherLimitOfMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4)
-        Me.txtHigherLimitOfMaxBlankCandlePercentage.Name = "txtHigherLimitOfMaxBlankCandlePercentage"
-        Me.txtHigherLimitOfMaxBlankCandlePercentage.Size = New System.Drawing.Size(55, 22)
-        Me.txtHigherLimitOfMaxBlankCandlePercentage.TabIndex = 46
-        '
-        'lblHigherLimitOfMaxBlankCandlePercentage
-        '
-        Me.lblHigherLimitOfMaxBlankCandlePercentage.AutoSize = True
-        Me.lblHigherLimitOfMaxBlankCandlePercentage.Location = New System.Drawing.Point(207, 46)
-        Me.lblHigherLimitOfMaxBlankCandlePercentage.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lblHigherLimitOfMaxBlankCandlePercentage.Name = "lblHigherLimitOfMaxBlankCandlePercentage"
-        Me.lblHigherLimitOfMaxBlankCandlePercentage.Size = New System.Drawing.Size(238, 17)
-        Me.lblHigherLimitOfMaxBlankCandlePercentage.TabIndex = 45
-        Me.lblHigherLimitOfMaxBlankCandlePercentage.Text = "Higher Limit Of Max Blank Candle %:"
-        '
         'pnlBtn
         '
         Me.pnlBtn.Controls.Add(Me.btnStart)
@@ -302,7 +284,7 @@ Partial Class frmMain
         Me.GroupBox3.Controls.Add(Me.txtMinPrice)
         Me.GroupBox3.Controls.Add(Me.lblMinPrice)
         Me.GroupBox3.Controls.Add(Me.chbImmediatePreviousDay)
-        Me.GroupBox3.Location = New System.Drawing.Point(3, 66)
+        Me.GroupBox3.Location = New System.Drawing.Point(3, 76)
         Me.GroupBox3.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
@@ -503,19 +485,40 @@ Partial Class frmMain
         Me.rdbSignalTime.Text = "Check Volume Till Signal Time"
         Me.rdbSignalTime.UseVisualStyleBackColor = True
         '
+        'cmbStockType
+        '
+        Me.cmbStockType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cmbStockType.FormattingEnabled = True
+        Me.cmbStockType.Items.AddRange(New Object() {"Cash", "Commodity", "Currency", "Futures"})
+        Me.cmbStockType.Location = New System.Drawing.Point(314, 47)
+        Me.cmbStockType.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbStockType.Name = "cmbStockType"
+        Me.cmbStockType.Size = New System.Drawing.Size(120, 24)
+        Me.cmbStockType.TabIndex = 57
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(227, 50)
+        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(83, 17)
+        Me.Label2.TabIndex = 56
+        Me.Label2.Text = "Stock Type:"
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1213, 636)
+        Me.Controls.Add(Me.cmbStockType)
+        Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.pnlHighVolumeInsidebatHLSettings)
         Me.Controls.Add(Me.pnlIntradayVolumeSpikeSettings)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.lblDescription)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.pnlBtn)
-        Me.Controls.Add(Me.txtHigherLimitOfMaxBlankCandlePercentage)
-        Me.Controls.Add(Me.lblHigherLimitOfMaxBlankCandlePercentage)
         Me.Controls.Add(Me.txtNumberOfStock)
         Me.Controls.Add(Me.lblNumberOfStock)
         Me.Controls.Add(Me.pnlInstrumentList)
@@ -567,8 +570,6 @@ Partial Class frmMain
     Friend WithEvents lblInstrumentList As Label
     Friend WithEvents txtNumberOfStock As TextBox
     Friend WithEvents lblNumberOfStock As Label
-    Friend WithEvents txtHigherLimitOfMaxBlankCandlePercentage As TextBox
-    Friend WithEvents lblHigherLimitOfMaxBlankCandlePercentage As Label
     Friend WithEvents pnlBtn As Panel
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents txtProcedureNumberOfStock As TextBox
@@ -591,4 +592,6 @@ Partial Class frmMain
     Friend WithEvents lblVoumePercentage As Label
     Friend WithEvents rdbEOD As RadioButton
     Friend WithEvents rdbSignalTime As RadioButton
+    Friend WithEvents cmbStockType As ComboBox
+    Friend WithEvents Label2 As Label
 End Class

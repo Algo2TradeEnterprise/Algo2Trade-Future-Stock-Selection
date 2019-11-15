@@ -32,9 +32,13 @@ Public Class StockListFromDatabase
     Private _conn As MySqlConnection
     Private ReadOnly ZerodhaEODHistoricalURL = "https://kitecharts-aws.zerodha.com/api/chart/{0}/day?api_key=kitefront&access_token=K&from={1}&to={2}"
     Private ReadOnly ZerodhaIntradayHistoricalURL = "https://kitecharts-aws.zerodha.com/api/chart/{0}/minute?api_key=kitefront&access_token=K&from={1}&to={2}"
+    Private ReadOnly intradayTable As Common.DataBaseTable = Common.DataBaseTable.Intraday_Futures
+    Private ReadOnly eodTable As Common.DataBaseTable = Common.DataBaseTable.EOD_Futures
 
-    Public Sub New(ByVal canceller As CancellationTokenSource)
+    Public Sub New(ByVal canceller As CancellationTokenSource, ByVal intradayTbl As Common.DataBaseTable, ByVal eodTbl As Common.DataBaseTable)
         _cts = canceller
+        intradayTable = intradayTbl
+        eodTable = eodTbl
         _common = New Common(_cts)
         AddHandler _common.Heartbeat, AddressOf OnHeartbeat
     End Sub
@@ -834,9 +838,9 @@ Public Class StockListFromDatabase
                     If userGivenInstrumentList IsNot Nothing AndAlso userGivenInstrumentList.Count > 0 Then
                         For Each ruuningUserGivenStock In userGivenInstrumentList
                             _cts.Token.ThrowIfCancellationRequested()
-                            Dim currentTradingSymbol As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.EOD_Futures, tradingDate, ruuningUserGivenStock.Key)
+                            Dim currentTradingSymbol As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(eodTable, tradingDate, ruuningUserGivenStock.Key)
                             If currentTradingSymbol IsNot Nothing Then
-                                Dim lotSize As Integer = _common.GetLotSize(Common.DataBaseTable.EOD_Futures, currentTradingSymbol.Item2, tradingDate)
+                                Dim lotSize As Integer = _common.GetLotSize(eodTable, currentTradingSymbol.Item2, tradingDate)
                                 If stockList Is Nothing Then stockList = New Dictionary(Of String, InstrumentDetails)
                                 stockList.Add(ruuningUserGivenStock.Key, New InstrumentDetails With {.ATRPercentage = 0, .LotSize = lotSize, .DayATR = 0, .PreviousDayOpen = 0, .PreviousDayLow = 0, .PreviousDayHigh = 0, .PreviousDayClose = 0})
                             End If
@@ -859,7 +863,7 @@ Public Class StockListFromDatabase
                     If bannedStocks Is Nothing OrElse
                     (bannedStocks IsNot Nothing AndAlso bannedStocks.Count > 0 AndAlso Not bannedStocks.Contains(stock.ToUpper)) Then
                         _cts.Token.ThrowIfCancellationRequested()
-                        Dim instrumentDetails As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.Intraday_Futures, tradingDate, stock)
+                        Dim instrumentDetails As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, tradingDate, stock)
                         If instrumentDetails IsNot Nothing Then
                             Dim tradingSymbol As String = instrumentDetails.Item2
                             _cts.Token.ThrowIfCancellationRequested()
@@ -906,7 +910,17 @@ Public Class StockListFromDatabase
                     rawInstrumentName = stock.Remove(stock.Count - 8)
                 End If
                 _cts.Token.ThrowIfCancellationRequested()
-                Dim cm As MySqlCommand = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_futures` WHERE `TRADING_SYMBOL` LIKE @trd AND `AS_ON_DATE`=@sd", _conn)
+                Dim cm As MySqlCommand = Nothing
+                Select Case eodTable
+                    Case Common.DataBaseTable.EOD_Cash
+                        cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_cash` WHERE `TRADING_SYMBOL` LIKE @trd AND `AS_ON_DATE`=@sd", _conn)
+                    Case Common.DataBaseTable.EOD_Commodity
+                        cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_commodity` WHERE `TRADING_SYMBOL` LIKE @trd AND `AS_ON_DATE`=@sd", _conn)
+                    Case Common.DataBaseTable.EOD_Currency
+                        cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_currency` WHERE `TRADING_SYMBOL` LIKE @trd AND `AS_ON_DATE`=@sd", _conn)
+                    Case Common.DataBaseTable.EOD_Futures
+                        cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_futures` WHERE `TRADING_SYMBOL` LIKE @trd AND `AS_ON_DATE`=@sd", _conn)
+                End Select
                 cm.Parameters.AddWithValue("@trd", String.Format("{0}%", rawInstrumentName))
                 cm.Parameters.AddWithValue("@sd", tradingDate.ToString("yyyy-MM-dd"))
                 _cts.Token.ThrowIfCancellationRequested()
@@ -978,30 +992,26 @@ Public Class StockListFromDatabase
             If instrumentData.PreviousContractTradingSymbol Is Nothing Then
                 Dim previousTradingDate As Date = Date.MinValue
                 If immediatePreviousDay Then
-                    previousTradingDate = _common.GetPreviousTradingDay(Common.DataBaseTable.Intraday_Futures, tradingDate)
+                    previousTradingDate = _common.GetPreviousTradingDay(intradayTable, tradingDate)
                 Else
-                    previousTradingDate = _common.GetPreviousTradingDayOfAnInstrument(Common.DataBaseTable.Intraday_Futures, instrumentData.TradingSymbol, tradingDate)
+                    previousTradingDate = _common.GetPreviousTradingDayOfAnInstrument(intradayTable, instrumentData.TradingSymbol, tradingDate)
                 End If
                 If previousTradingDate <> Date.MinValue Then
-                    ret = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, instrumentData.TradingSymbol, previousTradingDate, previousTradingDate)
+                    ret = _common.GetRawPayloadForSpecificTradingSymbol(intradayTable, instrumentData.TradingSymbol, previousTradingDate, previousTradingDate)
                 End If
             Else
                 Dim previousTradingDate As Date = Date.MinValue
                 If immediatePreviousDay Then
-                    previousTradingDate = _common.GetPreviousTradingDay(Common.DataBaseTable.Intraday_Futures, tradingDate)
+                    previousTradingDate = _common.GetPreviousTradingDay(intradayTable, tradingDate)
                 Else
-                    previousTradingDate = _common.GetPreviousTradingDayOfAnInstrument(Common.DataBaseTable.Intraday_Futures, instrumentData.PreviousContractTradingSymbol, tradingDate)
+                    previousTradingDate = _common.GetPreviousTradingDayOfAnInstrument(intradayTable, instrumentData.PreviousContractTradingSymbol, tradingDate)
                 End If
                 If previousTradingDate <> Date.MinValue Then
-                    ret = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, instrumentData.PreviousContractTradingSymbol, previousTradingDate, previousTradingDate)
+                    ret = _common.GetRawPayloadForSpecificTradingSymbol(intradayTable, instrumentData.PreviousContractTradingSymbol, previousTradingDate, previousTradingDate)
                 End If
             End If
         End If
         Return ret
-    End Function
-
-    Public Function GetPreviousTradingDay(ByVal tradingDate As Date) As Date
-        Return _common.GetPreviousTradingDay(Common.DataBaseTable.EOD_Futures, tradingDate)
     End Function
 
     Public Async Function IsTradableDay(ByVal tradingDate As Date) As Task(Of Boolean)
