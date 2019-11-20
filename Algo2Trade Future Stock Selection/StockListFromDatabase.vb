@@ -331,51 +331,6 @@ Public Class StockListFromDatabase
         Return ret
     End Function
 
-    'Private Async Function GetTrendingStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, String()))
-    '    Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
-    '    If _conn Is Nothing OrElse _conn.State <> ConnectionState.Open Then
-    '        _cts.Token.ThrowIfCancellationRequested()
-    '        _conn = _common.OpenDBConnection()
-    '    End If
-    '    Dim ret As Dictionary(Of String, String()) = Nothing
-    '    Dim dt As DataTable = Nothing
-    '    _cts.Token.ThrowIfCancellationRequested()
-    '    If _conn.State = ConnectionState.Open Then
-    '        _cts.Token.ThrowIfCancellationRequested()
-    '        OnHeartbeat(String.Format("Fetching Trending Stock Data for {0}", tradingDate.ToShortDateString))
-    '        Dim cmd As New MySqlCommand("GET_TRENDING_STOCKS_FROM_PRE_MARKET_DATA_ATR_VOLUME_ALL_DATES", _conn)
-    '        cmd.CommandType = CommandType.StoredProcedure
-    '        cmd.Parameters.AddWithValue("@startDate", tradingDate)
-    '        cmd.Parameters.AddWithValue("@endDate", tradingDate)
-    '        cmd.Parameters.AddWithValue("@numberOfRecords", My.Settings.ProcedureNumberOfRecords)
-    '        cmd.Parameters.AddWithValue("@minClose", My.Settings.MinClose)
-    '        cmd.Parameters.AddWithValue("@maxClose", My.Settings.MaxClose)
-    '        cmd.Parameters.AddWithValue("@atrPercentage", My.Settings.ATRPercentage)
-    '        cmd.Parameters.AddWithValue("@potentialAmount", My.Settings.PotentialAmount)
-    '        cmd.Parameters.AddWithValue("@minCapPercentage", My.Settings.MinCapPercentage)
-    '        cmd.Parameters.AddWithValue("@sortColumn", "")
-
-    '        Dim adapter As New MySqlDataAdapter(cmd)
-    '        adapter.SelectCommand.CommandTimeout = 3000
-    '        dt = New DataTable
-    '        _cts.Token.ThrowIfCancellationRequested()
-    '        adapter.Fill(dt)
-    '        _cts.Token.ThrowIfCancellationRequested()
-    '    End If
-    '    _cts.Token.ThrowIfCancellationRequested()
-    '    If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-    '        For i = 0 To dt.Rows.Count - 1
-    '            _cts.Token.ThrowIfCancellationRequested()
-    '            If Not IsDBNull(dt.Rows(i).Item(1)) AndAlso Not IsDBNull(dt.Rows(i).Item(10)) AndAlso
-    '                Not IsDBNull(dt.Rows(i).Item(11)) AndAlso Not IsDBNull(dt.Rows(i).Item(15)) Then
-    '                If ret Is Nothing Then ret = New Dictionary(Of String, String())
-    '                ret.Add(dt.Rows(i).Item(1), {dt.Rows(i).Item(10), dt.Rows(i).Item(11), dt.Rows(i).Item(15)})
-    '            End If
-    '        Next
-    '    End If
-    '    Return ret
-    'End Function
-
     Private Async Function GetPreMarketStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
@@ -437,28 +392,6 @@ Public Class StockListFromDatabase
                 _cts.Token.ThrowIfCancellationRequested()
                 Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Cash, runningStock, tradingDate.AddDays(-15), tradingDate)
                 If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
-                    'Dim currentDayVolumeSum As Long = 0
-                    'Dim previousDaysVolumeSum As Long = 0
-                    'Dim counter As Integer = 0
-                    'For Each runningPayload In intradayPayload.Keys.OrderByDescending(Function(x)
-                    '                                                                      Return x
-                    '                                                                  End Function)
-                    '    Dim firstCandle As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 9, 15, 0)
-                    '    Dim secondCandle As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 9, 16, 0)
-                    '    If runningPayload.Date = tradingDate.Date Then
-                    '        If runningPayload = firstCandle OrElse runningPayload = secondCandle Then
-                    '            currentDayVolumeSum += intradayPayload(runningPayload).Volume
-                    '        End If
-                    '    ElseIf runningPayload.Date < tradingDate.Date Then
-                    '        If runningPayload = firstCandle OrElse runningPayload = secondCandle Then
-                    '            previousDaysVolumeSum += intradayPayload(runningPayload).Volume
-                    '            counter += 1
-                    '            If counter = 10 Then Exit For
-                    '        End If
-                    '    End If
-                    'Next
-
-
                     Dim signalCheckStartTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 9, 15, 0)
                     Dim signalCheckEndTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day,
                                                               intradayVolumeSpikeUserInputs.CheckingTime.Hour,
@@ -508,219 +441,6 @@ Public Class StockListFromDatabase
         Return ret
     End Function
 
-    'Private Async Function GetHighLowATRStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
-    '    Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
-    '    Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
-    '    _cts.Token.ThrowIfCancellationRequested()
-    '    Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
-    '    _cts.Token.ThrowIfCancellationRequested()
-    '    If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
-    '        _cts.Token.ThrowIfCancellationRequested()
-    '        Dim tempStockList As Dictionary(Of String, String()) = Nothing
-    '        For Each runningStock In highATRStockList.Keys
-    '            _cts.Token.ThrowIfCancellationRequested()
-    '            Dim tradingSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.Intraday_Futures, tradingDate, runningStock)
-    '            If tradingSymbolToken IsNot Nothing Then
-    '                Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, tradingSymbolToken.Item2, tradingDate.AddDays(-15), tradingDate)
-    '                If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
-    '                    Dim previousDayATR As Decimal = highATRStockList(runningStock).DayATR
-    '                    For Each runningPayload In intradayPayload.Keys
-    '                        If runningPayload.Date = tradingDate.Date Then
-    '                            Dim dayHigh As Decimal = intradayPayload.Values.Max(Function(x)
-    '                                                                                    If x.PayloadDate.Date = tradingDate.Date AndAlso x.PayloadDate <= runningPayload Then
-    '                                                                                        Return x.High
-    '                                                                                    Else
-    '                                                                                        Return Decimal.MinValue
-    '                                                                                    End If
-    '                                                                                End Function)
-    '                            Dim dayLow As Decimal = intradayPayload.Values.Min(Function(x)
-    '                                                                                   If x.PayloadDate.Date = tradingDate.Date AndAlso x.PayloadDate <= runningPayload Then
-    '                                                                                       Return x.Low
-    '                                                                                   Else
-    '                                                                                       Return Decimal.MaxValue
-    '                                                                                   End If
-    '                                                                               End Function)
-    '                            If dayHigh - dayLow >= previousDayATR * 85 / 100 Then
-    '                                If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
-    '                                tempStockList.Add(runningStock, {highATRStockList(runningStock).ATRPercentage, runningPayload.ToString("HH:mm:ss")})
-    '                                Exit For
-    '                            End If
-    '                        End If
-    '                    Next
-    '                End If
-    '            End If
-    '        Next
-    '        If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
-    '            For Each runningStock In tempStockList.OrderByDescending(Function(x)
-    '                                                                         Return x.Value(0)
-    '                                                                     End Function)
-    '                If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
-    '                highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(1)
-    '                ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
-    '            Next
-    '        End If
-    '    End If
-    '    Return ret
-    'End Function
-
-    'Private Async Function GetLowSLATRStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
-    '    Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
-    '    Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
-    '    _cts.Token.ThrowIfCancellationRequested()
-
-
-    '    Dim maxSLAmount As Decimal = -1000
-    '    Dim minimumCapitalPerStock As Decimal = 15000
-    '    Dim atrMultiplier As Decimal = 1 / 3
-
-
-    '    Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
-    '    _cts.Token.ThrowIfCancellationRequested()
-    '    If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
-    '        _cts.Token.ThrowIfCancellationRequested()
-    '        Dim tempStockList As Dictionary(Of String, String()) = Nothing
-    '        For Each runningStock In highATRStockList.Keys
-    '            _cts.Token.ThrowIfCancellationRequested()
-    '            Dim tradingSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.Intraday_Futures, tradingDate, runningStock)
-    '            If tradingSymbolToken IsNot Nothing Then
-    '                Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, tradingSymbolToken.Item2, tradingDate.AddDays(-15), tradingDate)
-    '                If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
-    '                    Dim ATRPayload As Dictionary(Of Date, Decimal) = Nothing
-    '                    Indicator.ATR.CalculateATR(14, intradayPayload, ATRPayload)
-
-    '                    Dim firstCandleOfTheDay As Boolean = True
-    '                    Dim lotSize As Integer = Integer.MinValue
-    '                    Dim quantity As Integer = Integer.MinValue
-    '                    Dim buffer As Decimal = Decimal.MinValue
-    '                    For Each runningPayload In intradayPayload.Keys
-    '                        If runningPayload.Date = tradingDate.Date Then
-    '                            If firstCandleOfTheDay Then
-    '                                lotSize = _common.GetLotSize(Common.DataBaseTable.Intraday_Futures, intradayPayload(runningPayload).TradingSymbol, runningPayload.Date)
-    '                                quantity = CalculateQuantityFromInvestment(lotSize, minimumCapitalPerStock, intradayPayload(runningPayload).Open, True)
-    '                                buffer = CalculateBuffer(intradayPayload(runningPayload).Open, Utilities.Numbers.NumberManipulation.RoundOfType.Floor)
-    '                            End If
-    '                            If intradayPayload(runningPayload).Volume >= intradayPayload(runningPayload).PreviousCandlePayload.Volume * 90 / 100 Then
-    '                                If intradayPayload(runningPayload).CandleRange > ATRPayload(runningPayload) * atrMultiplier Then
-    '                                    Dim pl As Decimal = CalculatePL(intradayPayload(runningPayload).TradingSymbol, intradayPayload(runningPayload).High + buffer, intradayPayload(runningPayload).Low - buffer, quantity, lotSize)
-    '                                    If pl >= maxSLAmount Then
-    '                                        If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
-    '                                        tempStockList.Add(runningStock, {highATRStockList(runningStock).ATRPercentage, runningPayload.ToString("HH:mm:ss")})
-    '                                        Exit For
-    '                                    End If
-    '                                End If
-    '                            End If
-    '                            firstCandleOfTheDay = False
-    '                        End If
-    '                    Next
-    '                End If
-    '            End If
-    '        Next
-    '        If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
-    '            For Each runningStock In tempStockList.OrderByDescending(Function(x)
-    '                                                                         Return CDbl(x.Value(0))
-    '                                                                     End Function)
-    '                If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
-    '                highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(1)
-    '                ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
-    '            Next
-    '        End If
-    '    End If
-    '    Return ret
-    'End Function
-
-    'Private Async Function GetHighVolumeInsideBarHLStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
-    '    Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
-    '    If highVolumeInsideBarHLUserInputs Is Nothing Then Throw New ApplicationException("HighVolumeInsideBarHL Settings not implemented properly")
-    '    Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
-    '    _cts.Token.ThrowIfCancellationRequested()
-    '    Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
-    '    _cts.Token.ThrowIfCancellationRequested()
-    '    If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
-    '        _cts.Token.ThrowIfCancellationRequested()
-    '        Dim tempStockList As Dictionary(Of String, String()) = Nothing
-    '        For Each runningStock In highATRStockList.Keys
-    '            _cts.Token.ThrowIfCancellationRequested()
-    '            Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Cash, runningStock, tradingDate.AddDays(-15), tradingDate)
-    '            If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
-    '                Dim signalTimes As List(Of Date) = Nothing
-    '                Dim currentTradingSymbolWithToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.Intraday_Futures, tradingDate, runningStock)
-    '                If currentTradingSymbolWithToken IsNot Nothing Then
-    '                    Dim futureIntradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, currentTradingSymbolWithToken.Item2, tradingDate.AddDays(-15), tradingDate)
-    '                    If futureIntradayPayload IsNot Nothing AndAlso futureIntradayPayload.Count > 0 Then
-    '                        Dim ATRPayload As Dictionary(Of Date, Decimal) = Nothing
-    '                        Indicator.ATR.CalculateATR(14, futureIntradayPayload, ATRPayload)
-    '                        For Each runningPayload In futureIntradayPayload.Values
-    '                            If runningPayload.PayloadDate.Date = tradingDate.Date Then
-    '                                If runningPayload.PreviousCandlePayload.PreviousCandlePayload.PayloadDate.Date = tradingDate.Date Then
-    '                                    If IsInsideBar(runningPayload) OrElse IsInsideBar(runningPayload.PreviousCandlePayload) Then
-    '                                        Dim highestHigh As Decimal = Math.Max(runningPayload.High, Math.Max(runningPayload.PreviousCandlePayload.High, runningPayload.PreviousCandlePayload.PreviousCandlePayload.High))
-    '                                        Dim lowestLow As Decimal = Math.Min(runningPayload.Low, Math.Min(runningPayload.PreviousCandlePayload.Low, runningPayload.PreviousCandlePayload.PreviousCandlePayload.Low))
-    '                                        If (highestHigh - lowestLow) <= Math.Round(ATRPayload(runningPayload.PayloadDate), 2) Then
-    '                                            If signalTimes Is Nothing Then signalTimes = New List(Of Date)
-    '                                            signalTimes.Add(runningPayload.PayloadDate)
-    '                                        End If
-    '                                    End If
-    '                                End If
-    '                            End If
-    '                        Next
-    '                    End If
-    '                End If
-
-    '                If signalTimes IsNot Nothing AndAlso signalTimes.Count > 0 Then
-    '                    For Each runningSignalTime In signalTimes
-    '                        Dim signalCheckStartTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 9, 15, 0)
-    '                        Dim signalCheckEndTime As Date = runningSignalTime.AddMinutes(-3)
-    '                        Dim currentDayVolumeSum As Long = 0
-    '                        Dim previousDaysVolumeSum As Long = 0
-    '                        Dim counter As Integer = 0
-    '                        Dim lastCalculatedDate As Date = Date.MinValue
-    '                        For Each runningPayload In intradayPayload.Keys.OrderByDescending(Function(x)
-    '                                                                                              Return x
-    '                                                                                          End Function)
-    '                            Dim signalStart As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, signalCheckStartTime.Hour, signalCheckStartTime.Minute, signalCheckStartTime.Second)
-    '                            Dim signalEnd As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, signalCheckEndTime.Hour, signalCheckEndTime.Minute, signalCheckEndTime.Second)
-    '                            If runningPayload.Date = tradingDate.Date Then
-    '                                If runningPayload >= signalStart AndAlso runningPayload <= signalEnd Then
-    '                                    currentDayVolumeSum += intradayPayload(runningPayload).Volume
-    '                                End If
-    '                            ElseIf runningPayload.Date < tradingDate.Date Then
-    '                                If highVolumeInsideBarHLUserInputs.CheckEODVolume Then
-    '                                    signalEnd = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 15, 29, 0)
-    '                                End If
-    '                                If runningPayload >= signalStart AndAlso runningPayload <= signalEnd Then
-    '                                    If lastCalculatedDate.Date <> runningPayload.Date Then
-    '                                        lastCalculatedDate = runningPayload
-    '                                        counter += 1
-    '                                        If counter = 5 + 1 Then Exit For
-    '                                    End If
-    '                                    previousDaysVolumeSum += intradayPayload(runningPayload).Volume
-    '                                End If
-    '                            End If
-    '                        Next
-    '                        If currentDayVolumeSum <> 0 AndAlso previousDaysVolumeSum <> 0 Then
-    '                            Dim changePer As Decimal = ((currentDayVolumeSum / (previousDaysVolumeSum / 5)) - 1) * 100
-    '                            If currentDayVolumeSum > (previousDaysVolumeSum / 5) * highVolumeInsideBarHLUserInputs.Previous5DaysAvgVolumePercentage / 100 Then
-    '                                If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
-    '                                tempStockList.Add(runningStock, {changePer, runningSignalTime.ToString("HH:mm:ss")})
-    '                                Exit For
-    '                            End If
-    '                        End If
-    '                    Next
-    '                End If
-    '            End If
-    '        Next
-    '        If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
-    '            For Each runningStock In tempStockList
-    '                If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
-    '                highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
-    '                highATRStockList(runningStock.Key).Supporting2 = runningStock.Value(1)
-    '                ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
-    '            Next
-    '        End If
-    '    End If
-    '    Return ret
-    'End Function
-
     Private Async Function GetOHLATRStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
@@ -761,67 +481,53 @@ Public Class StockListFromDatabase
         Return ret
     End Function
 
-    'Private Async Function GetIntradayVolumeSpikeWithLowSLStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, String()))
-    '    Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
-    '    Dim ret As Dictionary(Of String, String()) = Nothing
-    '    _cts.Token.ThrowIfCancellationRequested()
-    '    Dim highATRStockList As Dictionary(Of String, String()) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
-    '    _cts.Token.ThrowIfCancellationRequested()
-    '    If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
-    '        _cts.Token.ThrowIfCancellationRequested()
-    '        Dim tempStockList As Dictionary(Of String, Decimal()) = Nothing
-    '        For Each runningStock In highATRStockList.Keys
-    '            _cts.Token.ThrowIfCancellationRequested()
-    '            Dim dayATR As Decimal = highATRStockList(runningStock)(3)
-    '            Dim close As Decimal = highATRStockList(runningStock)(2)
-    '            Dim lotSize As Integer = highATRStockList(runningStock)(1)
-    '            Dim capital As Decimal = close * lotSize / 30
-    '            Dim quanity As Integer = lotSize
-    '            If capital < 10000 Then quanity = 2 * lotSize
-    '            Dim stoploss As Decimal = CalculatorStoploss(close, quanity, 1000)
-    '            Dim slPoint As Decimal = close - stoploss
-    '            If capital <= 25000 AndAlso slPoint * 4 <= dayATR / 2 Then
-    '                Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Cash, runningStock, tradingDate.AddDays(-15), tradingDate)
-    '                If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
-    '                    Dim currentDayVolumeSum As Long = 0
-    '                    Dim previousDaysVolumeSum As Long = 0
-    '                    Dim counter As Integer = 0
-    '                    For Each runningPayload In intradayPayload.Keys.OrderByDescending(Function(x)
-    '                                                                                          Return x
-    '                                                                                      End Function)
-    '                        Dim firstCandle As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 9, 15, 0)
-    '                        Dim secondCandle As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, 9, 16, 0)
-    '                        If runningPayload.Date = tradingDate.Date Then
-    '                            If runningPayload = firstCandle OrElse runningPayload = secondCandle Then
-    '                                currentDayVolumeSum += intradayPayload(runningPayload).Volume
-    '                            End If
-    '                        ElseIf runningPayload.Date < tradingDate.Date Then
-    '                            If runningPayload = firstCandle OrElse runningPayload = secondCandle Then
-    '                                previousDaysVolumeSum += intradayPayload(runningPayload).Volume
-    '                                counter += 1
-    '                                If counter = 10 Then Exit For
-    '                            End If
-    '                        End If
-    '                    Next
-    '                    If currentDayVolumeSum <> 0 AndAlso previousDaysVolumeSum <> 0 Then
-    '                        Dim changePer As Decimal = ((currentDayVolumeSum / (previousDaysVolumeSum / 5)) - 1) * 100
-    '                        If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-    '                        tempStockList.Add(runningStock, {highATRStockList(runningStock)(0), highATRStockList(runningStock)(1), changePer, slPoint, dayATR})
-    '                    End If
-    '                End If
-    '            End If
-    '        Next
-    '        If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
-    '            For Each runningStock In tempStockList.OrderByDescending(Function(x)
-    '                                                                         Return x.Value(2)
-    '                                                                     End Function)
-    '                If ret Is Nothing Then ret = New Dictionary(Of String, String())
-    '                ret.Add(runningStock.Key, {runningStock.Value(0), runningStock.Value(1), runningStock.Value(2), runningStock.Value(3), runningStock.Value(4)})
-    '            Next
-    '        End If
-    '    End If
-    '    Return ret
-    'End Function
+
+    Private Async Function GetGapfillPreviousCloseStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
+        Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
+        Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
+        _cts.Token.ThrowIfCancellationRequested()
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        _cts.Token.ThrowIfCancellationRequested()
+        If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim tempStockList As Dictionary(Of String, Decimal()) = Nothing
+            For Each runningStock In highATRStockList.Keys
+                _cts.Token.ThrowIfCancellationRequested()
+                Dim currentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, tradingDate, runningStock)
+                If currentSymbolToken IsNot Nothing Then
+                    Dim tradingSymbol As String = currentSymbolToken.Item2
+                    Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(intradayTable, tradingSymbol, tradingDate.AddDays(-15), tradingDate)
+                    If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
+                        Dim currentDayFirstCandle As Payload = Nothing
+                        Dim firstPayloadTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 9, 15, 0)
+                        If intradayPayload.ContainsKey(firstPayloadTime) Then
+                            currentDayFirstCandle = intradayPayload(firstPayloadTime)
+                        End If
+                        If currentDayFirstCandle IsNot Nothing AndAlso currentDayFirstCandle.PreviousCandlePayload IsNot Nothing Then
+                            If currentDayFirstCandle.Open < currentDayFirstCandle.PreviousCandlePayload.Close Then
+                                If currentDayFirstCandle.High >= currentDayFirstCandle.PreviousCandlePayload.Close Then
+                                    If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
+                                    tempStockList.Add(runningStock, {0})
+                                End If
+                            ElseIf currentDayFirstCandle.Open >= currentDayFirstCandle.PreviousCandlePayload.Close Then
+                                If currentDayFirstCandle.Low <= currentDayFirstCandle.PreviousCandlePayload.Close Then
+                                    If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
+                                    tempStockList.Add(runningStock, {0})
+                                End If
+                            End If
+                        End If
+                    End If
+                End If
+            Next
+            If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
+                For Each runningStock In tempStockList
+                    If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
+                    ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
+                Next
+            End If
+        End If
+        Return ret
+    End Function
 #End Region
 
 #Region "Main Public Function"
@@ -854,6 +560,8 @@ Public Class StockListFromDatabase
                     stockList = Await GetIntradayVolumeSpikeStockDataAsync(tradingDate).ConfigureAwait(False)
                 Case 4
                     stockList = Await GetOHLATRStockDataAsync(tradingDate).ConfigureAwait(False)
+                Case 5
+                    stockList = Await GetGapfillPreviousCloseStockDataAsync(tradingDate).ConfigureAwait(False)
             End Select
             _cts.Token.ThrowIfCancellationRequested()
 
