@@ -505,12 +505,12 @@ Public Class StockListFromDatabase
                         End If
                         If currentDayFirstCandle IsNot Nothing AndAlso currentDayFirstCandle.PreviousCandlePayload IsNot Nothing Then
                             If currentDayFirstCandle.Open < currentDayFirstCandle.PreviousCandlePayload.Close Then
-                                If currentDayFirstCandle.High >= currentDayFirstCandle.PreviousCandlePayload.Close Then
+                                If currentDayFirstCandle.High >= currentDayFirstCandle.PreviousCandlePayload.Low Then
                                     If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
                                     tempStockList.Add(runningStock, {0})
                                 End If
                             ElseIf currentDayFirstCandle.Open >= currentDayFirstCandle.PreviousCandlePayload.Close Then
-                                If currentDayFirstCandle.Low <= currentDayFirstCandle.PreviousCandlePayload.Close Then
+                                If currentDayFirstCandle.Low <= currentDayFirstCandle.PreviousCandlePayload.High Then
                                     If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
                                     tempStockList.Add(runningStock, {0})
                                 End If
