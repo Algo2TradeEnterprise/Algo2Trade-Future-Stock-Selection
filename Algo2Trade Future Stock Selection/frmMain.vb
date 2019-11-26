@@ -654,7 +654,7 @@ Public Class frmMain
                 SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
                 SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
-                lblDescription.Text = String.Format("Return High ATR Stocks which fill the gap of previous day close on first minute")
+                lblDescription.Text = String.Format("Return High ATR Stocks which touch the previous day last candle on first minute")
             Case Else
                 Throw New NotImplementedException()
         End Select

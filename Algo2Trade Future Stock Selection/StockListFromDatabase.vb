@@ -482,7 +482,7 @@ Public Class StockListFromDatabase
     End Function
 
 
-    Private Async Function GetGapfillPreviousCloseStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
+    Private Async Function GetTouchPreviousDayLastCandleStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
@@ -504,15 +504,18 @@ Public Class StockListFromDatabase
                             currentDayFirstCandle = intradayPayload(firstPayloadTime)
                         End If
                         If currentDayFirstCandle IsNot Nothing AndAlso currentDayFirstCandle.PreviousCandlePayload IsNot Nothing Then
+                            Dim buffer As Decimal = CalculateBuffer(currentDayFirstCandle.Open, Utilities.Numbers.NumberManipulation.RoundOfType.Floor)
+                            Dim atrPer As Decimal = highATRStockList(runningStock).ATRPercentage
+                            Dim slab As Decimal = CalculateSlab(currentDayFirstCandle.Open, atrPer)
                             If currentDayFirstCandle.Open < currentDayFirstCandle.PreviousCandlePayload.Close Then
-                                If currentDayFirstCandle.High >= currentDayFirstCandle.PreviousCandlePayload.Low Then
+                                If currentDayFirstCandle.High + buffer >= currentDayFirstCandle.PreviousCandlePayload.Low Then
                                     If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                                    tempStockList.Add(runningStock, {0})
+                                    tempStockList.Add(runningStock, {slab})
                                 End If
                             ElseIf currentDayFirstCandle.Open >= currentDayFirstCandle.PreviousCandlePayload.Close Then
-                                If currentDayFirstCandle.Low <= currentDayFirstCandle.PreviousCandlePayload.High Then
+                                If currentDayFirstCandle.Low - buffer <= currentDayFirstCandle.PreviousCandlePayload.High Then
                                     If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                                    tempStockList.Add(runningStock, {0})
+                                    tempStockList.Add(runningStock, {slab})
                                 End If
                             End If
                         End If
@@ -522,6 +525,7 @@ Public Class StockListFromDatabase
             If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
                 For Each runningStock In tempStockList
                     If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
+                    highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
                     ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
                 Next
             End If
@@ -561,7 +565,7 @@ Public Class StockListFromDatabase
                 Case 4
                     stockList = Await GetOHLATRStockDataAsync(tradingDate).ConfigureAwait(False)
                 Case 5
-                    stockList = Await GetGapfillPreviousCloseStockDataAsync(tradingDate).ConfigureAwait(False)
+                    stockList = Await GetTouchPreviousDayLastCandleStockDataAsync(tradingDate).ConfigureAwait(False)
             End Select
             _cts.Token.ThrowIfCancellationRequested()
 
@@ -774,6 +778,27 @@ Public Class StockListFromDatabase
         If candle IsNot Nothing AndAlso candle.PreviousCandlePayload IsNot Nothing Then
             If candle.High <= candle.PreviousCandlePayload.High AndAlso candle.Low >= candle.PreviousCandlePayload.Low Then
                 ret = True
+            End If
+        End If
+        Return ret
+    End Function
+
+    Private Function CalculateSlab(ByVal price As Decimal, ByVal atrPer As Decimal) As Decimal
+        Dim ret As Decimal = 0.5
+        Dim slabList As List(Of Decimal) = New List(Of Decimal) From {0.5, 1, 2.5, 5, 10, 15}
+        Dim atr As Decimal = (atrPer / 100) * price
+        Dim supportedSlabList As List(Of Decimal) = slabList.FindAll(Function(x)
+                                                                         Return x <= atr / 8
+                                                                     End Function)
+        If supportedSlabList IsNot Nothing AndAlso supportedSlabList.Count > 0 Then
+            ret = supportedSlabList.Max
+            If price * 1 / 100 < ret Then
+                Dim newSupportedSlabList As List(Of Decimal) = supportedSlabList.FindAll(Function(x)
+                                                                                             Return x <= price * 1 / 100
+                                                                                         End Function)
+                If newSupportedSlabList IsNot Nothing AndAlso newSupportedSlabList.Count > 0 Then
+                    ret = newSupportedSlabList.Max
+                End If
             End If
         End If
         Return ret
