@@ -649,7 +649,7 @@ Public Class StockListFromDatabase
                         Dim instrumentData As New ActiveInstrumentData With
                         {.Token = dt.Rows(i).Item(0),
                          .TradingSymbol = dt.Rows(i).Item(1).ToString.ToUpper,
-                         .Expiry = dt.Rows(i).Item(2)}
+                         .Expiry = If(IsDBNull(dt.Rows(i).Item(2)), Date.MaxValue, dt.Rows(i).Item(2))}
                         If activeInstruments Is Nothing Then activeInstruments = New List(Of ActiveInstrumentData)
                         activeInstruments.Add(instrumentData)
                         If instrumentData.TradingSymbol = stock Then
