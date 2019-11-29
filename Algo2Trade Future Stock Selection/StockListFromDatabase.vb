@@ -547,14 +547,14 @@ Public Class StockListFromDatabase
         If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
             _cts.Token.ThrowIfCancellationRequested()
             Dim niftyGainLossPercentage As Decimal = Decimal.MinValue
-            Dim niftyCurrentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, tradingDate, "NIFTY")
+            Dim niftyCurrentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.Intraday_Futures, tradingDate, "NIFTY")
             If niftyCurrentSymbolToken IsNot Nothing Then
                 Dim niftyTradingSymbol As String = niftyCurrentSymbolToken.Item2
-                Dim niftyEODPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(eodTable, niftyTradingSymbol, tradingDate.AddDays(-15), tradingDate)
+                Dim niftyEODPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.EOD_Futures, niftyTradingSymbol, tradingDate.AddDays(-15), tradingDate)
                 If niftyEODPayload IsNot Nothing AndAlso niftyEODPayload.Count > 0 AndAlso niftyEODPayload.LastOrDefault.Key.Date = tradingDate.Date Then
                     If niftyEODPayload.LastOrDefault.Value.PreviousCandlePayload IsNot Nothing Then
                         Dim previousDayPayload As Payload = niftyEODPayload.LastOrDefault.Value.PreviousCandlePayload
-                        Dim niftyIntradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(intradayTable, niftyTradingSymbol, tradingDate.AddDays(-15), tradingDate)
+                        Dim niftyIntradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, niftyTradingSymbol, tradingDate.AddDays(-15), tradingDate)
                         If niftyIntradayPayload IsNot Nothing AndAlso niftyIntradayPayload.Count > 0 Then
                             Dim candleToCheck As Payload = Nothing
                             Dim payloadTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day,
