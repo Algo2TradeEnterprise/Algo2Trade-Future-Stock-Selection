@@ -586,7 +586,7 @@ Public Class StockListFromDatabase
                 End If
             End If
             _cts.Token.ThrowIfCancellationRequested()
-            Dim tempStockList As Dictionary(Of String, Decimal()) = Nothing
+            Dim tempStockList As Dictionary(Of String, String()) = Nothing
             For Each runningStock In highATRStockList.Keys
                 _cts.Token.ThrowIfCancellationRequested()
                 Dim currentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, tradingDate, runningStock)
@@ -602,20 +602,21 @@ Public Class StockListFromDatabase
                             Dim previousClose As Decimal = highATRStockList(runningStock).PreviousDayClose
                             Dim gainLossPercentage As Decimal = ((candleToCheck.Close - previousClose) / previousClose) * 100
                             Dim slab As Decimal = CalculateSlab(candleToCheck.Close, highATRStockList(runningStock).ATRPercentage)
-                            If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                            tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), niftyGainLossPercentage, slab})
+                            If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
+                            tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), niftyGainLossPercentage, payloadTime.ToString("HH:mm:ss"), slab})
                         End If
                     End If
                 End If
             Next
             If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
                 For Each runningStock In tempStockList.OrderByDescending(Function(x)
-                                                                             Return x.Value(0)
+                                                                             Return CDec(x.Value(0))
                                                                          End Function)
                     If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
                     highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
                     highATRStockList(runningStock.Key).Supporting2 = runningStock.Value(1)
                     highATRStockList(runningStock.Key).Supporting3 = runningStock.Value(2)
+                    highATRStockList(runningStock.Key).Supporting4 = runningStock.Value(3)
                     ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
                 Next
             End If
