@@ -611,6 +611,8 @@ Public Class StockListFromDatabase
                     stockList = Await GetOHLATRStockDataAsync(tradingDate).ConfigureAwait(False)
                 Case 5
                     stockList = Await GetTouchPreviousDayLastCandleStockDataAsync(tradingDate).ConfigureAwait(False)
+                Case 6
+                    stockList = Await GetTopGainerTopLosserStockDataAsync(tradingDate).ConfigureAwait(False)
             End Select
             _cts.Token.ThrowIfCancellationRequested()
 
