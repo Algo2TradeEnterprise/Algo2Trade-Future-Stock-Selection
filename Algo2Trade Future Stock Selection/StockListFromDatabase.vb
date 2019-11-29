@@ -34,11 +34,13 @@ Public Class StockListFromDatabase
     Private ReadOnly ZerodhaIntradayHistoricalURL = "https://kitecharts-aws.zerodha.com/api/chart/{0}/minute?api_key=kitefront&access_token=K&from={1}&to={2}"
     Private ReadOnly intradayTable As Common.DataBaseTable = Common.DataBaseTable.Intraday_Futures
     Private ReadOnly eodTable As Common.DataBaseTable = Common.DataBaseTable.EOD_Futures
+    Private ReadOnly index As String = Nothing
 
-    Public Sub New(ByVal canceller As CancellationTokenSource, ByVal intradayTbl As Common.DataBaseTable, ByVal eodTbl As Common.DataBaseTable)
+    Public Sub New(ByVal canceller As CancellationTokenSource, ByVal intradayTbl As Common.DataBaseTable, ByVal eodTbl As Common.DataBaseTable, ByVal currentIndex As String)
         _cts = canceller
         intradayTable = intradayTbl
         eodTable = eodTbl
+        index = currentIndex
         _common = New Common(_cts)
         AddHandler _common.Heartbeat, AddressOf OnHeartbeat
     End Sub
@@ -230,7 +232,7 @@ Public Class StockListFromDatabase
                             lastDayPayload = previousDayPayloads.LastOrDefault.Value
                         End If
                         If lastDayPayload IsNot Nothing AndAlso lastDayPayload.Close >= My.Settings.MinClose AndAlso lastDayPayload.Close <= My.Settings.MaxClose Then
-                            Dim rawCashInstrument As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.EOD_Cash, previousTradingDay, runningInstrument.RawInstrumentName)
+                            Dim rawCashInstrument As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.EOD_Cash, index, previousTradingDay, runningInstrument.RawInstrumentName)
                             If rawCashInstrument IsNot Nothing Then
                                 runningInstrument.CashInstrumentToken = rawCashInstrument.Item1
                                 runningInstrument.CashInstrumentName = rawCashInstrument.Item2
@@ -322,7 +324,7 @@ Public Class StockListFromDatabase
                                                                                      Return x.Value(0)
                                                                                  End Function)
                             _cts.Token.ThrowIfCancellationRequested()
-                            Dim currentTradingSymbol As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.EOD_Futures, tradingDate, runningStock.Key)
+                            Dim currentTradingSymbol As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.EOD_Futures, index, tradingDate, runningStock.Key)
                             If currentTradingSymbol IsNot Nothing Then
                                 Dim lotSize As Integer = _common.GetLotSize(Common.DataBaseTable.EOD_Futures, currentTradingSymbol.Item2, tradingDate)
                                 If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
@@ -497,7 +499,7 @@ Public Class StockListFromDatabase
             Dim tempStockList As Dictionary(Of String, Decimal()) = Nothing
             For Each runningStock In highATRStockList.Keys
                 _cts.Token.ThrowIfCancellationRequested()
-                Dim currentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, tradingDate, runningStock)
+                Dim currentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, index, tradingDate, runningStock)
                 If currentSymbolToken IsNot Nothing Then
                     Dim tradingSymbol As String = currentSymbolToken.Item2
                     Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(intradayTable, tradingSymbol, tradingDate.AddDays(-15), tradingDate)
@@ -550,7 +552,7 @@ Public Class StockListFromDatabase
                                                 topGainerTopLosserUserInputs.CheckingTime.Hour,
                                                 topGainerTopLosserUserInputs.CheckingTime.Minute, 0)
             Dim niftyGainLossPercentage As Decimal = Decimal.MinValue
-            Dim niftyCurrentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.Intraday_Futures, tradingDate, "NIFTY")
+            Dim niftyCurrentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.Intraday_Futures, Nothing, tradingDate, "NIFTY")
             If niftyCurrentSymbolToken IsNot Nothing Then
                 Dim niftyTradingSymbol As String = niftyCurrentSymbolToken.Item2
                 Dim niftyEODPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.EOD_Futures, niftyTradingSymbol, tradingDate.AddDays(-15), tradingDate)
@@ -589,7 +591,7 @@ Public Class StockListFromDatabase
             Dim tempStockList As Dictionary(Of String, String()) = Nothing
             For Each runningStock In highATRStockList.Keys
                 _cts.Token.ThrowIfCancellationRequested()
-                Dim currentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, tradingDate, runningStock)
+                Dim currentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, index, tradingDate, runningStock)
                 If currentSymbolToken IsNot Nothing Then
                     Dim tradingSymbol As String = currentSymbolToken.Item2
                     Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(intradayTable, tradingSymbol, tradingDate.AddDays(-15), tradingDate)
@@ -639,7 +641,7 @@ Public Class StockListFromDatabase
                     If userGivenInstrumentList IsNot Nothing AndAlso userGivenInstrumentList.Count > 0 Then
                         For Each ruuningUserGivenStock In userGivenInstrumentList
                             _cts.Token.ThrowIfCancellationRequested()
-                            Dim currentTradingSymbol As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(eodTable, tradingDate, ruuningUserGivenStock.Key)
+                            Dim currentTradingSymbol As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(eodTable, Nothing, tradingDate, ruuningUserGivenStock.Key)
                             If currentTradingSymbol IsNot Nothing Then
                                 Dim lotSize As Integer = _common.GetLotSize(eodTable, currentTradingSymbol.Item2, tradingDate)
                                 If stockList Is Nothing Then stockList = New Dictionary(Of String, InstrumentDetails)
@@ -668,7 +670,7 @@ Public Class StockListFromDatabase
                     If bannedStocks Is Nothing OrElse
                     (bannedStocks IsNot Nothing AndAlso bannedStocks.Count > 0 AndAlso Not bannedStocks.Contains(stock.ToUpper)) Then
                         _cts.Token.ThrowIfCancellationRequested()
-                        Dim instrumentDetails As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, tradingDate, stock)
+                        Dim instrumentDetails As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, index, tradingDate, stock)
                         If instrumentDetails IsNot Nothing Then
                             Dim tradingSymbol As String = instrumentDetails.Item2
                             _cts.Token.ThrowIfCancellationRequested()

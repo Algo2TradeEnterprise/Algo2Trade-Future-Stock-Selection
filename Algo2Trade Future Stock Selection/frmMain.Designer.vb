@@ -66,6 +66,8 @@ Partial Class frmMain
         Me.Label4 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.txtTopGainerLosserNiftyChangePercentage = New System.Windows.Forms.TextBox()
+        Me.cmbIndexType = New System.Windows.Forms.ComboBox()
+        Me.Label6 = New System.Windows.Forms.Label()
         CType(Me.dgrvMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlInstrumentList.SuspendLayout()
         Me.pnlBtn.SuspendLayout()
@@ -502,11 +504,34 @@ Partial Class frmMain
         Me.txtTopGainerLosserNiftyChangePercentage.Size = New System.Drawing.Size(100, 22)
         Me.txtTopGainerLosserNiftyChangePercentage.TabIndex = 7
         '
+        'cmbIndexType
+        '
+        Me.cmbIndexType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cmbIndexType.FormattingEnabled = True
+        Me.cmbIndexType.Items.AddRange(New Object() {"None", "NIFTY50", "NIFTYNEXT50", "NIFTY100", "NIFTY200", "NIFTYAUTO", "NIFTYBANK", "NIFTYENERGY", "NIFTYFINSERV", "NIFTYFMCG", "NIFTYIT", "NIFTYMEDIA", "NIFTYMETAL", "NIFTYMNC", "NIFTYPHARMA", "NIFTYPSUBANK", "NIFTYREALTY", "NIFTYCOMMODITIES", "NIFTYCONSUMPTION", "NIFTYINFRA", "NIFTYPSE", "NIFTYSERVSECTOR", "NIFTYPVTBANK"})
+        Me.cmbIndexType.Location = New System.Drawing.Point(531, 47)
+        Me.cmbIndexType.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbIndexType.Name = "cmbIndexType"
+        Me.cmbIndexType.Size = New System.Drawing.Size(120, 24)
+        Me.cmbIndexType.TabIndex = 60
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(444, 50)
+        Me.Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(81, 17)
+        Me.Label6.TabIndex = 59
+        Me.Label6.Text = "Index Type:"
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1213, 636)
+        Me.Controls.Add(Me.cmbIndexType)
+        Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.pnlTopGainerLooserSettings)
         Me.Controls.Add(Me.cmbStockType)
         Me.Controls.Add(Me.Label2)
@@ -590,4 +615,6 @@ Partial Class frmMain
     Friend WithEvents Label4 As Label
     Friend WithEvents txtTopGainerLosserNiftyChangePercentage As TextBox
     Friend WithEvents Label5 As Label
+    Friend WithEvents cmbIndexType As ComboBox
+    Friend WithEvents Label6 As Label
 End Class

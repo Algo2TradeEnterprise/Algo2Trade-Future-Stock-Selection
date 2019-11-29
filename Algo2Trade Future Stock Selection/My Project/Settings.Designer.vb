@@ -207,6 +207,18 @@ Namespace My
                 Me("StockType") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
+        Public Property IndexType() As Integer
+            Get
+                Return CType(Me("IndexType"),Integer)
+            End Get
+            Set
+                Me("IndexType") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

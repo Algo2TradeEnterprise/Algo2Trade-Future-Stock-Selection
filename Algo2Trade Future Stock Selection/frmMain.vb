@@ -231,6 +231,7 @@ Public Class frmMain
         txtInstrumentList.Text = My.Settings.InstrumentList
         txtNumberOfStock.Text = My.Settings.NumberOfStockPerDay
         cmbStockType.SelectedIndex = My.Settings.StockType
+        cmbIndexType.SelectedIndex = My.Settings.IndexType
         txtProcedureNumberOfStock.Text = My.Settings.ProcedureNumberOfRecords
         txtMinPrice.Text = My.Settings.MinClose
         txtMaxPrice.Text = My.Settings.MaxClose
@@ -250,6 +251,7 @@ Public Class frmMain
         My.Settings.MaxBlankCandlePercentage = txtMaxBlankCandlePercentage.Text
         My.Settings.InstrumentList = txtInstrumentList.Text
         My.Settings.StockType = cmbStockType.SelectedIndex
+        My.Settings.IndexType = cmbIndexType.SelectedIndex
         My.Settings.NumberOfStockPerDay = txtNumberOfStock.Text
         My.Settings.ProcedureNumberOfRecords = txtProcedureNumberOfStock.Text
         My.Settings.MinClose = txtMinPrice.Text
@@ -291,6 +293,7 @@ Public Class frmMain
             Dim procedureToRun As Integer = GetComboBoxIndex_ThreadSafe(cmbProcedure)
             Dim maxBlankCandlePercentage As Decimal = GetTextBoxText_ThreadSafe(txtMaxBlankCandlePercentage)
             Dim stockType As Integer = GetComboBoxIndex_ThreadSafe(cmbStockType)
+            Dim indexType As String = GetComboBoxItem_ThreadSafe(cmbIndexType)
             Dim numberOfStockPerDay As Decimal = GetTextBoxText_ThreadSafe(txtNumberOfStock)
             Dim imdtPrvsDay As Boolean = GetCheckBoxChecked_ThreadSafe(chbImmediatePreviousDay)
             If numberOfStockPerDay = 0 Then numberOfStockPerDay = 5000
@@ -327,7 +330,7 @@ Public Class frmMain
             End If
 
             Dim tradingDate As Date = startDate
-            Using stockSelection As New StockListFromDatabase(canceller, intradayTable, eodTable)
+            Using stockSelection As New StockListFromDatabase(canceller, intradayTable, eodTable, indexType)
                 AddHandler stockSelection.Heartbeat, AddressOf OnHeartbeat
 
                 Select Case procedureToRun
