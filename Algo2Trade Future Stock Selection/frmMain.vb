@@ -331,14 +331,12 @@ Public Class frmMain
                 Select Case procedureToRun
                     Case 3
                         stockSelection.intradayVolumeSpikeUserInputs = New StockListFromDatabase.IntradayVolumeSpikeSettings With {
-                            .CheckingTime = dtpkrChkTime.Value
+                            .CheckingTime = dtpkrVolumeSpikeChkTime.Value
                         }
-                        'Case 6
-                        '    stockSelection.highVolumeInsideBarHLUserInputs = New StockListFromDatabase.HighVolumeInsideBarHLSettings With {
-                        '        .CheckVolumeTillSignalTime = GetRadioButtonChecked_ThreadSafe(rdbSignalTime),
-                        '        .CheckEODVolume = GetRadioButtonChecked_ThreadSafe(rdbEOD),
-                        '        .Previous5DaysAvgVolumePercentage = GetTextBoxText_ThreadSafe(txtPreviousDaysVolumePercentage)
-                        '    }
+                    Case 6
+                        stockSelection.topGainerTopLosserUserInputs = New StockListFromDatabase.TopGainerTopLosserSettings With {
+                            .CheckingTime = dtpkrTopGainerLosserChkTime.Value
+                        }
                 End Select
 
                 While tradingDate <= endDate
@@ -623,38 +621,48 @@ Public Class frmMain
                 pnlInstrumentList.Location = pnlLocation
                 SetObjectVisible_ThreadSafe(pnlInstrumentList, True)
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
-                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, False)
                 lblDescription.Text = String.Format("Return the user given stocklist with proper lotsize and volume filter")
             Case 1
                 SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
-                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, False)
                 lblDescription.Text = String.Format("Return High ATR Stocks between price range which are greater than ATR% and satisfies the volume criteria")
             Case 2
                 SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
-                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, False)
                 lblDescription.Text = String.Format("Return ATR Stocks with Pre market change% and previous close")
             Case 3
                 Dim pnlLocation As Point = New Point(510, 50)
                 pnlIntradayVolumeSpikeSettings.Location = pnlLocation
 
-                dtpkrChkTime.Value = New Date(Now.Year, Now.Month, Now.Day, 9, 16, 0)
+                dtpkrVolumeSpikeChkTime.Value = New Date(Now.Year, Now.Month, Now.Day, 9, 16, 0)
 
                 SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, True)
-                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, False)
                 lblDescription.Text = String.Format("Return ATR stocks with volume change% till checking time compare to Previous 5 days average volume till checking time")
             Case 4
                 SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
-                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, False)
                 lblDescription.Text = String.Format("Return ATR Stocks where previous day Open=High or Open=Low")
             Case 5
                 SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
-                SetObjectVisible_ThreadSafe(pnlHighVolumeInsidebatHLSettings, False)
+                SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, False)
                 lblDescription.Text = String.Format("Return High ATR Stocks which touch the previous day last candle on first minute")
+            Case 6
+                Dim pnlLocation As Point = New Point(510, 50)
+                pnlTopGainerLooserSettings.Location = pnlLocation
+
+                dtpkrTopGainerLosserChkTime.Value = New Date(Now.Year, Now.Month, Now.Day, 9, 19, 0)
+
+                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, True)
+                lblDescription.Text = String.Format("Return ATR stocks with change% till checking time compare to Previous day close")
             Case Else
                 Throw New NotImplementedException()
         End Select

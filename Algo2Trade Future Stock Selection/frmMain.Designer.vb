@@ -57,21 +57,19 @@ Partial Class frmMain
         Me.chbImmediatePreviousDay = New System.Windows.Forms.CheckBox()
         Me.lblDescription = New System.Windows.Forms.Label()
         Me.pnlIntradayVolumeSpikeSettings = New System.Windows.Forms.Panel()
-        Me.dtpkrChkTime = New System.Windows.Forms.DateTimePicker()
+        Me.dtpkrVolumeSpikeChkTime = New System.Windows.Forms.DateTimePicker()
         Me.Label3 = New System.Windows.Forms.Label()
-        Me.pnlHighVolumeInsidebatHLSettings = New System.Windows.Forms.Panel()
-        Me.txtPreviousDaysVolumePercentage = New System.Windows.Forms.TextBox()
-        Me.lblVoumePercentage = New System.Windows.Forms.Label()
-        Me.rdbEOD = New System.Windows.Forms.RadioButton()
-        Me.rdbSignalTime = New System.Windows.Forms.RadioButton()
         Me.cmbStockType = New System.Windows.Forms.ComboBox()
         Me.Label2 = New System.Windows.Forms.Label()
+        Me.pnlTopGainerLooserSettings = New System.Windows.Forms.Panel()
+        Me.dtpkrTopGainerLosserChkTime = New System.Windows.Forms.DateTimePicker()
+        Me.Label4 = New System.Windows.Forms.Label()
         CType(Me.dgrvMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlInstrumentList.SuspendLayout()
         Me.pnlBtn.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.pnlIntradayVolumeSpikeSettings.SuspendLayout()
-        Me.pnlHighVolumeInsidebatHLSettings.SuspendLayout()
+        Me.pnlTopGainerLooserSettings.SuspendLayout()
         Me.SuspendLayout()
         '
         'dtpckrToDate
@@ -187,7 +185,7 @@ Partial Class frmMain
         '
         Me.cmbProcedure.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbProcedure.FormattingEnabled = True
-        Me.cmbProcedure.Items.AddRange(New Object() {"User Given", "ATR Based All Stock", "Pre Market Stock", "Intraday Volume Spike Stock", "OHL ATR Stock", "Touch Previous Day Last Candle"})
+        Me.cmbProcedure.Items.AddRange(New Object() {"User Given", "ATR Based All Stock", "Pre Market Stock", "Intraday Volume Spike Stock", "OHL ATR Stock", "Touch Previous Day Last Candle", "Top Gainer Top Looser"})
         Me.cmbProcedure.Location = New System.Drawing.Point(765, 11)
         Me.cmbProcedure.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbProcedure.Name = "cmbProcedure"
@@ -411,21 +409,21 @@ Partial Class frmMain
         '
         'pnlIntradayVolumeSpikeSettings
         '
-        Me.pnlIntradayVolumeSpikeSettings.Controls.Add(Me.dtpkrChkTime)
+        Me.pnlIntradayVolumeSpikeSettings.Controls.Add(Me.dtpkrVolumeSpikeChkTime)
         Me.pnlIntradayVolumeSpikeSettings.Controls.Add(Me.Label3)
         Me.pnlIntradayVolumeSpikeSettings.Location = New System.Drawing.Point(519, 189)
         Me.pnlIntradayVolumeSpikeSettings.Name = "pnlIntradayVolumeSpikeSettings"
         Me.pnlIntradayVolumeSpikeSettings.Size = New System.Drawing.Size(257, 91)
         Me.pnlIntradayVolumeSpikeSettings.TabIndex = 52
         '
-        'dtpkrChkTime
+        'dtpkrVolumeSpikeChkTime
         '
-        Me.dtpkrChkTime.Format = System.Windows.Forms.DateTimePickerFormat.Time
-        Me.dtpkrChkTime.Location = New System.Drawing.Point(118, 11)
-        Me.dtpkrChkTime.Name = "dtpkrChkTime"
-        Me.dtpkrChkTime.Size = New System.Drawing.Size(110, 22)
-        Me.dtpkrChkTime.TabIndex = 5
-        Me.dtpkrChkTime.Value = New Date(2019, 12, 8, 0, 0, 0, 0)
+        Me.dtpkrVolumeSpikeChkTime.Format = System.Windows.Forms.DateTimePickerFormat.Time
+        Me.dtpkrVolumeSpikeChkTime.Location = New System.Drawing.Point(118, 11)
+        Me.dtpkrVolumeSpikeChkTime.Name = "dtpkrVolumeSpikeChkTime"
+        Me.dtpkrVolumeSpikeChkTime.Size = New System.Drawing.Size(110, 22)
+        Me.dtpkrVolumeSpikeChkTime.TabIndex = 5
+        Me.dtpkrVolumeSpikeChkTime.Value = New Date(2019, 12, 8, 0, 0, 0, 0)
         '
         'Label3
         '
@@ -435,55 +433,6 @@ Partial Class frmMain
         Me.Label3.Size = New System.Drawing.Size(108, 17)
         Me.Label3.TabIndex = 4
         Me.Label3.Text = "Check Till Time:"
-        '
-        'pnlHighVolumeInsidebatHLSettings
-        '
-        Me.pnlHighVolumeInsidebatHLSettings.Controls.Add(Me.txtPreviousDaysVolumePercentage)
-        Me.pnlHighVolumeInsidebatHLSettings.Controls.Add(Me.lblVoumePercentage)
-        Me.pnlHighVolumeInsidebatHLSettings.Controls.Add(Me.rdbEOD)
-        Me.pnlHighVolumeInsidebatHLSettings.Controls.Add(Me.rdbSignalTime)
-        Me.pnlHighVolumeInsidebatHLSettings.Location = New System.Drawing.Point(782, 188)
-        Me.pnlHighVolumeInsidebatHLSettings.Name = "pnlHighVolumeInsidebatHLSettings"
-        Me.pnlHighVolumeInsidebatHLSettings.Size = New System.Drawing.Size(257, 91)
-        Me.pnlHighVolumeInsidebatHLSettings.TabIndex = 53
-        '
-        'txtPreviousDaysVolumePercentage
-        '
-        Me.txtPreviousDaysVolumePercentage.Location = New System.Drawing.Point(184, 59)
-        Me.txtPreviousDaysVolumePercentage.Name = "txtPreviousDaysVolumePercentage"
-        Me.txtPreviousDaysVolumePercentage.Size = New System.Drawing.Size(67, 22)
-        Me.txtPreviousDaysVolumePercentage.TabIndex = 7
-        '
-        'lblVoumePercentage
-        '
-        Me.lblVoumePercentage.AutoSize = True
-        Me.lblVoumePercentage.Location = New System.Drawing.Point(5, 62)
-        Me.lblVoumePercentage.Name = "lblVoumePercentage"
-        Me.lblVoumePercentage.Size = New System.Drawing.Size(182, 17)
-        Me.lblVoumePercentage.TabIndex = 6
-        Me.lblVoumePercentage.Text = "Previous 5 Days Volume %:"
-        '
-        'rdbEOD
-        '
-        Me.rdbEOD.AutoSize = True
-        Me.rdbEOD.Location = New System.Drawing.Point(8, 34)
-        Me.rdbEOD.Name = "rdbEOD"
-        Me.rdbEOD.Size = New System.Drawing.Size(153, 21)
-        Me.rdbEOD.TabIndex = 5
-        Me.rdbEOD.TabStop = True
-        Me.rdbEOD.Text = "Check EOD Volume"
-        Me.rdbEOD.UseVisualStyleBackColor = True
-        '
-        'rdbSignalTime
-        '
-        Me.rdbSignalTime.AutoSize = True
-        Me.rdbSignalTime.Location = New System.Drawing.Point(8, 10)
-        Me.rdbSignalTime.Name = "rdbSignalTime"
-        Me.rdbSignalTime.Size = New System.Drawing.Size(219, 21)
-        Me.rdbSignalTime.TabIndex = 4
-        Me.rdbSignalTime.TabStop = True
-        Me.rdbSignalTime.Text = "Check Volume Till Signal Time"
-        Me.rdbSignalTime.UseVisualStyleBackColor = True
         '
         'cmbStockType
         '
@@ -506,14 +455,41 @@ Partial Class frmMain
         Me.Label2.TabIndex = 56
         Me.Label2.Text = "Stock Type:"
         '
+        'pnlTopGainerLooserSettings
+        '
+        Me.pnlTopGainerLooserSettings.Controls.Add(Me.dtpkrTopGainerLosserChkTime)
+        Me.pnlTopGainerLooserSettings.Controls.Add(Me.Label4)
+        Me.pnlTopGainerLooserSettings.Location = New System.Drawing.Point(519, 286)
+        Me.pnlTopGainerLooserSettings.Name = "pnlTopGainerLooserSettings"
+        Me.pnlTopGainerLooserSettings.Size = New System.Drawing.Size(257, 91)
+        Me.pnlTopGainerLooserSettings.TabIndex = 58
+        '
+        'dtpkrTopGainerLosserChkTime
+        '
+        Me.dtpkrTopGainerLosserChkTime.Format = System.Windows.Forms.DateTimePickerFormat.Time
+        Me.dtpkrTopGainerLosserChkTime.Location = New System.Drawing.Point(118, 11)
+        Me.dtpkrTopGainerLosserChkTime.Name = "dtpkrTopGainerLosserChkTime"
+        Me.dtpkrTopGainerLosserChkTime.Size = New System.Drawing.Size(110, 22)
+        Me.dtpkrTopGainerLosserChkTime.TabIndex = 5
+        Me.dtpkrTopGainerLosserChkTime.Value = New Date(2019, 12, 8, 0, 0, 0, 0)
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.Location = New System.Drawing.Point(8, 12)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(108, 17)
+        Me.Label4.TabIndex = 4
+        Me.Label4.Text = "Check Till Time:"
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1213, 636)
+        Me.Controls.Add(Me.pnlTopGainerLooserSettings)
         Me.Controls.Add(Me.cmbStockType)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.pnlHighVolumeInsidebatHLSettings)
         Me.Controls.Add(Me.pnlIntradayVolumeSpikeSettings)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.lblDescription)
@@ -544,8 +520,8 @@ Partial Class frmMain
         Me.GroupBox3.PerformLayout()
         Me.pnlIntradayVolumeSpikeSettings.ResumeLayout(False)
         Me.pnlIntradayVolumeSpikeSettings.PerformLayout()
-        Me.pnlHighVolumeInsidebatHLSettings.ResumeLayout(False)
-        Me.pnlHighVolumeInsidebatHLSettings.PerformLayout()
+        Me.pnlTopGainerLooserSettings.ResumeLayout(False)
+        Me.pnlTopGainerLooserSettings.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -585,13 +561,11 @@ Partial Class frmMain
     Friend WithEvents chbImmediatePreviousDay As CheckBox
     Friend WithEvents lblDescription As Label
     Friend WithEvents pnlIntradayVolumeSpikeSettings As Panel
-    Friend WithEvents dtpkrChkTime As DateTimePicker
+    Friend WithEvents dtpkrVolumeSpikeChkTime As DateTimePicker
     Friend WithEvents Label3 As Label
-    Friend WithEvents pnlHighVolumeInsidebatHLSettings As Panel
-    Friend WithEvents txtPreviousDaysVolumePercentage As TextBox
-    Friend WithEvents lblVoumePercentage As Label
-    Friend WithEvents rdbEOD As RadioButton
-    Friend WithEvents rdbSignalTime As RadioButton
     Friend WithEvents cmbStockType As ComboBox
     Friend WithEvents Label2 As Label
+    Friend WithEvents pnlTopGainerLooserSettings As Panel
+    Friend WithEvents dtpkrTopGainerLosserChkTime As DateTimePicker
+    Friend WithEvents Label4 As Label
 End Class

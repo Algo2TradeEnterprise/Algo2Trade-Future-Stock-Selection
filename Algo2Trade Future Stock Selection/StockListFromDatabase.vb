@@ -481,7 +481,6 @@ Public Class StockListFromDatabase
         Return ret
     End Function
 
-
     Private Async Function GetTouchPreviousDayLastCandleStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
@@ -524,6 +523,52 @@ Public Class StockListFromDatabase
             Next
             If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
                 For Each runningStock In tempStockList
+                    If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
+                    highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
+                    ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
+                Next
+            End If
+        End If
+        Return ret
+    End Function
+
+    Private Async Function GetTopGainerTopLosserStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
+        Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
+        If topGainerTopLosserUserInputs Is Nothing Then Throw New ApplicationException("Top Gainer Top Losser Settings not implemented properly")
+        Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
+        _cts.Token.ThrowIfCancellationRequested()
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        _cts.Token.ThrowIfCancellationRequested()
+        If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim tempStockList As Dictionary(Of String, Decimal()) = Nothing
+            For Each runningStock In highATRStockList.Keys
+                _cts.Token.ThrowIfCancellationRequested()
+                Dim currentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, tradingDate, runningStock)
+                If currentSymbolToken IsNot Nothing Then
+                    Dim tradingSymbol As String = currentSymbolToken.Item2
+                    Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(intradayTable, tradingSymbol, tradingDate.AddDays(-15), tradingDate)
+                    If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
+                        Dim candleToCheck As Payload = Nothing
+                        Dim payloadTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day,
+                                                           topGainerTopLosserUserInputs.CheckingTime.Hour,
+                                                           topGainerTopLosserUserInputs.CheckingTime.Minute, 0)
+                        If intradayPayload.ContainsKey(payloadTime) Then
+                            candleToCheck = intradayPayload(payloadTime)
+                        End If
+                        If candleToCheck IsNot Nothing AndAlso candleToCheck.PreviousCandlePayload IsNot Nothing Then
+                            Dim previousClose As Decimal = highATRStockList(runningStock).PreviousDayClose
+                            Dim gainLossPercentage As Decimal = ((candleToCheck.Close - previousClose) / previousClose) * 100
+                            If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
+                            tempStockList.Add(runningStock, {gainLossPercentage})
+                        End If
+                    End If
+                End If
+            Next
+            If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
+                For Each runningStock In tempStockList.OrderByDescending(Function(x)
+                                                                             Return x.Value(0)
+                                                                         End Function)
                     If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
                     highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
                     ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
@@ -815,6 +860,11 @@ Public Class StockListFromDatabase
 
     Public intradayVolumeSpikeUserInputs As IntradayVolumeSpikeSettings = Nothing
     Public Class IntradayVolumeSpikeSettings
+        Public CheckingTime As Date
+    End Class
+
+    Public topGainerTopLosserUserInputs As TopGainerTopLosserSettings = Nothing
+    Public Class TopGainerTopLosserSettings
         Public CheckingTime As Date
     End Class
 #End Region
