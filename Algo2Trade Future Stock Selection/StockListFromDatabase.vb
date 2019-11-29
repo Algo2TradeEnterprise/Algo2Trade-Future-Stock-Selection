@@ -541,6 +541,31 @@ Public Class StockListFromDatabase
         _cts.Token.ThrowIfCancellationRequested()
         If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
             _cts.Token.ThrowIfCancellationRequested()
+            Dim niftyGainLossPercentage As Decimal = Decimal.MinValue
+            Dim niftyCurrentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, tradingDate, "NIFTY")
+            If niftyCurrentSymbolToken IsNot Nothing Then
+                Dim niftyTradingSymbol As String = niftyCurrentSymbolToken.Item2
+                Dim niftyEODPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(eodTable, niftyTradingSymbol, tradingDate.AddDays(-15), tradingDate)
+                If niftyEODPayload IsNot Nothing AndAlso niftyEODPayload.Count > 0 AndAlso niftyEODPayload.LastOrDefault.Key.Date = tradingDate.Date Then
+                    If niftyEODPayload.LastOrDefault.Value.PreviousCandlePayload IsNot Nothing Then
+                        Dim previousDayPayload As Payload = niftyEODPayload.LastOrDefault.Value.PreviousCandlePayload
+                        Dim niftyIntradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(intradayTable, niftyTradingSymbol, tradingDate.AddDays(-15), tradingDate)
+                        If niftyIntradayPayload IsNot Nothing AndAlso niftyIntradayPayload.Count > 0 Then
+                            Dim candleToCheck As Payload = Nothing
+                            Dim payloadTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day,
+                                                               topGainerTopLosserUserInputs.CheckingTime.Hour,
+                                                               topGainerTopLosserUserInputs.CheckingTime.Minute, 0)
+                            If niftyIntradayPayload.ContainsKey(payloadTime) Then
+                                candleToCheck = niftyIntradayPayload(payloadTime)
+                            End If
+                            If candleToCheck IsNot Nothing AndAlso candleToCheck.PreviousCandlePayload IsNot Nothing Then
+                                niftyGainLossPercentage = Math.Round(((candleToCheck.Close - previousDayPayload.Close) / previousDayPayload.Close) * 100, 4)
+                            End If
+                        End If
+                    End If
+                End If
+            End If
+            _cts.Token.ThrowIfCancellationRequested()
             Dim tempStockList As Dictionary(Of String, Decimal()) = Nothing
             For Each runningStock In highATRStockList.Keys
                 _cts.Token.ThrowIfCancellationRequested()
@@ -559,8 +584,9 @@ Public Class StockListFromDatabase
                         If candleToCheck IsNot Nothing AndAlso candleToCheck.PreviousCandlePayload IsNot Nothing Then
                             Dim previousClose As Decimal = highATRStockList(runningStock).PreviousDayClose
                             Dim gainLossPercentage As Decimal = ((candleToCheck.Close - previousClose) / previousClose) * 100
+                            Dim slab As Decimal = CalculateSlab(candleToCheck.Close, highATRStockList(runningStock).ATRPercentage)
                             If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                            tempStockList.Add(runningStock, {gainLossPercentage})
+                            tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), niftyGainLossPercentage, slab})
                         End If
                     End If
                 End If
@@ -571,6 +597,8 @@ Public Class StockListFromDatabase
                                                                          End Function)
                     If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
                     highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
+                    highATRStockList(runningStock.Key).Supporting2 = runningStock.Value(1)
+                    highATRStockList(runningStock.Key).Supporting3 = runningStock.Value(2)
                     ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
                 Next
             End If
