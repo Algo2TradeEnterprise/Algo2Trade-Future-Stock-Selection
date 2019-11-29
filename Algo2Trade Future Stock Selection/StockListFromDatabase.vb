@@ -546,6 +546,9 @@ Public Class StockListFromDatabase
         _cts.Token.ThrowIfCancellationRequested()
         If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
             _cts.Token.ThrowIfCancellationRequested()
+            Dim payloadTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day,
+                                                topGainerTopLosserUserInputs.CheckingTime.Hour,
+                                                topGainerTopLosserUserInputs.CheckingTime.Minute, 0)
             Dim niftyGainLossPercentage As Decimal = Decimal.MinValue
             Dim niftyCurrentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.Intraday_Futures, tradingDate, "NIFTY")
             If niftyCurrentSymbolToken IsNot Nothing Then
@@ -556,15 +559,27 @@ Public Class StockListFromDatabase
                         Dim previousDayPayload As Payload = niftyEODPayload.LastOrDefault.Value.PreviousCandlePayload
                         Dim niftyIntradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, niftyTradingSymbol, tradingDate.AddDays(-15), tradingDate)
                         If niftyIntradayPayload IsNot Nothing AndAlso niftyIntradayPayload.Count > 0 Then
-                            Dim candleToCheck As Payload = Nothing
-                            Dim payloadTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day,
-                                                               topGainerTopLosserUserInputs.CheckingTime.Hour,
-                                                               topGainerTopLosserUserInputs.CheckingTime.Minute, 0)
-                            If niftyIntradayPayload.ContainsKey(payloadTime) Then
-                                candleToCheck = niftyIntradayPayload(payloadTime)
-                            End If
-                            If candleToCheck IsNot Nothing AndAlso candleToCheck.PreviousCandlePayload IsNot Nothing Then
-                                niftyGainLossPercentage = Math.Round(((candleToCheck.Close - previousDayPayload.Close) / previousDayPayload.Close) * 100, 4)
+                            If topGainerTopLosserUserInputs.NiftyChangePercentage = 0 Then
+                                Dim candleToCheck As Payload = Nothing
+                                If niftyIntradayPayload.ContainsKey(payloadTime) Then
+                                    candleToCheck = niftyIntradayPayload(payloadTime)
+                                End If
+                                If candleToCheck IsNot Nothing AndAlso candleToCheck.PreviousCandlePayload IsNot Nothing Then
+                                    niftyGainLossPercentage = Math.Round(((candleToCheck.Close - previousDayPayload.Close) / previousDayPayload.Close) * 100, 4)
+                                End If
+                            Else
+                                For Each runningPaylod In niftyIntradayPayload.Keys
+                                    If runningPaylod >= payloadTime Then
+                                        Dim candleToCheck As Payload = niftyIntradayPayload(runningPaylod)
+                                        If candleToCheck IsNot Nothing AndAlso candleToCheck.PreviousCandlePayload IsNot Nothing Then
+                                            niftyGainLossPercentage = Math.Round(((candleToCheck.Close - previousDayPayload.Close) / previousDayPayload.Close) * 100, 4)
+                                            If Math.Abs(niftyGainLossPercentage) >= topGainerTopLosserUserInputs.NiftyChangePercentage Then
+                                                payloadTime = runningPaylod
+                                                Exit For
+                                            End If
+                                        End If
+                                    End If
+                                Next
                             End If
                         End If
                     End If
@@ -580,9 +595,6 @@ Public Class StockListFromDatabase
                     Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(intradayTable, tradingSymbol, tradingDate.AddDays(-15), tradingDate)
                     If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
                         Dim candleToCheck As Payload = Nothing
-                        Dim payloadTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day,
-                                                           topGainerTopLosserUserInputs.CheckingTime.Hour,
-                                                           topGainerTopLosserUserInputs.CheckingTime.Minute, 0)
                         If intradayPayload.ContainsKey(payloadTime) Then
                             candleToCheck = intradayPayload(payloadTime)
                         End If
@@ -901,6 +913,7 @@ Public Class StockListFromDatabase
     Public topGainerTopLosserUserInputs As TopGainerTopLosserSettings = Nothing
     Public Class TopGainerTopLosserSettings
         Public CheckingTime As Date
+        Public NiftyChangePercentage As Decimal
     End Class
 #End Region
 

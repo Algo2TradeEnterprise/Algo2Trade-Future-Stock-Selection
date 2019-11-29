@@ -335,7 +335,8 @@ Public Class frmMain
                         }
                     Case 6
                         stockSelection.topGainerTopLosserUserInputs = New StockListFromDatabase.TopGainerTopLosserSettings With {
-                            .CheckingTime = dtpkrTopGainerLosserChkTime.Value
+                            .CheckingTime = dtpkrTopGainerLosserChkTime.Value,
+                            .NiftyChangePercentage = txtTopGainerLosserNiftyChangePercentage.Text
                         }
                 End Select
 
@@ -548,6 +549,7 @@ Public Class frmMain
                 pnlTopGainerLooserSettings.Location = pnlLocation
 
                 dtpkrTopGainerLosserChkTime.Value = New Date(Now.Year, Now.Month, Now.Day, 9, 19, 0)
+                txtTopGainerLosserNiftyChangePercentage.Text = 0
 
                 SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)

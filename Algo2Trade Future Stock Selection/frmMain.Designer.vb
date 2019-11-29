@@ -64,6 +64,8 @@ Partial Class frmMain
         Me.pnlTopGainerLooserSettings = New System.Windows.Forms.Panel()
         Me.dtpkrTopGainerLosserChkTime = New System.Windows.Forms.DateTimePicker()
         Me.Label4 = New System.Windows.Forms.Label()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.txtTopGainerLosserNiftyChangePercentage = New System.Windows.Forms.TextBox()
         CType(Me.dgrvMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlInstrumentList.SuspendLayout()
         Me.pnlBtn.SuspendLayout()
@@ -457,9 +459,11 @@ Partial Class frmMain
         '
         'pnlTopGainerLooserSettings
         '
+        Me.pnlTopGainerLooserSettings.Controls.Add(Me.txtTopGainerLosserNiftyChangePercentage)
+        Me.pnlTopGainerLooserSettings.Controls.Add(Me.Label5)
         Me.pnlTopGainerLooserSettings.Controls.Add(Me.dtpkrTopGainerLosserChkTime)
         Me.pnlTopGainerLooserSettings.Controls.Add(Me.Label4)
-        Me.pnlTopGainerLooserSettings.Location = New System.Drawing.Point(519, 286)
+        Me.pnlTopGainerLooserSettings.Location = New System.Drawing.Point(782, 189)
         Me.pnlTopGainerLooserSettings.Name = "pnlTopGainerLooserSettings"
         Me.pnlTopGainerLooserSettings.Size = New System.Drawing.Size(257, 91)
         Me.pnlTopGainerLooserSettings.TabIndex = 58
@@ -481,6 +485,22 @@ Partial Class frmMain
         Me.Label4.Size = New System.Drawing.Size(108, 17)
         Me.Label4.TabIndex = 4
         Me.Label4.Text = "Check Till Time:"
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(8, 43)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(105, 17)
+        Me.Label5.TabIndex = 6
+        Me.Label5.Text = "Nifty Change%:"
+        '
+        'txtTopGainerLosserNiftyChangePercentage
+        '
+        Me.txtTopGainerLosserNiftyChangePercentage.Location = New System.Drawing.Point(118, 43)
+        Me.txtTopGainerLosserNiftyChangePercentage.Name = "txtTopGainerLosserNiftyChangePercentage"
+        Me.txtTopGainerLosserNiftyChangePercentage.Size = New System.Drawing.Size(100, 22)
+        Me.txtTopGainerLosserNiftyChangePercentage.TabIndex = 7
         '
         'frmMain
         '
@@ -568,4 +588,6 @@ Partial Class frmMain
     Friend WithEvents pnlTopGainerLooserSettings As Panel
     Friend WithEvents dtpkrTopGainerLosserChkTime As DateTimePicker
     Friend WithEvents Label4 As Label
+    Friend WithEvents txtTopGainerLosserNiftyChangePercentage As TextBox
+    Friend WithEvents Label5 As Label
 End Class
