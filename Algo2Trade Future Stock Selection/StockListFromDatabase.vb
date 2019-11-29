@@ -685,7 +685,9 @@ Public Class StockListFromDatabase
                                  .PreviousDayClose = stockList(stock).PreviousDayClose,
                                  .Supporting1 = If(stockList(stock).Supporting1 IsNot Nothing, stockList(stock).Supporting1, 0),
                                  .Supporting2 = If(stockList(stock).Supporting2 IsNot Nothing, stockList(stock).Supporting2, 0),
-                                 .Supporting3 = If(stockList(stock).Supporting3 IsNot Nothing, stockList(stock).Supporting3, 0)}
+                                 .Supporting3 = If(stockList(stock).Supporting3 IsNot Nothing, stockList(stock).Supporting3, 0),
+                                 .Supporting4 = If(stockList(stock).Supporting4 IsNot Nothing, stockList(stock).Supporting4, 0),
+                                 .Supporting5 = If(stockList(stock).Supporting5 IsNot Nothing, stockList(stock).Supporting5, 0)}
                                 ret.Add(tradingSymbol, instrumentData)
                             End If
                         End If

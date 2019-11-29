@@ -283,6 +283,8 @@ Public Class frmMain
             mainDataTable.Columns.Add("Supporting1")
             mainDataTable.Columns.Add("Supporting2")
             mainDataTable.Columns.Add("Supporting3")
+            mainDataTable.Columns.Add("Supporting4")
+            mainDataTable.Columns.Add("Supporting5")
 
             Dim startDate As Date = GetDateTimePickerValue_ThreadSafe(dtpckrFromDate)
             Dim endDate As Date = GetDateTimePickerValue_ThreadSafe(dtpckrToDate)
@@ -395,6 +397,8 @@ Public Class frmMain
                                             row("Supporting1") = stockData.Value.Supporting1
                                             row("Supporting2") = stockData.Value.Supporting2
                                             row("Supporting3") = stockData.Value.Supporting3
+                                            row("Supporting4") = stockData.Value.Supporting4
+                                            row("Supporting5") = stockData.Value.Supporting5
                                             mainDataTable.Rows.Add(row)
                                             stockCounter += 1
                                             If stockCounter = numberOfStockPerDay Then Exit For
@@ -417,6 +421,8 @@ Public Class frmMain
                                             row("Supporting1") = stockData.Value.Supporting1
                                             row("Supporting2") = stockData.Value.Supporting2
                                             row("Supporting3") = stockData.Value.Supporting3
+                                            row("Supporting4") = stockData.Value.Supporting4
+                                            row("Supporting5") = stockData.Value.Supporting5
                                             mainDataTable.Rows.Add(row)
                                             stockCounter += 1
                                             If stockCounter = numberOfStockPerDay Then Exit For
@@ -437,6 +443,8 @@ Public Class frmMain
                                             row("Supporting1") = stockData.Value.Supporting1
                                             row("Supporting2") = stockData.Value.Supporting2
                                             row("Supporting3") = stockData.Value.Supporting3
+                                            row("Supporting4") = stockData.Value.Supporting4
+                                            row("Supporting5") = stockData.Value.Supporting5
                                             mainDataTable.Rows.Add(row)
                                             stockCounter += 1
                                             If stockCounter = numberOfStockPerDay Then Exit For
