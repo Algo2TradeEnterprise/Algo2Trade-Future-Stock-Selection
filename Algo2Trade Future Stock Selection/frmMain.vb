@@ -383,49 +383,53 @@ Public Class frmMain
                                         For Each stockData In stocksLessThanMaxBlankCandlePercentage.OrderByDescending(Function(x)
                                                                                                                            Return CDec(x.Value.Supporting1)
                                                                                                                        End Function)
-                                            Dim row As DataRow = mainDataTable.NewRow
-                                            row("Date") = tradingDate.ToShortDateString
-                                            row("Trading Symbol") = stockData.Value.TradingSymbol
-                                            row("Lot Size") = stockData.Value.LotSize
-                                            row("ATR %") = stockData.Value.ATRPercentage
-                                            row("Blank Candle %") = stockData.Value.BlankCandlePercentage
-                                            row("Day ATR") = stockData.Value.DayATR
-                                            row("Previous Day Open") = stockData.Value.PreviousDayOpen
-                                            row("Previous Day Low") = stockData.Value.PreviousDayLow
-                                            row("Previous Day High") = stockData.Value.PreviousDayHigh
-                                            row("Previous Day Close") = stockData.Value.PreviousDayClose
-                                            row("Supporting1") = stockData.Value.Supporting1
-                                            row("Supporting2") = stockData.Value.Supporting2
-                                            row("Supporting3") = stockData.Value.Supporting3
-                                            row("Supporting4") = stockData.Value.Supporting4
-                                            row("Supporting5") = stockData.Value.Supporting5
-                                            mainDataTable.Rows.Add(row)
-                                            stockCounter += 1
-                                            If stockCounter = numberOfStockPerDay Then Exit For
+                                            If CDec(stockData.Value.Supporting1) >= 0 Then
+                                                Dim row As DataRow = mainDataTable.NewRow
+                                                row("Date") = tradingDate.ToShortDateString
+                                                row("Trading Symbol") = stockData.Value.TradingSymbol
+                                                row("Lot Size") = stockData.Value.LotSize
+                                                row("ATR %") = stockData.Value.ATRPercentage
+                                                row("Blank Candle %") = stockData.Value.BlankCandlePercentage
+                                                row("Day ATR") = stockData.Value.DayATR
+                                                row("Previous Day Open") = stockData.Value.PreviousDayOpen
+                                                row("Previous Day Low") = stockData.Value.PreviousDayLow
+                                                row("Previous Day High") = stockData.Value.PreviousDayHigh
+                                                row("Previous Day Close") = stockData.Value.PreviousDayClose
+                                                row("Supporting1") = stockData.Value.Supporting1
+                                                row("Supporting2") = stockData.Value.Supporting2
+                                                row("Supporting3") = stockData.Value.Supporting3
+                                                row("Supporting4") = stockData.Value.Supporting4
+                                                row("Supporting5") = stockData.Value.Supporting5
+                                                mainDataTable.Rows.Add(row)
+                                                stockCounter += 1
+                                                If stockCounter = numberOfStockPerDay Then Exit For
+                                            End If
                                         Next
                                         stockCounter = 0
                                         For Each stockData In stocksLessThanMaxBlankCandlePercentage.OrderBy(Function(x)
                                                                                                                  Return CDec(x.Value.Supporting1)
                                                                                                              End Function)
-                                            Dim row As DataRow = mainDataTable.NewRow
-                                            row("Date") = tradingDate.ToShortDateString
-                                            row("Trading Symbol") = stockData.Value.TradingSymbol
-                                            row("Lot Size") = stockData.Value.LotSize
-                                            row("ATR %") = stockData.Value.ATRPercentage
-                                            row("Blank Candle %") = stockData.Value.BlankCandlePercentage
-                                            row("Day ATR") = stockData.Value.DayATR
-                                            row("Previous Day Open") = stockData.Value.PreviousDayOpen
-                                            row("Previous Day Low") = stockData.Value.PreviousDayLow
-                                            row("Previous Day High") = stockData.Value.PreviousDayHigh
-                                            row("Previous Day Close") = stockData.Value.PreviousDayClose
-                                            row("Supporting1") = stockData.Value.Supporting1
-                                            row("Supporting2") = stockData.Value.Supporting2
-                                            row("Supporting3") = stockData.Value.Supporting3
-                                            row("Supporting4") = stockData.Value.Supporting4
-                                            row("Supporting5") = stockData.Value.Supporting5
-                                            mainDataTable.Rows.Add(row)
-                                            stockCounter += 1
-                                            If stockCounter = numberOfStockPerDay Then Exit For
+                                            If CDec(stockData.Value.Supporting1) < 0 Then
+                                                Dim row As DataRow = mainDataTable.NewRow
+                                                row("Date") = tradingDate.ToShortDateString
+                                                row("Trading Symbol") = stockData.Value.TradingSymbol
+                                                row("Lot Size") = stockData.Value.LotSize
+                                                row("ATR %") = stockData.Value.ATRPercentage
+                                                row("Blank Candle %") = stockData.Value.BlankCandlePercentage
+                                                row("Day ATR") = stockData.Value.DayATR
+                                                row("Previous Day Open") = stockData.Value.PreviousDayOpen
+                                                row("Previous Day Low") = stockData.Value.PreviousDayLow
+                                                row("Previous Day High") = stockData.Value.PreviousDayHigh
+                                                row("Previous Day Close") = stockData.Value.PreviousDayClose
+                                                row("Supporting1") = stockData.Value.Supporting1
+                                                row("Supporting2") = stockData.Value.Supporting2
+                                                row("Supporting3") = stockData.Value.Supporting3
+                                                row("Supporting4") = stockData.Value.Supporting4
+                                                row("Supporting5") = stockData.Value.Supporting5
+                                                mainDataTable.Rows.Add(row)
+                                                stockCounter += 1
+                                                If stockCounter = numberOfStockPerDay Then Exit For
+                                            End If
                                         Next
                                     Else
                                         For Each stockData In stocksLessThanMaxBlankCandlePercentage
