@@ -483,7 +483,10 @@ Public Class frmMain
     Private Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
         If dgrvMain IsNot Nothing AndAlso dgrvMain.Rows.Count > 0 Then
             saveFile.AddExtension = True
-            saveFile.FileName = String.Format("Future Stock List with volume filter {0} to {1}.csv", GetDateTimePickerValue_ThreadSafe(dtpckrFromDate).ToString("dd_MM_yy"), GetDateTimePickerValue_ThreadSafe(dtpckrToDate).ToString("dd_MM_yy"))
+            saveFile.FileName = String.Format("{0} {1} to {2}.csv",
+                                              GetComboBoxItem_ThreadSafe(cmbProcedure),
+                                              GetDateTimePickerValue_ThreadSafe(dtpckrFromDate).ToString("dd_MM_yy"),
+                                              GetDateTimePickerValue_ThreadSafe(dtpckrToDate).ToString("dd_MM_yy"))
             saveFile.Filter = "CSV (*.csv)|*.csv"
             saveFile.ShowDialog()
         Else
