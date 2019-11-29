@@ -219,7 +219,7 @@ Public Class StockListFromDatabase
                     Dim priceFilterdCurrentNFOInstruments As List(Of ActiveInstrumentData) = Nothing
                     For Each runningInstrument In currentNFOInstruments
                         _cts.Token.ThrowIfCancellationRequested()
-                        Dim previousDayPayloads As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.EOD_Futures, runningInstrument.TradingSymbol, previousTradingDay.AddDays(-10), previousTradingDay)
+                        Dim previousDayPayloads As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(eodTable, runningInstrument.TradingSymbol, previousTradingDay.AddDays(-10), previousTradingDay)
                         Dim lastDayPayload As Payload = Nothing
                         If previousDayPayloads IsNot Nothing AndAlso previousDayPayloads.Count > 0 Then
                             lastDayPayload = previousDayPayloads.LastOrDefault.Value
