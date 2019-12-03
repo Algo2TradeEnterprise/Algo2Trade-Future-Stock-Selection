@@ -62,10 +62,10 @@ Partial Class frmMain
         Me.cmbStockType = New System.Windows.Forms.ComboBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.pnlTopGainerLooserSettings = New System.Windows.Forms.Panel()
+        Me.txtTopGainerLosserNiftyChangePercentage = New System.Windows.Forms.TextBox()
+        Me.Label5 = New System.Windows.Forms.Label()
         Me.dtpkrTopGainerLosserChkTime = New System.Windows.Forms.DateTimePicker()
         Me.Label4 = New System.Windows.Forms.Label()
-        Me.Label5 = New System.Windows.Forms.Label()
-        Me.txtTopGainerLosserNiftyChangePercentage = New System.Windows.Forms.TextBox()
         Me.cmbIndexType = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
         CType(Me.dgrvMain, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -189,7 +189,7 @@ Partial Class frmMain
         '
         Me.cmbProcedure.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbProcedure.FormattingEnabled = True
-        Me.cmbProcedure.Items.AddRange(New Object() {"User Given", "ATR Based All Stock", "Pre Market Stock", "Intraday Volume Spike Stock", "OHL ATR Stock", "Touch Previous Day Last Candle", "Top Gainer Top Looser"})
+        Me.cmbProcedure.Items.AddRange(New Object() {"User Given", "ATR Based All Stock", "Pre Market Stock", "Intraday Volume Spike Stock", "OHL ATR Stock", "Touch Previous Day Last Candle", "Top Gainer Top Looser", "High Low Gap Stock"})
         Me.cmbProcedure.Location = New System.Drawing.Point(765, 11)
         Me.cmbProcedure.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbProcedure.Name = "cmbProcedure"
@@ -470,6 +470,22 @@ Partial Class frmMain
         Me.pnlTopGainerLooserSettings.Size = New System.Drawing.Size(257, 91)
         Me.pnlTopGainerLooserSettings.TabIndex = 58
         '
+        'txtTopGainerLosserNiftyChangePercentage
+        '
+        Me.txtTopGainerLosserNiftyChangePercentage.Location = New System.Drawing.Point(118, 43)
+        Me.txtTopGainerLosserNiftyChangePercentage.Name = "txtTopGainerLosserNiftyChangePercentage"
+        Me.txtTopGainerLosserNiftyChangePercentage.Size = New System.Drawing.Size(100, 22)
+        Me.txtTopGainerLosserNiftyChangePercentage.TabIndex = 7
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(8, 43)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(105, 17)
+        Me.Label5.TabIndex = 6
+        Me.Label5.Text = "Nifty Change%:"
+        '
         'dtpkrTopGainerLosserChkTime
         '
         Me.dtpkrTopGainerLosserChkTime.Format = System.Windows.Forms.DateTimePickerFormat.Time
@@ -487,22 +503,6 @@ Partial Class frmMain
         Me.Label4.Size = New System.Drawing.Size(108, 17)
         Me.Label4.TabIndex = 4
         Me.Label4.Text = "Check Till Time:"
-        '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(8, 43)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(105, 17)
-        Me.Label5.TabIndex = 6
-        Me.Label5.Text = "Nifty Change%:"
-        '
-        'txtTopGainerLosserNiftyChangePercentage
-        '
-        Me.txtTopGainerLosserNiftyChangePercentage.Location = New System.Drawing.Point(118, 43)
-        Me.txtTopGainerLosserNiftyChangePercentage.Name = "txtTopGainerLosserNiftyChangePercentage"
-        Me.txtTopGainerLosserNiftyChangePercentage.Size = New System.Drawing.Size(100, 22)
-        Me.txtTopGainerLosserNiftyChangePercentage.TabIndex = 7
         '
         'cmbIndexType
         '

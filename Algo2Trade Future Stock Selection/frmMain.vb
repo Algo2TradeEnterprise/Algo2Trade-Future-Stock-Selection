@@ -574,6 +574,11 @@ Public Class frmMain
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
                 SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, True)
                 lblDescription.Text = String.Format("Return ATR stocks with change% till checking time compare to Previous day close")
+            Case 7
+                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, False)
+                lblDescription.Text = String.Format("Return High ATR Stocks which open above/below previous day high/low and continues the gap after 5 mins")
             Case Else
                 Throw New NotImplementedException()
         End Select

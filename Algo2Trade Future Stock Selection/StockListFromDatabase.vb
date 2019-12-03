@@ -626,6 +626,62 @@ Public Class StockListFromDatabase
         End If
         Return ret
     End Function
+
+    Private Async Function GetHighLowGapStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
+        Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
+        Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
+        _cts.Token.ThrowIfCancellationRequested()
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        _cts.Token.ThrowIfCancellationRequested()
+        If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim tempStockList As Dictionary(Of String, Decimal()) = Nothing
+            For Each runningStock In highATRStockList.Keys
+                _cts.Token.ThrowIfCancellationRequested()
+                Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(intradayTable, runningStock, tradingDate.AddDays(-15), tradingDate)
+                Dim eodPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(eodTable, runningStock, tradingDate.AddDays(-15), tradingDate)
+                If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
+                    Dim signalStartTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 9, 15, 0)
+                    Dim signalEndTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 9, 20, 0)
+                    Dim signalPayload As IEnumerable(Of Payload) = intradayPayload.Values.Where(Function(x)
+                                                                                                    Return x.PayloadDate >= signalStartTime AndAlso
+                                                                                                           x.PayloadDate < signalEndTime
+                                                                                                End Function)
+                    If signalPayload IsNot Nothing AndAlso signalPayload.Count > 0 Then
+                        Dim open As Decimal = signalPayload.FirstOrDefault.Open
+                        Dim high As Decimal = signalPayload.Max(Function(x)
+                                                                    Return x.High
+                                                                End Function)
+                        Dim low As Decimal = signalPayload.Min(Function(x)
+                                                                   Return x.Low
+                                                               End Function)
+                        If open > eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
+                            If low > eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
+                                If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
+                                tempStockList.Add(runningStock, {0})
+                            End If
+                        ElseIf open < eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
+                            If high < eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
+                                If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
+                                tempStockList.Add(runningStock, {0})
+                            End If
+                        End If
+                    End If
+                End If
+            Next
+            If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
+                For Each runningStock In tempStockList.OrderByDescending(Function(x)
+                                                                             Return x.Value(0)
+                                                                         End Function)
+                    If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
+                    highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
+                    ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
+                Next
+            End If
+        End If
+        Return ret
+    End Function
+
 #End Region
 
 #Region "Main Public Function"
@@ -662,6 +718,8 @@ Public Class StockListFromDatabase
                     stockList = Await GetTouchPreviousDayLastCandleStockDataAsync(tradingDate).ConfigureAwait(False)
                 Case 6
                     stockList = Await GetTopGainerTopLosserStockDataAsync(tradingDate).ConfigureAwait(False)
+                Case 7
+                    stockList = Await GetHighLowGapStockDataAsync(tradingDate).ConfigureAwait(False)
             End Select
             _cts.Token.ThrowIfCancellationRequested()
 
