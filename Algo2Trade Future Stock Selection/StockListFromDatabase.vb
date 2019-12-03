@@ -686,6 +686,7 @@ Public Class StockListFromDatabase
                                  .PreviousDayLow = stockList(stock).PreviousDayLow,
                                  .PreviousDayHigh = stockList(stock).PreviousDayHigh,
                                  .PreviousDayClose = stockList(stock).PreviousDayClose,
+                                 .Slab = CalculateSlab(.PreviousDayClose, .ATRPercentage),
                                  .Supporting1 = If(stockList(stock).Supporting1 IsNot Nothing, stockList(stock).Supporting1, 0),
                                  .Supporting2 = If(stockList(stock).Supporting2 IsNot Nothing, stockList(stock).Supporting2, 0),
                                  .Supporting3 = If(stockList(stock).Supporting3 IsNot Nothing, stockList(stock).Supporting3, 0),
@@ -881,8 +882,8 @@ Public Class StockListFromDatabase
     End Function
 
     Private Function CalculateSlab(ByVal price As Decimal, ByVal atrPer As Decimal) As Decimal
-        Dim ret As Decimal = 0.5
-        Dim slabList As List(Of Decimal) = New List(Of Decimal) From {0.5, 1, 2.5, 5, 10, 15}
+        Dim ret As Decimal = 0.25
+        Dim slabList As List(Of Decimal) = New List(Of Decimal) From {0.25, 0.5, 1, 2.5, 5, 10, 15}
         Dim atr As Decimal = (atrPer / 100) * price
         Dim supportedSlabList As List(Of Decimal) = slabList.FindAll(Function(x)
                                                                          Return x <= atr / 8

@@ -8,6 +8,7 @@
     Public Property PreviousDayLow As Decimal
     Public Property PreviousDayHigh As Decimal
     Public Property PreviousDayClose As Decimal
+    Public Property Slab As Decimal
     Public Property Supporting1 As String
     Public Property Supporting2 As String
     Public Property Supporting3 As String
