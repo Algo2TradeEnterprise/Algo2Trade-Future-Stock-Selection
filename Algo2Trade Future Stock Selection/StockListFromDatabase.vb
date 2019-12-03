@@ -638,32 +638,36 @@ Public Class StockListFromDatabase
             Dim tempStockList As Dictionary(Of String, Decimal()) = Nothing
             For Each runningStock In highATRStockList.Keys
                 _cts.Token.ThrowIfCancellationRequested()
-                Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(intradayTable, runningStock, tradingDate.AddDays(-15), tradingDate)
-                Dim eodPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(eodTable, runningStock, tradingDate.AddDays(-15), tradingDate)
-                If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
-                    Dim signalStartTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 9, 15, 0)
-                    Dim signalEndTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 9, 20, 0)
-                    Dim signalPayload As IEnumerable(Of Payload) = intradayPayload.Values.Where(Function(x)
-                                                                                                    Return x.PayloadDate >= signalStartTime AndAlso
-                                                                                                           x.PayloadDate < signalEndTime
-                                                                                                End Function)
-                    If signalPayload IsNot Nothing AndAlso signalPayload.Count > 0 Then
-                        Dim open As Decimal = signalPayload.FirstOrDefault.Open
-                        Dim high As Decimal = signalPayload.Max(Function(x)
-                                                                    Return x.High
-                                                                End Function)
-                        Dim low As Decimal = signalPayload.Min(Function(x)
-                                                                   Return x.Low
-                                                               End Function)
-                        If open > eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
-                            If low > eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
-                                If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                                tempStockList.Add(runningStock, {0})
-                            End If
-                        ElseIf open < eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
-                            If high < eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
-                                If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                                tempStockList.Add(runningStock, {0})
+                Dim currentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, index, tradingDate, runningStock)
+                If currentSymbolToken IsNot Nothing Then
+                    Dim tradingSymbol As String = currentSymbolToken.Item2
+                    Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(intradayTable, tradingSymbol, tradingDate.AddDays(-15), tradingDate)
+                    Dim eodPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(eodTable, tradingSymbol, tradingDate.AddDays(-15), tradingDate)
+                    If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
+                        Dim signalStartTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 9, 15, 0)
+                        Dim signalEndTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 9, 20, 0)
+                        Dim signalPayload As IEnumerable(Of Payload) = intradayPayload.Values.Where(Function(x)
+                                                                                                        Return x.PayloadDate >= signalStartTime AndAlso
+                                                                                                               x.PayloadDate < signalEndTime
+                                                                                                    End Function)
+                        If signalPayload IsNot Nothing AndAlso signalPayload.Count > 0 Then
+                            Dim open As Decimal = signalPayload.FirstOrDefault.Open
+                            Dim high As Decimal = signalPayload.Max(Function(x)
+                                                                        Return x.High
+                                                                    End Function)
+                            Dim low As Decimal = signalPayload.Min(Function(x)
+                                                                       Return x.Low
+                                                                   End Function)
+                            If open > eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
+                                If low > eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
+                                    If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
+                                    tempStockList.Add(runningStock, {0})
+                                End If
+                            ElseIf open < eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
+                                If high < eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
+                                    If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
+                                    tempStockList.Add(runningStock, {0})
+                                End If
                             End If
                         End If
                     End If
