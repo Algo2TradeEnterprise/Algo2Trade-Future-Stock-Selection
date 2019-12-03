@@ -512,16 +512,18 @@ Public Class StockListFromDatabase
                         If currentDayFirstCandle IsNot Nothing AndAlso currentDayFirstCandle.PreviousCandlePayload IsNot Nothing Then
                             Dim buffer As Decimal = CalculateBuffer(currentDayFirstCandle.Open, Utilities.Numbers.NumberManipulation.RoundOfType.Floor)
                             Dim atrPer As Decimal = highATRStockList(runningStock).ATRPercentage
-                            Dim slab As Decimal = CalculateSlab(currentDayFirstCandle.Open, atrPer)
+                            'Dim slab As Decimal = CalculateSlab(currentDayFirstCandle.Open, atrPer)
                             If currentDayFirstCandle.Open < currentDayFirstCandle.PreviousCandlePayload.Close Then
                                 If currentDayFirstCandle.High + buffer >= currentDayFirstCandle.PreviousCandlePayload.Low Then
                                     If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                                    tempStockList.Add(runningStock, {slab})
+                                    'tempStockList.Add(runningStock, {slab})
+                                    tempStockList.Add(runningStock, {0})
                                 End If
                             ElseIf currentDayFirstCandle.Open >= currentDayFirstCandle.PreviousCandlePayload.Close Then
                                 If currentDayFirstCandle.Low - buffer <= currentDayFirstCandle.PreviousCandlePayload.High Then
                                     If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                                    tempStockList.Add(runningStock, {slab})
+                                    'tempStockList.Add(runningStock, {slab})
+                                    tempStockList.Add(runningStock, {0})
                                 End If
                             End If
                         End If
@@ -531,7 +533,7 @@ Public Class StockListFromDatabase
             If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
                 For Each runningStock In tempStockList
                     If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
-                    highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
+                    'highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
                     ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
                 Next
             End If
@@ -603,9 +605,9 @@ Public Class StockListFromDatabase
                         If candleToCheck IsNot Nothing AndAlso candleToCheck.PreviousCandlePayload IsNot Nothing Then
                             Dim previousClose As Decimal = highATRStockList(runningStock).PreviousDayClose
                             Dim gainLossPercentage As Decimal = ((candleToCheck.Close - previousClose) / previousClose) * 100
-                            Dim slab As Decimal = CalculateSlab(candleToCheck.Close, highATRStockList(runningStock).ATRPercentage)
+                            'Dim slab As Decimal = CalculateSlab(candleToCheck.Close, highATRStockList(runningStock).ATRPercentage)
                             If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
-                            tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), niftyGainLossPercentage, payloadTime.ToString("HH:mm:ss"), slab})
+                            tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), niftyGainLossPercentage, payloadTime.ToString("HH:mm:ss")})
                         End If
                     End If
                 End If
@@ -618,7 +620,6 @@ Public Class StockListFromDatabase
                     highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
                     highATRStockList(runningStock.Key).Supporting2 = runningStock.Value(1)
                     highATRStockList(runningStock.Key).Supporting3 = runningStock.Value(2)
-                    highATRStockList(runningStock.Key).Supporting4 = runningStock.Value(3)
                     ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
                 Next
             End If
