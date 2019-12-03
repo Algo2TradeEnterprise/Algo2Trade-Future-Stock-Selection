@@ -450,6 +450,7 @@ Public Class frmMain
                                             row("Previous Day Low") = stockData.Value.PreviousDayLow
                                             row("Previous Day High") = stockData.Value.PreviousDayHigh
                                             row("Previous Day Close") = stockData.Value.PreviousDayClose
+                                            row("Slab") = stockData.Value.Slab
                                             row("Supporting1") = stockData.Value.Supporting1
                                             row("Supporting2") = stockData.Value.Supporting2
                                             row("Supporting3") = stockData.Value.Supporting3
