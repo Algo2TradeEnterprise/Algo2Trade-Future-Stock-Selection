@@ -661,12 +661,12 @@ Public Class StockListFromDatabase
                             If open > eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
                                 If low > eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
                                     If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                                    tempStockList.Add(runningStock, {0})
+                                    tempStockList.Add(runningStock, {1})
                                 End If
-                            ElseIf open < eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
-                                If high < eodPayload.LastOrDefault.Value.PreviousCandlePayload.High Then
+                            ElseIf open < eodPayload.LastOrDefault.Value.PreviousCandlePayload.Low Then
+                                If high < eodPayload.LastOrDefault.Value.PreviousCandlePayload.Low Then
                                     If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                                    tempStockList.Add(runningStock, {0})
+                                    tempStockList.Add(runningStock, {-1})
                                 End If
                             End If
                         End If
@@ -674,9 +674,7 @@ Public Class StockListFromDatabase
                 End If
             Next
             If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
-                For Each runningStock In tempStockList.OrderByDescending(Function(x)
-                                                                             Return x.Value(0)
-                                                                         End Function)
+                For Each runningStock In tempStockList
                     If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
                     highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
                     ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
