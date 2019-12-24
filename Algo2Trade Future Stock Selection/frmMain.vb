@@ -345,8 +345,8 @@ Public Class frmMain
                             .NiftyChangePercentage = txtTopGainerLosserNiftyChangePercentage.Text
                         }
                     Case 8
-                        stockSelection.stockFutureUserInputs = New StockListFromDatabase.StockFutureSettings With {
-                            .DifferencePercentage = 2.5
+                        stockSelection.spotFutureArbritrageUserInputs = New StockListFromDatabase.SpotFutureArbritrageSettings With {
+                            .DifferencePercentage = 0
                         }
                 End Select
 

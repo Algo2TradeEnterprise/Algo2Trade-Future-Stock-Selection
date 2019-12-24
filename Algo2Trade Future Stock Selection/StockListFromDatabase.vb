@@ -684,9 +684,9 @@ Public Class StockListFromDatabase
         Return ret
     End Function
 
-    Private Async Function GetStockFutureStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
+    Private Async Function GetSpotFutureArbritrageStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
-        If stockFutureUserInputs Is Nothing Then Throw New ApplicationException("Stock Future Settings not implemented properly")
+        If spotFutureArbritrageUserInputs Is Nothing Then Throw New ApplicationException("Spot Future Arbritrage Settings not implemented properly")
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
         Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
@@ -703,15 +703,19 @@ Public Class StockListFromDatabase
                     Dim futureIntradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, tradingSymbol, tradingDate, tradingDate)
                     Dim cashIntradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Cash, instrumentName, tradingDate, tradingDate)
                     If futureIntradayPayload IsNot Nothing AndAlso futureIntradayPayload.Count > 0 Then
+                        Dim diff As String = ""
+                        Dim time As String = ""
                         For Each runningPayload In futureIntradayPayload
                             If cashIntradayPayload.ContainsKey(runningPayload.Key) Then
                                 Dim diffPer As Decimal = ((runningPayload.Value.Close / cashIntradayPayload(runningPayload.Key).Close) - 1) * 100
-                                If diffPer >= stockFutureUserInputs.DifferencePercentage Then
-                                    If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
-                                    tempStockList.Add(runningStock, {diffPer, runningPayload.Key.ToString("dd-MM-yyyy HH:mm:ss")})
+                                If diffPer >= spotFutureArbritrageUserInputs.DifferencePercentage Then
+                                    diff = String.Format("{0},{1}", diff, Math.Round(diffPer, 2))
+                                    time = String.Format("{0},{1}", time, runningPayload.Key.ToString("dd-MM-yyyy HH:mm:ss"))
                                 End If
                             End If
                         Next
+                        If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
+                        tempStockList.Add(runningStock, {diff, time})
                     End If
                 End If
             Next
@@ -765,7 +769,7 @@ Public Class StockListFromDatabase
                 Case 7
                     stockList = Await GetHighLowGapStockDataAsync(tradingDate).ConfigureAwait(False)
                 Case 8
-                    stockList = Await GetStockFutureStockDataAsync(tradingDate).ConfigureAwait(False)
+                    stockList = Await GetSpotFutureArbritrageStockDataAsync(tradingDate).ConfigureAwait(False)
             End Select
             _cts.Token.ThrowIfCancellationRequested()
 
@@ -1027,8 +1031,8 @@ Public Class StockListFromDatabase
         Public NiftyChangePercentage As Decimal
     End Class
 
-    Public stockFutureUserInputs As StockFutureSettings = Nothing
-    Public Class StockFutureSettings
+    Public spotFutureArbritrageUserInputs As SpotFutureArbritrageSettings = Nothing
+    Public Class SpotFutureArbritrageSettings
         Public DifferencePercentage As Decimal
     End Class
 #End Region
