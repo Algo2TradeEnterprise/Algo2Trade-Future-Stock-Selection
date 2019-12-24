@@ -346,7 +346,7 @@ Public Class frmMain
                         }
                     Case 8
                         stockSelection.spotFutureArbritrageUserInputs = New StockListFromDatabase.SpotFutureArbritrageSettings With {
-                            .DifferencePercentage = 0
+                            .DifferencePercentage = 1
                         }
                 End Select
 

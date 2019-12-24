@@ -716,7 +716,7 @@ Public Class StockListFromDatabase
                         Next
                         If diff <> "" AndAlso time <> "" Then
                             If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
-                            tempStockList.Add(runningStock, {diff, time})
+                            tempStockList.Add(runningStock, {diff.Substring(1), time.Substring(1)})
                         End If
                     End If
                 End If
