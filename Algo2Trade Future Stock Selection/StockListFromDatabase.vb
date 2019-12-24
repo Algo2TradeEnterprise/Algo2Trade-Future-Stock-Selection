@@ -684,6 +684,48 @@ Public Class StockListFromDatabase
         Return ret
     End Function
 
+    Private Async Function GetStockFutureStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
+        Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
+        If stockFutureUserInputs Is Nothing Then Throw New ApplicationException("Stock Future Settings not implemented properly")
+        Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
+        _cts.Token.ThrowIfCancellationRequested()
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        _cts.Token.ThrowIfCancellationRequested()
+        If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim tempStockList As Dictionary(Of String, String()) = Nothing
+            For Each runningStock In highATRStockList.Keys
+                _cts.Token.ThrowIfCancellationRequested()
+                Dim currentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.Intraday_Futures, index, tradingDate, runningStock)
+                If currentSymbolToken IsNot Nothing Then
+                    Dim tradingSymbol As String = currentSymbolToken.Item2
+                    Dim instrumentName As String = tradingSymbol.Remove(tradingSymbol.Count - 8)
+                    Dim futureIntradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Futures, tradingSymbol, tradingDate, tradingDate)
+                    Dim cashIntradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Cash, instrumentName, tradingDate, tradingDate)
+                    If futureIntradayPayload IsNot Nothing AndAlso futureIntradayPayload.Count > 0 Then
+                        For Each runningPayload In futureIntradayPayload
+                            If cashIntradayPayload.ContainsKey(runningPayload.Key) Then
+                                Dim diffPer As Decimal = ((runningPayload.Value.Close / cashIntradayPayload(runningPayload.Key).Close) - 1) * 100
+                                If diffPer >= stockFutureUserInputs.DifferencePercentage Then
+                                    If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
+                                    tempStockList.Add(runningStock, {diffPer, runningPayload.Key.ToString("dd-MM-yyyy HH:mm:ss")})
+                                End If
+                            End If
+                        Next
+                    End If
+                End If
+            Next
+            If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
+                For Each runningStock In tempStockList
+                    If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
+                    highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
+                    highATRStockList(runningStock.Key).Supporting2 = runningStock.Value(1)
+                    ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
+                Next
+            End If
+        End If
+        Return ret
+    End Function
 #End Region
 
 #Region "Main Public Function"
@@ -722,6 +764,8 @@ Public Class StockListFromDatabase
                     stockList = Await GetTopGainerTopLosserStockDataAsync(tradingDate).ConfigureAwait(False)
                 Case 7
                     stockList = Await GetHighLowGapStockDataAsync(tradingDate).ConfigureAwait(False)
+                Case 8
+                    stockList = Await GetStockFutureStockDataAsync(tradingDate).ConfigureAwait(False)
             End Select
             _cts.Token.ThrowIfCancellationRequested()
 
@@ -981,6 +1025,11 @@ Public Class StockListFromDatabase
     Public Class TopGainerTopLosserSettings
         Public CheckingTime As Date
         Public NiftyChangePercentage As Decimal
+    End Class
+
+    Public stockFutureUserInputs As StockFutureSettings = Nothing
+    Public Class StockFutureSettings
+        Public DifferencePercentage As Decimal
     End Class
 #End Region
 

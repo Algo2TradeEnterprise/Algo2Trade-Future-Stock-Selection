@@ -344,6 +344,10 @@ Public Class frmMain
                             .CheckingTime = dtpkrTopGainerLosserChkTime.Value,
                             .NiftyChangePercentage = txtTopGainerLosserNiftyChangePercentage.Text
                         }
+                    Case 8
+                        stockSelection.stockFutureUserInputs = New StockListFromDatabase.StockFutureSettings With {
+                            .DifferencePercentage = 2.5
+                        }
                 End Select
 
                 While tradingDate <= endDate
@@ -579,6 +583,11 @@ Public Class frmMain
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
                 SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, False)
                 lblDescription.Text = String.Format("Return High ATR Stocks which open above/below previous day high/low and continues the gap after 5 mins")
+            Case 8
+                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, False)
+                lblDescription.Text = String.Format("Return High ATR Stocks which creats gap between cash and future")
             Case Else
                 Throw New NotImplementedException()
         End Select
