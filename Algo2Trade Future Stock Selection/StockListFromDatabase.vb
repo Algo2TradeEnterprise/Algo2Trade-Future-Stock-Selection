@@ -709,8 +709,8 @@ Public Class StockListFromDatabase
                             If cashIntradayPayload.ContainsKey(runningPayload.Key) Then
                                 Dim diffPer As Decimal = ((runningPayload.Value.Close / cashIntradayPayload(runningPayload.Key).Close) - 1) * 100
                                 If diffPer >= spotFutureArbritrageUserInputs.DifferencePercentage Then
-                                    diff = String.Format("{0},{1}", diff, Math.Round(diffPer, 2))
-                                    time = String.Format("{0},{1}", time, runningPayload.Key.ToString("dd-MM-yyyy HH:mm:ss"))
+                                    diff = String.Format("{0};{1}", diff, Math.Round(diffPer, 2))
+                                    time = String.Format("{0};{1}", time, runningPayload.Key.ToString("dd-MM-yyyy HH:mm:ss"))
                                 End If
                             End If
                         Next
