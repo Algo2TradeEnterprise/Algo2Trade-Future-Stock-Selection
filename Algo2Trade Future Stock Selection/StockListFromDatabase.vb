@@ -714,8 +714,10 @@ Public Class StockListFromDatabase
                                 End If
                             End If
                         Next
-                        If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
-                        tempStockList.Add(runningStock, {diff, time})
+                        If diff <> "" AndAlso time <> "" Then
+                            If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
+                            tempStockList.Add(runningStock, {diff, time})
+                        End If
                     End If
                 End If
             Next
