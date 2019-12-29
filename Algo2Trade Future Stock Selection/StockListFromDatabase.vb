@@ -166,7 +166,8 @@ Public Class StockListFromDatabase
                 _conn = _common.OpenDBConnection()
             End If
             _cts.Token.ThrowIfCancellationRequested()
-            Dim cm As MySqlCommand = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_futures` WHERE `AS_ON_DATE`=@sd", _conn)
+            OnHeartbeat("Fetching all future instrument")
+            Dim cm As MySqlCommand = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_futures` WHERE `AS_ON_DATE`=@sd AND `SEGMENT`='NFO-FUT'", _conn)
             cm.Parameters.AddWithValue("@sd", tradingDate.ToString("yyyy-MM-dd"))
             _cts.Token.ThrowIfCancellationRequested()
             Dim adapter As New MySqlDataAdapter(cm)
@@ -836,13 +837,13 @@ Public Class StockListFromDatabase
                     Case Common.DataBaseTable.EOD_Cash
                         cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_cash` WHERE `TRADING_SYMBOL` LIKE @trd AND `AS_ON_DATE`=@sd", _conn)
                     Case Common.DataBaseTable.EOD_Commodity
-                        cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_commodity` WHERE `TRADING_SYMBOL` LIKE @trd AND `AS_ON_DATE`=@sd", _conn)
+                        cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_commodity` WHERE `TRADING_SYMBOL` REGEXP @trd AND `SEGMENT`='MCX' AND `AS_ON_DATE`=@sd", _conn)
                     Case Common.DataBaseTable.EOD_Currency
-                        cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_currency` WHERE `TRADING_SYMBOL` LIKE @trd AND `AS_ON_DATE`=@sd", _conn)
+                        cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_currency` WHERE `TRADING_SYMBOL` REGEXP @trd AND `SEGMENT`='CDS-FUT' AND `AS_ON_DATE`=@sd", _conn)
                     Case Common.DataBaseTable.EOD_Futures
-                        cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_futures` WHERE `TRADING_SYMBOL` LIKE @trd AND `AS_ON_DATE`=@sd", _conn)
+                        cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_futures` WHERE `TRADING_SYMBOL` REGEXP @trd AND `SEGMENT`='NFO-FUT' AND `AS_ON_DATE`=@sd", _conn)
                 End Select
-                cm.Parameters.AddWithValue("@trd", String.Format("{0}%", rawInstrumentName))
+                cm.Parameters.AddWithValue("@trd", String.Format("{0}[0-9][0-9]*", rawInstrumentName))
                 cm.Parameters.AddWithValue("@sd", tradingDate.ToString("yyyy-MM-dd"))
                 _cts.Token.ThrowIfCancellationRequested()
                 Dim adapter As New MySqlDataAdapter(cm)

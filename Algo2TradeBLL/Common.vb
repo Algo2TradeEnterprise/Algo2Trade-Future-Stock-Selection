@@ -573,54 +573,6 @@ Public Class Common
 
         Return previousTradingDate
     End Function
-    Public Function GetAppropiateLotSize(ByVal tableName As DataBaseTable, ByVal instrumentName As String, ByVal currentDate As Date) As Integer
-        Dim trade As String = Nothing
-        Dim dt As DataTable = Nothing
-        Dim lotSize As Integer = Nothing
-        Dim conn As MySqlConnection = OpenDBConnection()
-        Dim cmd As MySqlCommand = Nothing
-        Dim cm As MySqlCommand = Nothing
-
-        Select Case tableName
-            Case DataBaseTable.Intraday_Cash, DataBaseTable.EOD_Cash
-                cmd = New MySqlCommand("CURRENT_TRADINGSYMBOL_FUTURE", conn)
-                cm = New MySqlCommand("SELECT `LOT_SIZE` FROM `active_instruments_futures` WHERE `TRADING_SYMBOL`=@trd AND `AS_ON_DATE`<=@ed AND `AS_ON_DATE`>=@sd ORDER BY `AS_ON_DATE` DESC LIMIT 1", conn)
-            Case DataBaseTable.Intraday_Currency, DataBaseTable.EOD_Currency
-                cmd = New MySqlCommand("CURRENT_TRADINGSYMBOL_CURRENCY", conn)
-                cm = New MySqlCommand("SELECT `LOT_SIZE` FROM `active_instruments_currency` WHERE `TRADING_SYMBOL`=@trd AND `AS_ON_DATE`<=@ed AND `AS_ON_DATE`>=@sd ORDER BY `AS_ON_DATE` DESC LIMIT 1", conn)
-            Case DataBaseTable.Intraday_Commodity, DataBaseTable.EOD_Commodity
-                cmd = New MySqlCommand("CURRENT_TRADINGSYMBOL_COMMODITY", conn)
-                cm = New MySqlCommand("SELECT `LOT_SIZE` FROM `active_instruments_commodity` WHERE `TRADING_SYMBOL`=@trd AND `AS_ON_DATE`<=@ed AND `AS_ON_DATE`>=@sd ORDER BY `AS_ON_DATE` DESC LIMIT 1", conn)
-            Case DataBaseTable.Intraday_Futures, DataBaseTable.EOD_Futures
-                cmd = New MySqlCommand("CURRENT_TRADINGSYMBOL_FUTURE", conn)
-                cm = New MySqlCommand("SELECT `LOT_SIZE` FROM `active_instruments_futures` WHERE `TRADING_SYMBOL`=@trd AND `AS_ON_DATE`<=@ed AND `AS_ON_DATE`>=@sd ORDER BY `AS_ON_DATE` DESC LIMIT 1", conn)
-        End Select
-
-        OnHeartbeat(String.Format("Fetching required data from DataBase for {0} on {1}", instrumentName, currentDate.ToShortDateString))
-
-        cmd.CommandType = CommandType.StoredProcedure
-        cmd.Parameters.AddWithValue("@userDate", currentDate.Date.ToString("yyyy-MM-dd"))
-        cmd.Parameters.AddWithValue("@allData", 0)
-        cmd.Parameters.AddWithValue("@tableName", "")
-        cmd.Parameters.AddWithValue("@instrumentName", instrumentName)
-        cmd.Parameters.Add("@currentTradingSymbol", MySqlDbType.VarChar, 100).Direction = ParameterDirection.Output
-        cmd.ExecuteNonQuery()
-        trade = cmd.Parameters(4).Value.ToString()
-
-        If trade IsNot Nothing Then
-            cm.Parameters.AddWithValue("@trd", trade)
-            cm.Parameters.AddWithValue("@ed", currentDate.Date.ToString("yyyy-MM-dd"))
-            cm.Parameters.AddWithValue("@sd", currentDate.Date.AddDays(-30).ToString("yyyy-MM-dd"))
-            Dim adapter As New MySqlDataAdapter(cm)
-            adapter.SelectCommand.CommandTimeout = 300
-            dt = New DataTable()
-            adapter.Fill(dt)
-            If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-                lotSize = dt.Rows(0).Item(0)
-            End If
-        End If
-        Return lotSize
-    End Function
     Public Function GetCurrentTradingSymbolWithInstrumentToken(ByVal tableName As DataBaseTable, ByVal index As String, ByVal tradingDate As Date, ByVal rawInstrumentName As String) As Tuple(Of String, String)
         Dim ret As Tuple(Of String, String) = Nothing
         Dim dt As DataTable = Nothing
