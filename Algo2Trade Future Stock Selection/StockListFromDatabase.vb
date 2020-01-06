@@ -836,14 +836,17 @@ Public Class StockListFromDatabase
                 Select Case eodTable
                     Case Common.DataBaseTable.EOD_Cash
                         cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_cash` WHERE `TRADING_SYMBOL` LIKE @trd AND `AS_ON_DATE`=@sd", _conn)
+                        cm.Parameters.AddWithValue("@trd", String.Format("{0}", rawInstrumentName))
                     Case Common.DataBaseTable.EOD_Commodity
                         cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_commodity` WHERE `TRADING_SYMBOL` REGEXP @trd AND `SEGMENT`='MCX' AND `AS_ON_DATE`=@sd", _conn)
+                        cm.Parameters.AddWithValue("@trd", String.Format("{0}[0-9][0-9]*", rawInstrumentName))
                     Case Common.DataBaseTable.EOD_Currency
                         cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_currency` WHERE `TRADING_SYMBOL` REGEXP @trd AND `SEGMENT`='CDS-FUT' AND `AS_ON_DATE`=@sd", _conn)
+                        cm.Parameters.AddWithValue("@trd", String.Format("{0}[0-9][0-9]*", rawInstrumentName))
                     Case Common.DataBaseTable.EOD_Futures
                         cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_futures` WHERE `TRADING_SYMBOL` REGEXP @trd AND `SEGMENT`='NFO-FUT' AND `AS_ON_DATE`=@sd", _conn)
+                        cm.Parameters.AddWithValue("@trd", String.Format("{0}[0-9][0-9]*", rawInstrumentName))
                 End Select
-                cm.Parameters.AddWithValue("@trd", String.Format("{0}[0-9][0-9]*", rawInstrumentName))
                 cm.Parameters.AddWithValue("@sd", tradingDate.ToString("yyyy-MM-dd"))
                 _cts.Token.ThrowIfCancellationRequested()
                 Dim adapter As New MySqlDataAdapter(cm)
