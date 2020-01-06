@@ -941,7 +941,9 @@ Public Class StockListFromDatabase
                     If cashEODPayload IsNot Nothing AndAlso cashEODPayload.Count > 0 Then
                         Dim dayCtr As Integer = 0
                         Dim turnover As Decimal = 0
-                        For Each runningPayload In cashEODPayload
+                        For Each runningPayload In cashEODPayload.OrderByDescending(Function(x)
+                                                                                        Return x.Key
+                                                                                    End Function)
                             turnover += runningPayload.Value.Close * runningPayload.Value.Volume
                             dayCtr += 1
                             If dayCtr = 5 Then Exit For
