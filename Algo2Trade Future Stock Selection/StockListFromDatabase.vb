@@ -347,7 +347,7 @@ Public Class StockListFromDatabase
         End If
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
-        Dim previousTradingDay As Date = _common.GetPreviousTradingDay(Common.DataBaseTable.EOD_Futures, tradingDate)
+        Dim previousTradingDay As Date = _common.GetPreviousTradingDay(Common.DataBaseTable.EOD_Cash, tradingDate)
         If previousTradingDay <> Date.MinValue Then
             If _conn Is Nothing OrElse _conn.State <> ConnectionState.Open Then
                 _cts.Token.ThrowIfCancellationRequested()
@@ -371,7 +371,7 @@ Public Class StockListFromDatabase
                     Dim instrumentData As New ActiveInstrumentData With
                     {.Token = dt.Rows(i).Item(0),
                      .TradingSymbol = dt.Rows(i).Item(1).ToString.ToUpper,
-                     .Expiry = dt.Rows(i).Item(2)}
+                     .Expiry = Date.MaxValue}
                     If cashInstruments Is Nothing Then cashInstruments = New List(Of ActiveInstrumentData)
                     cashInstruments.Add(instrumentData)
                 Next
