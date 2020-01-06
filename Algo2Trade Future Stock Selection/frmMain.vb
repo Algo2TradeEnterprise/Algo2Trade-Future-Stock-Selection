@@ -396,9 +396,9 @@ Public Class frmMain
                                                 row("Date") = tradingDate.ToShortDateString
                                                 row("Trading Symbol") = stockData.Value.TradingSymbol
                                                 row("Lot Size") = stockData.Value.LotSize
-                                                row("ATR %") = stockData.Value.ATRPercentage
+                                                row("ATR %") = Math.Round(stockData.Value.ATRPercentage, 4)
                                                 row("Blank Candle %") = stockData.Value.BlankCandlePercentage
-                                                row("Day ATR") = stockData.Value.DayATR
+                                                row("Day ATR") = Math.Round(stockData.Value.DayATR, 4)
                                                 row("Previous Day Open") = stockData.Value.PreviousDayOpen
                                                 row("Previous Day Low") = stockData.Value.PreviousDayLow
                                                 row("Previous Day High") = stockData.Value.PreviousDayHigh
@@ -423,9 +423,9 @@ Public Class frmMain
                                                 row("Date") = tradingDate.ToShortDateString
                                                 row("Trading Symbol") = stockData.Value.TradingSymbol
                                                 row("Lot Size") = stockData.Value.LotSize
-                                                row("ATR %") = stockData.Value.ATRPercentage
+                                                row("ATR %") = Math.Round(stockData.Value.ATRPercentage, 4)
                                                 row("Blank Candle %") = stockData.Value.BlankCandlePercentage
-                                                row("Day ATR") = stockData.Value.DayATR
+                                                row("Day ATR") = Math.Round(stockData.Value.DayATR, 4)
                                                 row("Previous Day Open") = stockData.Value.PreviousDayOpen
                                                 row("Previous Day Low") = stockData.Value.PreviousDayLow
                                                 row("Previous Day High") = stockData.Value.PreviousDayHigh
@@ -447,9 +447,9 @@ Public Class frmMain
                                             row("Date") = tradingDate.ToShortDateString
                                             row("Trading Symbol") = stockData.Value.TradingSymbol
                                             row("Lot Size") = stockData.Value.LotSize
-                                            row("ATR %") = stockData.Value.ATRPercentage
+                                            row("ATR %") = Math.Round(stockData.Value.ATRPercentage, 4)
                                             row("Blank Candle %") = stockData.Value.BlankCandlePercentage
-                                            row("Day ATR") = stockData.Value.DayATR
+                                            row("Day ATR") = Math.Round(stockData.Value.DayATR, 4)
                                             row("Previous Day Open") = stockData.Value.PreviousDayOpen
                                             row("Previous Day Low") = stockData.Value.PreviousDayLow
                                             row("Previous Day High") = stockData.Value.PreviousDayHigh
@@ -588,6 +588,11 @@ Public Class frmMain
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
                 SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, False)
                 lblDescription.Text = String.Format("Return High ATR Stocks which creats gap between cash and future")
+            Case 9
+                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, False)
+                lblDescription.Text = String.Format("Return High ATR Cash Stocks with high turnover (5 day average of volume*close)")
             Case Else
                 Throw New NotImplementedException()
         End Select
