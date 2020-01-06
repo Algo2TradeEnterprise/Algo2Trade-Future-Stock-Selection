@@ -453,7 +453,7 @@ Public Class StockListFromDatabase
                                                                                                                         _cts.Token.ThrowIfCancellationRequested()
                                                                                                                         Dim eodHistoricalData As Dictionary(Of Date, Payload) = Await GetChartFromHistoricalAsync(historicalCandlesJSONDict, instrumentData.Value, tradingDate).ConfigureAwait(False)
                                                                                                                         _cts.Token.ThrowIfCancellationRequested()
-                                                                                                                        If eodHistoricalData IsNot Nothing AndAlso eodHistoricalData.Count > 0 Then
+                                                                                                                        If eodHistoricalData IsNot Nothing AndAlso eodHistoricalData.Count > 100 Then
                                                                                                                             _cts.Token.ThrowIfCancellationRequested()
                                                                                                                             Dim ATRPayload As Dictionary(Of Date, Decimal) = Nothing
                                                                                                                             Indicator.ATR.CalculateATR(14, eodHistoricalData, ATRPayload)
