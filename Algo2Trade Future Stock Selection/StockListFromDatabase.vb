@@ -937,7 +937,7 @@ Public Class StockListFromDatabase
                 Dim currentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.Intraday_Cash, index, tradingDate, runningStock)
                 If currentSymbolToken IsNot Nothing Then
                     Dim tradingSymbol As String = currentSymbolToken.Item2
-                    Dim cashEODPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.EOD_Cash, tradingSymbol, tradingDate.AddDays(-1), tradingDate.AddDays(-10))
+                    Dim cashEODPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.EOD_Cash, tradingSymbol, tradingDate.AddDays(-15), tradingDate.AddDays(-1))
                     If cashEODPayload IsNot Nothing AndAlso cashEODPayload.Count > 0 Then
                         Dim dayCtr As Integer = 0
                         Dim turnover As Decimal = 0
