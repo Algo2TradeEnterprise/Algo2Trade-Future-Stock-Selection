@@ -413,7 +413,7 @@ Public Class StockListFromDatabase
                         _cts.Token.ThrowIfCancellationRequested()
                         Dim previousDayPayloads As Dictionary(Of Date, Payload) = Nothing
                         If eodTable = Common.DataBaseTable.EOD_Cash Then
-                            previousDayPayloads = _common.GetRawPayloadForSpecificTradingSymbol(eodTable, runningInstrument.RawInstrumentName, previousTradingDay.AddDays(-10), previousTradingDay)
+                            previousDayPayloads = _common.GetRawPayloadForSpecificTradingSymbol(eodTable, runningInstrument.TradingSymbol, previousTradingDay.AddDays(-10), previousTradingDay)
                         Else
                             previousDayPayloads = _common.GetRawPayloadForSpecificTradingSymbol(eodTable, runningInstrument.TradingSymbol, previousTradingDay.AddDays(-10), previousTradingDay)
                         End If
@@ -422,7 +422,7 @@ Public Class StockListFromDatabase
                             lastDayPayload = previousDayPayloads.LastOrDefault.Value
                         End If
                         If lastDayPayload IsNot Nothing AndAlso lastDayPayload.Close >= My.Settings.MinClose AndAlso lastDayPayload.Close <= My.Settings.MaxClose Then
-                            Dim rawCashInstrument As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.EOD_Cash, index, previousTradingDay, runningInstrument.RawInstrumentName)
+                            Dim rawCashInstrument As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.EOD_Cash, index, previousTradingDay, runningInstrument.TradingSymbol)
                             If rawCashInstrument IsNot Nothing Then
                                 runningInstrument.CashInstrumentToken = rawCashInstrument.Item1
                                 runningInstrument.CashInstrumentName = rawCashInstrument.Item2
