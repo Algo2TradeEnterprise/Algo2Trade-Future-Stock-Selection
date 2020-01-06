@@ -10,7 +10,7 @@ Namespace Indicator
                 For Each runningInputPayload In inputPayload
 
                     'If it is less than IndicatorPeriod, we will need to take SMA of all previous prices, hence the call to GetSubPayload
-                    Dim previousNInputFieldPayload As List(Of KeyValuePair(Of DateTime, Payload)) = cmn.GetSubPayload(inputPayload,
+                    Dim previousNInputFieldPayload As List(Of KeyValuePair(Of DateTime, Payload)) = Common.GetSubPayload(inputPayload,
                                                                                                                        runningInputPayload.Key,
                                                                                                                         smaPeriod - 1,
                                                                                                                         False)

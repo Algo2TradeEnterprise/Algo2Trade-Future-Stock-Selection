@@ -17,7 +17,7 @@ Namespace Indicator
                     Dim highDonchian As Decimal = Nothing
                     Dim lowDonchian As Decimal = Nothing
                     Dim middleDonchian As Decimal = Nothing
-                    Dim previousNInputHighFieldPayload As List(Of KeyValuePair(Of DateTime, Payload)) = cmn.GetSubPayload(inputPayload, runningPayload, highPeriod, False)
+                    Dim previousNInputHighFieldPayload As List(Of KeyValuePair(Of DateTime, Payload)) = Common.GetSubPayload(inputPayload, runningPayload, highPeriod, False)
                     If previousNInputHighFieldPayload Is Nothing Then
                         highDonchian = 0
                     ElseIf previousNInputHighFieldPayload IsNot Nothing AndAlso previousNInputHighFieldPayload.Count < highPeriod Then
@@ -25,7 +25,7 @@ Namespace Indicator
                     Else
                         highDonchian = previousNInputHighFieldPayload.Max(Function(x) x.Value.High)
                     End If
-                    Dim previousNInputLowFieldPayload As List(Of KeyValuePair(Of DateTime, Payload)) = cmn.GetSubPayload(inputPayload, runningPayload, lowPeriod, False)
+                    Dim previousNInputLowFieldPayload As List(Of KeyValuePair(Of DateTime, Payload)) = Common.GetSubPayload(inputPayload, runningPayload, lowPeriod, False)
                     If previousNInputLowFieldPayload Is Nothing Then
                         lowDonchian = 0
                     ElseIf previousNInputLowFieldPayload IsNot Nothing AndAlso previousNInputLowFieldPayload.Count < lowPeriod Then

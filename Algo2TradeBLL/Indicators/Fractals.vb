@@ -187,7 +187,7 @@ Namespace Indicator
         Public Function GetDifferentNthFractalBefore(ByVal beforeThisTime As Date, ByVal payload As Dictionary(Of Date, Decimal), ByVal howManyBefore As Integer) As KeyValuePair(Of Date, Decimal)
             Dim ret As KeyValuePair(Of Date, Decimal) = Nothing
             If payload IsNot Nothing AndAlso payload.Count > 0 Then
-                Dim subPayload As IEnumerable(Of KeyValuePair(Of Date, Decimal)) = cmn.GetSubPayload(payload, beforeThisTime, 200, False)
+                Dim subPayload As IEnumerable(Of KeyValuePair(Of Date, Decimal)) = Common.GetSubPayload(payload, beforeThisTime, 200, False)
                 Dim priceCheck As Decimal = payload(beforeThisTime)
                 Dim ctrFound As Integer = 0
                 If subPayload IsNot Nothing And subPayload.Count > 0 Then
@@ -220,7 +220,7 @@ Namespace Indicator
         Public Function GetPreviousFractal(ByVal beforeThisTime As Date, ByVal payload As Dictionary(Of Date, Decimal)) As KeyValuePair(Of Date, Decimal)
             Dim ret As KeyValuePair(Of Date, Decimal) = Nothing
             If payload IsNot Nothing AndAlso payload.Count > 0 Then
-                Dim subPayload As IEnumerable(Of KeyValuePair(Of Date, Decimal)) = cmn.GetSubPayload(payload, beforeThisTime, 10, False)
+                Dim subPayload As IEnumerable(Of KeyValuePair(Of Date, Decimal)) = Common.GetSubPayload(payload, beforeThisTime, 10, False)
                 If subPayload IsNot Nothing AndAlso subPayload.Count > 0 Then
                     ret = subPayload(subPayload.Count - 1)
                 End If

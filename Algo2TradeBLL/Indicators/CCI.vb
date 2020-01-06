@@ -12,7 +12,7 @@ Namespace Indicator
                 Dim CCIPeriodSMA As Decimal = 0
                 For Each runninginputpayload In inputPayload
 
-                    Dim previousNInputFieldPayload As List(Of KeyValuePair(Of DateTime, Payload)) = cmn.GetSubPayload(inputPayload,
+                    Dim previousNInputFieldPayload As List(Of KeyValuePair(Of DateTime, Payload)) = Common.GetSubPayload(inputPayload,
                                                                                                                            runninginputpayload.Key,
                                                                                                                             CCIPeriod,
                                                                                                                             True)

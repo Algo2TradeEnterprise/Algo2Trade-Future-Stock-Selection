@@ -13,7 +13,7 @@ Namespace Indicator
 
                 For Each runninginputpayload In inputPayload
 
-                    Dim previousNInputFieldPayload As List(Of KeyValuePair(Of DateTime, Payload)) = cmn.GetSubPayload(inputPayload,
+                    Dim previousNInputFieldPayload As List(Of KeyValuePair(Of DateTime, Payload)) = Common.GetSubPayload(inputPayload,
                                                                                                                        runninginputpayload.Key,
                                                                                                                         K_Periods,
                                                                                                                         True)
