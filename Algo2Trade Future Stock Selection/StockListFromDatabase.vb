@@ -151,7 +151,7 @@ Public Class StockListFromDatabase
 #End Region
 
 #Region "Procedure to get stock"
-    Private Async Function GetATRBasedAllStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
+    Private Async Function GetATRBasedFOStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
         If _conn Is Nothing OrElse _conn.State <> ConnectionState.Open Then
             _cts.Token.ThrowIfCancellationRequested()
@@ -343,7 +343,7 @@ Public Class StockListFromDatabase
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
-        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedFOStockDataAsync(tradingDate).ConfigureAwait(False)
         _cts.Token.ThrowIfCancellationRequested()
         If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
             If _conn Is Nothing OrElse _conn.State <> ConnectionState.Open Then
@@ -391,7 +391,7 @@ Public Class StockListFromDatabase
         If intradayVolumeSpikeUserInputs Is Nothing Then Throw New ApplicationException("IntradayVolumeSpike Settings not implemented properly")
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
-        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedFOStockDataAsync(tradingDate).ConfigureAwait(False)
         _cts.Token.ThrowIfCancellationRequested()
         If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
             _cts.Token.ThrowIfCancellationRequested()
@@ -453,7 +453,7 @@ Public Class StockListFromDatabase
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
-        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedFOStockDataAsync(tradingDate).ConfigureAwait(False)
         _cts.Token.ThrowIfCancellationRequested()
         If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
             _cts.Token.ThrowIfCancellationRequested()
@@ -493,7 +493,7 @@ Public Class StockListFromDatabase
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
-        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedFOStockDataAsync(tradingDate).ConfigureAwait(False)
         _cts.Token.ThrowIfCancellationRequested()
         If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
             _cts.Token.ThrowIfCancellationRequested()
@@ -547,7 +547,7 @@ Public Class StockListFromDatabase
         If topGainerTopLosserUserInputs Is Nothing Then Throw New ApplicationException("Top Gainer Top Losser Settings not implemented properly")
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
-        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedFOStockDataAsync(tradingDate).ConfigureAwait(False)
         _cts.Token.ThrowIfCancellationRequested()
         If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
             _cts.Token.ThrowIfCancellationRequested()
@@ -632,7 +632,7 @@ Public Class StockListFromDatabase
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
-        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedFOStockDataAsync(tradingDate).ConfigureAwait(False)
         _cts.Token.ThrowIfCancellationRequested()
         If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
             _cts.Token.ThrowIfCancellationRequested()
@@ -690,7 +690,7 @@ Public Class StockListFromDatabase
         If spotFutureArbritrageUserInputs Is Nothing Then Throw New ApplicationException("Spot Future Arbritrage Settings not implemented properly")
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
-        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedFOStockDataAsync(tradingDate).ConfigureAwait(False)
         _cts.Token.ThrowIfCancellationRequested()
         If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
             _cts.Token.ThrowIfCancellationRequested()
@@ -758,7 +758,7 @@ Public Class StockListFromDatabase
                         Next
                     End If
                 Case 1
-                    stockList = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
+                    stockList = Await GetATRBasedFOStockDataAsync(tradingDate).ConfigureAwait(False)
                 Case 2
                     stockList = Await GetPreMarketStockDataAsync(tradingDate).ConfigureAwait(False)
                 Case 3
