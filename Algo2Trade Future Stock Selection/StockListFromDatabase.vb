@@ -796,22 +796,41 @@ Public Class StockListFromDatabase
                             Dim previousClose As Decimal = highATRStockList(runningStock).PreviousDayClose
                             Dim gainLossPercentage As Decimal = ((candleToCheck.Close - previousClose) / previousClose) * 100
                             'Dim slab As Decimal = CalculateSlab(candleToCheck.Close, highATRStockList(runningStock).ATRPercentage)
-                            Dim highestCandle As Payload = Nothing
-                            Dim lowestCandle As Payload = Nothing
+                            Dim dayATR As Decimal = highATRStockList(runningStock).DayATR
+                            Dim targetPoint As Decimal = Utilities.Numbers.ConvertFloorCeling(dayATR / 2, 0.05, Utilities.Numbers.NumberManipulation.RoundOfType.Floor)
+                            Dim slPoint As Decimal = Utilities.Numbers.ConvertFloorCeling(dayATR / 4, 0.05, Utilities.Numbers.NumberManipulation.RoundOfType.Floor)
+                            Dim eodTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 15, 15, 0)
+                            Dim plPoint As Decimal = 0
                             For Each runningPayload In intradayPayload.Values
                                 If runningPayload.PayloadDate > payloadTime Then
-                                    If highestCandle Is Nothing Then highestCandle = runningPayload
-                                    If lowestCandle Is Nothing Then lowestCandle = runningPayload
-
-                                    If runningPayload.High > highestCandle.High Then highestCandle = runningPayload
-                                    If runningPayload.Low < lowestCandle.Low Then lowestCandle = runningPayload
+                                    If gainLossPercentage > 0 Then
+                                        If runningPayload.PayloadDate = eodTime Then
+                                            plPoint = runningPayload.Open - candleToCheck.Close
+                                            Exit For
+                                        ElseIf runningPayload.High - candleToCheck.Close >= targetPoint Then
+                                            plPoint = targetPoint
+                                            Exit For
+                                        ElseIf runningPayload.Low - candleToCheck.Close <= slPoint * -1 Then
+                                            plPoint = slPoint * -1
+                                            Exit For
+                                        End If
+                                    ElseIf gainLossPercentage < 0 Then
+                                        If runningPayload.PayloadDate = eodTime Then
+                                            plPoint = candleToCheck.Close - runningPayload.Open
+                                            Exit For
+                                        ElseIf candleToCheck.Close - runningPayload.Low >= targetPoint Then
+                                            plPoint = targetPoint
+                                            Exit For
+                                        ElseIf candleToCheck.Close - runningPayload.High <= slPoint * -1 Then
+                                            plPoint = slPoint * -1
+                                            Exit For
+                                        End If
+                                    End If
                                 End If
                             Next
                             If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
                             'tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), niftyGainLossPercentage, payloadTime.ToString("HH:mm:ss")})
-                            tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), highestCandle.High,
-                                              highestCandle.PayloadDate.ToString("HH:mm:ss"),
-                                              lowestCandle.Low, lowestCandle.PayloadDate.ToString("HH:mm:ss")})
+                            tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), plPoint})
                         End If
                     End If
                 End If
@@ -823,9 +842,7 @@ Public Class StockListFromDatabase
                     If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
                     highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
                     highATRStockList(runningStock.Key).Supporting2 = runningStock.Value(1)
-                    highATRStockList(runningStock.Key).Supporting3 = runningStock.Value(2)
-                    highATRStockList(runningStock.Key).Supporting4 = runningStock.Value(3)
-                    highATRStockList(runningStock.Key).Supporting5 = runningStock.Value(4)
+                    'highATRStockList(runningStock.Key).Supporting3 = runningStock.Value(2)
                     ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
                 Next
             End If
