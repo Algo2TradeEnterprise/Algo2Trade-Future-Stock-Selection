@@ -824,6 +824,8 @@ Public Class StockListFromDatabase
                     highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
                     highATRStockList(runningStock.Key).Supporting2 = runningStock.Value(1)
                     highATRStockList(runningStock.Key).Supporting3 = runningStock.Value(2)
+                    highATRStockList(runningStock.Key).Supporting4 = runningStock.Value(3)
+                    highATRStockList(runningStock.Key).Supporting5 = runningStock.Value(4)
                     ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
                 Next
             End If
