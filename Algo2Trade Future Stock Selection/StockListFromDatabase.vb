@@ -1020,7 +1020,7 @@ Public Class StockListFromDatabase
         Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
         Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
         _cts.Token.ThrowIfCancellationRequested()
-        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedFOStockDataAsync(tradingDate).ConfigureAwait(False)
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedAllStockDataAsync(tradingDate).ConfigureAwait(False)
         _cts.Token.ThrowIfCancellationRequested()
         If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
             _cts.Token.ThrowIfCancellationRequested()
