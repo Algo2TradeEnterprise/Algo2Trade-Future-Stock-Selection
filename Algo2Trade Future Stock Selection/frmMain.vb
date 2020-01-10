@@ -593,6 +593,11 @@ Public Class frmMain
                 SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
                 SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, False)
                 lblDescription.Text = String.Format("Return High ATR Cash Stocks with high turnover (5 day average of volume X close)")
+            Case 10
+                SetObjectVisible_ThreadSafe(pnlInstrumentList, False)
+                SetObjectVisible_ThreadSafe(pnlIntradayVolumeSpikeSettings, False)
+                SetObjectVisible_ThreadSafe(pnlTopGainerLooserSettings, False)
+                lblDescription.Text = String.Format("Return High ATR Cash Stocks with every minute top gainer losser")
             Case Else
                 Throw New NotImplementedException()
         End Select

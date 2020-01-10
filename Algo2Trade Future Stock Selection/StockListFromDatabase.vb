@@ -805,48 +805,48 @@ Public Class StockListFromDatabase
                             Dim previousClose As Decimal = highATRStockList(runningStock).PreviousDayClose
                             Dim gainLossPercentage As Decimal = ((candleToCheck.Close - previousClose) / previousClose) * 100
                             'Dim slab As Decimal = CalculateSlab(candleToCheck.Close, highATRStockList(runningStock).ATRPercentage)
-                            Dim dayATR As Decimal = highATRStockList(runningStock).DayATR
-                            Dim targetPoint As Decimal = Utilities.Numbers.ConvertFloorCeling(dayATR / 2, 0.05, Utilities.Numbers.NumberManipulation.RoundOfType.Floor)
-                            Dim slPoint As Decimal = Utilities.Numbers.ConvertFloorCeling(dayATR / 4, 0.05, Utilities.Numbers.NumberManipulation.RoundOfType.Floor)
-                            Dim eodTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 15, 15, 0)
-                            Dim plPoint As Decimal = 0
-                            Dim time As Date = tradingDate.Date
-                            For Each runningPayload In intradayPayload.Values
-                                If runningPayload.PayloadDate > payloadTime Then
-                                    If gainLossPercentage > 0 Then
-                                        If runningPayload.PayloadDate = eodTime Then
-                                            plPoint = runningPayload.Open - candleToCheck.Close
-                                            time = runningPayload.PayloadDate
-                                            Exit For
-                                        ElseIf runningPayload.High - candleToCheck.Close >= targetPoint Then
-                                            plPoint = targetPoint
-                                            time = runningPayload.PayloadDate
-                                            Exit For
-                                        ElseIf runningPayload.Low - candleToCheck.Close <= slPoint * -1 Then
-                                            plPoint = slPoint * -1
-                                            time = runningPayload.PayloadDate
-                                            Exit For
-                                        End If
-                                    ElseIf gainLossPercentage < 0 Then
-                                        If runningPayload.PayloadDate = eodTime Then
-                                            plPoint = candleToCheck.Close - runningPayload.Open
-                                            time = runningPayload.PayloadDate
-                                            Exit For
-                                        ElseIf candleToCheck.Close - runningPayload.Low >= targetPoint Then
-                                            plPoint = targetPoint
-                                            time = runningPayload.PayloadDate
-                                            Exit For
-                                        ElseIf candleToCheck.Close - runningPayload.High <= slPoint * -1 Then
-                                            plPoint = slPoint * -1
-                                            time = runningPayload.PayloadDate
-                                            Exit For
-                                        End If
-                                    End If
-                                End If
-                            Next
+                            'Dim dayATR As Decimal = highATRStockList(runningStock).DayATR
+                            'Dim targetPoint As Decimal = Utilities.Numbers.ConvertFloorCeling(dayATR / 2, 0.05, Utilities.Numbers.NumberManipulation.RoundOfType.Floor)
+                            'Dim slPoint As Decimal = Utilities.Numbers.ConvertFloorCeling(dayATR / 4, 0.05, Utilities.Numbers.NumberManipulation.RoundOfType.Floor)
+                            'Dim eodTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 15, 15, 0)
+                            'Dim plPoint As Decimal = 0
+                            'Dim time As Date = tradingDate.Date
+                            'For Each runningPayload In intradayPayload.Values
+                            '    If runningPayload.PayloadDate > payloadTime Then
+                            '        If gainLossPercentage > 0 Then
+                            '            If runningPayload.PayloadDate = eodTime Then
+                            '                plPoint = runningPayload.Open - candleToCheck.Close
+                            '                time = runningPayload.PayloadDate
+                            '                Exit For
+                            '            ElseIf runningPayload.High - candleToCheck.Close >= targetPoint Then
+                            '                plPoint = targetPoint
+                            '                time = runningPayload.PayloadDate
+                            '                Exit For
+                            '            ElseIf runningPayload.Low - candleToCheck.Close <= slPoint * -1 Then
+                            '                plPoint = slPoint * -1
+                            '                time = runningPayload.PayloadDate
+                            '                Exit For
+                            '            End If
+                            '        ElseIf gainLossPercentage < 0 Then
+                            '            If runningPayload.PayloadDate = eodTime Then
+                            '                plPoint = candleToCheck.Close - runningPayload.Open
+                            '                time = runningPayload.PayloadDate
+                            '                Exit For
+                            '            ElseIf candleToCheck.Close - runningPayload.Low >= targetPoint Then
+                            '                plPoint = targetPoint
+                            '                time = runningPayload.PayloadDate
+                            '                Exit For
+                            '            ElseIf candleToCheck.Close - runningPayload.High <= slPoint * -1 Then
+                            '                plPoint = slPoint * -1
+                            '                time = runningPayload.PayloadDate
+                            '                Exit For
+                            '            End If
+                            '        End If
+                            '    End If
+                            'Next
                             If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
-                            'tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), niftyGainLossPercentage, payloadTime.ToString("HH:mm:ss")})
-                            tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), plPoint, time.ToString("HH:mm:ss")})
+                            tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), niftyGainLossPercentage, payloadTime.ToString("HH:mm:ss")})
+                            'tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), plPoint, time.ToString("HH:mm:ss")})
                         End If
                     End If
                 End If
@@ -1015,6 +1015,107 @@ Public Class StockListFromDatabase
         End If
         Return ret
     End Function
+
+    Private Async Function GetTopGainerTopLosserEveryMinuteStockDataAsync(ByVal tradingDate As Date) As Task(Of Dictionary(Of String, InstrumentDetails))
+        Await Task.Delay(1, _cts.Token).ConfigureAwait(False)
+        Dim ret As Dictionary(Of String, InstrumentDetails) = Nothing
+        _cts.Token.ThrowIfCancellationRequested()
+        Dim highATRStockList As Dictionary(Of String, InstrumentDetails) = Await GetATRBasedFOStockDataAsync(tradingDate).ConfigureAwait(False)
+        _cts.Token.ThrowIfCancellationRequested()
+        If highATRStockList IsNot Nothing AndAlso highATRStockList.Count > 0 Then
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim startTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 9, 19, 0)
+            Dim endTime As Date = startTime.AddHours(2)
+            Dim payloadTime As Date = startTime
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim stockData As Dictionary(Of String, Dictionary(Of Date, Payload)) = Nothing
+            For Each runningStock In highATRStockList.Keys
+                _cts.Token.ThrowIfCancellationRequested()
+                Dim currentSymbolToken As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(intradayTable, index, tradingDate, runningStock)
+                If currentSymbolToken IsNot Nothing Then
+                    Dim tradingSymbol As String = currentSymbolToken.Item2
+                    Dim intradayPayload As Dictionary(Of Date, Payload) = _common.GetRawPayloadForSpecificTradingSymbol(intradayTable, tradingSymbol, tradingDate, tradingDate)
+                    If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
+                        If stockData Is Nothing Then stockData = New Dictionary(Of String, Dictionary(Of Date, Payload))
+                        stockData.Add(runningStock, intradayPayload)
+                    End If
+                End If
+            Next
+            Dim topGainerLosserStockList As Dictionary(Of String, String()) = Nothing
+            If stockData IsNot Nothing AndAlso stockData.Count > 0 Then
+                While payloadTime <= endTime
+                    Dim tempCloseStockList As Dictionary(Of String, String()) = Nothing
+                    Dim tempOpenStockList As Dictionary(Of String, String()) = Nothing
+                    For Each runningStock In highATRStockList.Keys
+                        _cts.Token.ThrowIfCancellationRequested()
+                        If stockData.ContainsKey(runningStock) Then
+                            Dim intradayPayload As Dictionary(Of Date, Payload) = stockData(runningStock)
+                            If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
+                                Dim candleToCheck As Payload = Nothing
+                                If intradayPayload.ContainsKey(payloadTime) Then
+                                    candleToCheck = intradayPayload(payloadTime)
+                                End If
+                                If candleToCheck IsNot Nothing AndAlso candleToCheck.PreviousCandlePayload IsNot Nothing Then
+                                    Dim previousClose As Decimal = highATRStockList(runningStock).PreviousDayClose
+                                    Dim gainLossPercentage As Decimal = ((candleToCheck.Close - previousClose) / previousClose) * 100
+                                    If tempCloseStockList Is Nothing Then tempCloseStockList = New Dictionary(Of String, String())
+                                    tempCloseStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), payloadTime.ToString("HH:mm:ss"), "Previous Close"})
+                                End If
+                                If candleToCheck IsNot Nothing AndAlso candleToCheck.PreviousCandlePayload IsNot Nothing Then
+                                    Dim currentOpen As Decimal = intradayPayload.FirstOrDefault.Value.Open
+                                    Dim gainLossPercentage As Decimal = ((candleToCheck.Close - currentOpen) / currentOpen) * 100
+                                    If tempOpenStockList Is Nothing Then tempOpenStockList = New Dictionary(Of String, String())
+                                    tempOpenStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), payloadTime.ToString("HH:mm:ss"), "Current Open"})
+                                End If
+                            End If
+                        End If
+                    Next
+                    If tempCloseStockList IsNot Nothing AndAlso tempCloseStockList.Count > 0 Then
+                        Dim topGainer As KeyValuePair(Of String, String()) = tempCloseStockList.OrderByDescending(Function(x)
+                                                                                                                      Return CDec(x.Value(0))
+                                                                                                                  End Function).FirstOrDefault
+                        Dim topLosser As KeyValuePair(Of String, String()) = tempCloseStockList.OrderByDescending(Function(x)
+                                                                                                                      Return CDec(x.Value(0))
+                                                                                                                  End Function).LastOrDefault
+                        If topGainerLosserStockList Is Nothing Then topGainerLosserStockList = New Dictionary(Of String, String())
+                        If Not topGainerLosserStockList.ContainsKey(topGainer.Key) Then topGainerLosserStockList.Add(topGainer.Key, topGainer.Value)
+                        If Not topGainerLosserStockList.ContainsKey(topLosser.Key) Then topGainerLosserStockList.Add(topLosser.Key, topLosser.Value)
+                    End If
+                    If tempOpenStockList IsNot Nothing AndAlso tempOpenStockList.Count > 0 Then
+                        Dim topGainer As KeyValuePair(Of String, String()) = tempOpenStockList.OrderByDescending(Function(x)
+                                                                                                                     Return CDec(x.Value(0))
+                                                                                                                 End Function).FirstOrDefault
+                        Dim topLosser As KeyValuePair(Of String, String()) = tempOpenStockList.OrderByDescending(Function(x)
+                                                                                                                     Return CDec(x.Value(0))
+                                                                                                                 End Function).LastOrDefault
+                        If topGainerLosserStockList Is Nothing Then topGainerLosserStockList = New Dictionary(Of String, String())
+                        If Not topGainerLosserStockList.ContainsKey(topGainer.Key) Then
+                            topGainerLosserStockList.Add(topGainer.Key, topGainer.Value)
+                        Else
+                            topGainerLosserStockList(topGainer.Key)(2) = "Previous Close + Current Open"
+                        End If
+                        If Not topGainerLosserStockList.ContainsKey(topLosser.Key) Then
+                            topGainerLosserStockList.Add(topLosser.Key, topLosser.Value)
+                        Else
+                            topGainerLosserStockList(topLosser.Key)(2) = "Previous Close + Current Open"
+                        End If
+                    End If
+
+                    payloadTime = payloadTime.AddMinutes(1)
+                End While
+            End If
+            If topGainerLosserStockList IsNot Nothing AndAlso topGainerLosserStockList.Count > 0 Then
+                For Each runningStock In topGainerLosserStockList
+                    If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
+                    highATRStockList(runningStock.Key).Supporting1 = runningStock.Value(0)
+                    highATRStockList(runningStock.Key).Supporting2 = runningStock.Value(1)
+                    highATRStockList(runningStock.Key).Supporting3 = runningStock.Value(2)
+                    ret.Add(runningStock.Key, highATRStockList(runningStock.Key))
+                Next
+            End If
+        End If
+        Return ret
+    End Function
 #End Region
 
 #Region "Main Public Function"
@@ -1057,6 +1158,8 @@ Public Class StockListFromDatabase
                     stockList = Await GetSpotFutureArbritrageStockDataAsync(tradingDate).ConfigureAwait(False)
                 Case 9
                     stockList = Await GetHighTurnoverStockDataAsync(tradingDate).ConfigureAwait(False)
+                Case 10
+                    stockList = Await GetTopGainerTopLosserEveryMinuteStockDataAsync(tradingDate).ConfigureAwait(False)
             End Select
             _cts.Token.ThrowIfCancellationRequested()
 
