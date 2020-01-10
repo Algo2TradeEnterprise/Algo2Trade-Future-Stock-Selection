@@ -796,8 +796,22 @@ Public Class StockListFromDatabase
                             Dim previousClose As Decimal = highATRStockList(runningStock).PreviousDayClose
                             Dim gainLossPercentage As Decimal = ((candleToCheck.Close - previousClose) / previousClose) * 100
                             'Dim slab As Decimal = CalculateSlab(candleToCheck.Close, highATRStockList(runningStock).ATRPercentage)
+                            Dim highestCandle As Payload = Nothing
+                            Dim lowestCandle As Payload = Nothing
+                            For Each runningPayload In intradayPayload.Values
+                                If runningPayload.PayloadDate > payloadTime Then
+                                    If highestCandle Is Nothing Then highestCandle = runningPayload
+                                    If lowestCandle Is Nothing Then lowestCandle = runningPayload
+
+                                    If runningPayload.High > highestCandle.High Then highestCandle = runningPayload
+                                    If runningPayload.Low < lowestCandle.Low Then lowestCandle = runningPayload
+                                End If
+                            Next
                             If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
-                            tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), niftyGainLossPercentage, payloadTime.ToString("HH:mm:ss")})
+                            'tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), niftyGainLossPercentage, payloadTime.ToString("HH:mm:ss")})
+                            tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), highestCandle.High,
+                                              highestCandle.PayloadDate.ToString("HH:mm:ss"),
+                                              lowestCandle.Low, lowestCandle.PayloadDate.ToString("HH:mm:ss")})
                         End If
                     End If
                 End If
