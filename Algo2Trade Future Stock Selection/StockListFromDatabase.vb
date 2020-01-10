@@ -359,7 +359,7 @@ Public Class StockListFromDatabase
                 _conn = _common.OpenDBConnection()
             End If
             _cts.Token.ThrowIfCancellationRequested()
-            OnHeartbeat("Fetching all future instrument")
+            OnHeartbeat("Fetching all cash instrument")
             Dim cm As MySqlCommand = New MySqlCommand("SELECT DISTINCT(`INSTRUMENT_TOKEN`),`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_cash` WHERE `AS_ON_DATE`=@sd", _conn)
             cm.Parameters.AddWithValue("@sd", tradingDate.ToString("yyyy-MM-dd"))
             _cts.Token.ThrowIfCancellationRequested()
@@ -523,9 +523,9 @@ Public Class StockListFromDatabase
                                                                                      Return x.Value(0)
                                                                                  End Function)
                             _cts.Token.ThrowIfCancellationRequested()
-                            Dim currentTradingSymbol As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.EOD_Futures, index, tradingDate, runningStock.Key)
+                            Dim currentTradingSymbol As Tuple(Of String, String) = _common.GetCurrentTradingSymbolWithInstrumentToken(Common.DataBaseTable.EOD_Cash, index, tradingDate, runningStock.Key)
                             If currentTradingSymbol IsNot Nothing Then
-                                Dim lotSize As Integer = _common.GetLotSize(Common.DataBaseTable.EOD_Futures, currentTradingSymbol.Item2, tradingDate)
+                                Dim lotSize As Integer = 1
                                 If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
                                 ret.Add(runningStock.Key, New InstrumentDetails With {.ATRPercentage = runningStock.Value(0), .LotSize = lotSize, .DayATR = runningStock.Value(1), .PreviousDayOpen = runningStock.Value(2), .PreviousDayLow = runningStock.Value(3), .PreviousDayHigh = runningStock.Value(4), .PreviousDayClose = runningStock.Value(5)})
                             End If
