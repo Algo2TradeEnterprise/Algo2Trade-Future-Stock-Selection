@@ -1092,12 +1092,12 @@ Public Class StockListFromDatabase
                         If Not topGainerLosserStockList.ContainsKey(topGainer.Key) Then
                             topGainerLosserStockList.Add(topGainer.Key, topGainer.Value)
                         Else
-                            topGainerLosserStockList(topGainer.Key)(2) = "Previous Close + Current Open"
+                            'topGainerLosserStockList(topGainer.Key)(2) = "Previous Close + Current Open"
                         End If
                         If Not topGainerLosserStockList.ContainsKey(topLosser.Key) Then
                             topGainerLosserStockList.Add(topLosser.Key, topLosser.Value)
                         Else
-                            topGainerLosserStockList(topLosser.Key)(2) = "Previous Close + Current Open"
+                            'topGainerLosserStockList(topLosser.Key)(2) = "Previous Close + Current Open"
                         End If
                     End If
 
