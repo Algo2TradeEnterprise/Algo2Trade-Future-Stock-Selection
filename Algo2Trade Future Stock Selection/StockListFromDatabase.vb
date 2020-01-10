@@ -3,6 +3,7 @@ Imports Algo2TradeBLL
 Imports MySql.Data.MySqlClient
 Imports Utilities.Network
 Imports System.Net.Http
+Imports System.Text.RegularExpressions
 
 Public Class StockListFromDatabase
     Implements IDisposable
@@ -184,8 +185,12 @@ Public Class StockListFromDatabase
                     {.Token = dt.Rows(i).Item(0),
                      .TradingSymbol = dt.Rows(i).Item(1).ToString.ToUpper,
                      .Expiry = dt.Rows(i).Item(2)}
-                    If nfoInstruments Is Nothing Then nfoInstruments = New List(Of ActiveInstrumentData)
-                    nfoInstruments.Add(instrumentData)
+
+                    Dim pattern As String = "([0-9][0-9]JAN)|([0-9][0-9]FEB)|([0-9][0-9]MAR)|([0-9][0-9]APR)|([0-9][0-9]MAY)|([0-9][0-9]JUN)|([0-9][0-9]JUL)|([0-9][0-9]AUG)|([0-9][0-9]SEP)|([0-9][0-9]OCT)|([0-9][0-9]NOV)|([0-9][0-9]DEC)"
+                    If Regex.Matches(instrumentData.TradingSymbol, pattern).Count <= 1 Then
+                        If nfoInstruments Is Nothing Then nfoInstruments = New List(Of ActiveInstrumentData)
+                        nfoInstruments.Add(instrumentData)
+                    End If
                 Next
             End If
             If nfoInstruments IsNot Nothing AndAlso nfoInstruments.Count > 0 Then
@@ -372,8 +377,12 @@ Public Class StockListFromDatabase
                     {.Token = dt.Rows(i).Item(0),
                      .TradingSymbol = dt.Rows(i).Item(1).ToString.ToUpper,
                      .Expiry = Date.MaxValue}
-                    If cashInstruments Is Nothing Then cashInstruments = New List(Of ActiveInstrumentData)
-                    cashInstruments.Add(instrumentData)
+
+                    Dim pattern As String = "([0-9][0-9]JAN)|([0-9][0-9]FEB)|([0-9][0-9]MAR)|([0-9][0-9]APR)|([0-9][0-9]MAY)|([0-9][0-9]JUN)|([0-9][0-9]JUL)|([0-9][0-9]AUG)|([0-9][0-9]SEP)|([0-9][0-9]OCT)|([0-9][0-9]NOV)|([0-9][0-9]DEC)"
+                    If Regex.Matches(instrumentData.TradingSymbol, pattern).Count <= 1 Then
+                        If cashInstruments Is Nothing Then cashInstruments = New List(Of ActiveInstrumentData)
+                        cashInstruments.Add(instrumentData)
+                    End If
                 Next
             End If
             If cashInstruments IsNot Nothing AndAlso cashInstruments.Count > 0 Then
