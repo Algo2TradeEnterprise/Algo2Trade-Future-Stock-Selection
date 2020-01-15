@@ -47,7 +47,11 @@ Public Class ATRStockSelection
         Public Property LastDayClose As Decimal
         Public ReadOnly Property RawInstrumentName As String
             Get
-                Return Me.TradingSymbol.Remove(Me.TradingSymbol.Count - 8)
+                If TradingSymbol.Contains("FUT") Then
+                    Return Me.TradingSymbol.Remove(Me.TradingSymbol.Count - 8)
+                Else
+                    Return TradingSymbol
+                End If
             End Get
         End Property
         Public Property CashInstrumentName As String
