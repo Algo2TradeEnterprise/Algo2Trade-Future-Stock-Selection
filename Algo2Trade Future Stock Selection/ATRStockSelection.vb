@@ -102,7 +102,7 @@ Public Class ATRStockSelection
                     End If
                 Next
                 If atrStockList IsNot Nothing AndAlso atrStockList.Count > 0 Then
-                    Dim activeInstrumentData As Dictionary(Of String, InstrumentDetails) = GetActiveInstrumentData(eodTableType, tradingDate, stockList)
+                    Dim activeInstrumentData As Dictionary(Of String, InstrumentDetails) = GetActiveInstrumentData(eodTableType, tradingDate, atrStockList)
                     If activeInstrumentData IsNot Nothing AndAlso activeInstrumentData.Count > 0 Then
                         Dim filteredInstruments As IEnumerable(Of KeyValuePair(Of String, InstrumentDetails)) = activeInstrumentData.Where(Function(x)
                                                                                                                                                Return x.Value.IsTradable = True
