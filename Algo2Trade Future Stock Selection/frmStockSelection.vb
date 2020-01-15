@@ -323,6 +323,7 @@ Public Class frmStockSelection
                 End Using
 
                 Dim stock As StockSelection = Nothing
+                AddHandler stock.Heartbeat, AddressOf OnHeartbeat
                 Select Case procedureToRun
                     Case 0
                         Throw New NotImplementedException
@@ -342,6 +343,8 @@ Public Class frmStockSelection
                         End If
                     Case 1
                         stock = New HighATRStocks(_canceller, cmn, stockType, tradingDate, bannedStockList)
+                    Case 2
+                        stock = New PreMarketStocks(_canceller, cmn, stockType, tradingDate, bannedStockList)
                 End Select
 
                 Dim dt As DataTable = Await stock.GetStockDataAsync().ConfigureAwait(False)
@@ -353,6 +356,11 @@ Public Class frmStockSelection
             MsgBox(oex.Message)
         Catch ex As Exception
             MsgBox(ex.ToString)
+        Finally
+            SetObjectEnableDisable_ThreadSafe(btnExport, True)
+            SetObjectEnableDisable_ThreadSafe(btnStart, True)
+            SetObjectEnableDisable_ThreadSafe(btnStop, False)
+            OnHeartbeat(String.Format("Process Complete. Number of records: {0}", dgrvMain.Rows.Count))
         End Try
     End Function
 
