@@ -395,7 +395,7 @@ Partial Class frmStockSelection
         '
         Me.pnlIntradayVolumeSpikeSettings.Controls.Add(Me.dtpkrVolumeSpikeChkTime)
         Me.pnlIntradayVolumeSpikeSettings.Controls.Add(Me.Label3)
-        Me.pnlIntradayVolumeSpikeSettings.Location = New System.Drawing.Point(11, 45)
+        Me.pnlIntradayVolumeSpikeSettings.Location = New System.Drawing.Point(493, 6)
         Me.pnlIntradayVolumeSpikeSettings.Name = "pnlIntradayVolumeSpikeSettings"
         Me.pnlIntradayVolumeSpikeSettings.Size = New System.Drawing.Size(257, 45)
         Me.pnlIntradayVolumeSpikeSettings.TabIndex = 60
