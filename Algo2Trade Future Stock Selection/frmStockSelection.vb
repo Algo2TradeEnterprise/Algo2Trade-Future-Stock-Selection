@@ -323,7 +323,6 @@ Public Class frmStockSelection
                 End Using
 
                 Dim stock As StockSelection = Nothing
-                AddHandler stock.Heartbeat, AddressOf OnHeartbeat
                 Select Case procedureToRun
                     Case 0
                         Throw New NotImplementedException
@@ -346,6 +345,7 @@ Public Class frmStockSelection
                     Case 2
                         stock = New PreMarketStocks(_canceller, cmn, stockType, tradingDate, bannedStockList)
                 End Select
+                AddHandler stock.Heartbeat, AddressOf OnHeartbeat
 
                 Dim dt As DataTable = Await stock.GetStockDataAsync().ConfigureAwait(False)
                 SetDatagridBindDatatable_ThreadSafe(dgrvMain, dt)
