@@ -126,7 +126,10 @@ Public Class ATRStockSelection
                                                               x.Value.IsTradable = True
                                                           End Function)
                             If stocksLessThanMaxBlankCandlePercentage IsNot Nothing AndAlso stocksLessThanMaxBlankCandlePercentage.Count > 0 Then
-                                ret = stocksLessThanMaxBlankCandlePercentage
+                                For Each runningStock In stocksLessThanMaxBlankCandlePercentage
+                                    If ret Is Nothing Then ret = New Dictionary(Of String, InstrumentDetails)
+                                    ret.Add(runningStock.Key, runningStock.Value)
+                                Next
                             End If
                         End If
                     End If
