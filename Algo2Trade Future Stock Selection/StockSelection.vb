@@ -27,16 +27,12 @@ Public MustInherit Class StockSelection
     Protected ReadOnly _cmn As Common
     Protected ReadOnly _intradayTable As Common.DataBaseTable
     Protected ReadOnly _eodTable As Common.DataBaseTable
-    Protected ReadOnly _tradingDate As Date
-    Protected ReadOnly _bannedStocksList As List(Of String)
+    Protected _bannedStockFileName As String
+
     Public Sub New(ByVal canceller As CancellationTokenSource,
                    ByVal cmn As Common,
-                   ByVal stockType As Integer,
-                   ByVal tradingDate As Date,
-                   ByVal bannedStocks As List(Of String))
+                   ByVal stockType As Integer)
         _canceller = canceller
-        _tradingDate = tradingDate
-        _bannedStocksList = bannedStocks
         _cmn = cmn
 
         Select Case stockType
@@ -55,7 +51,7 @@ Public MustInherit Class StockSelection
         End Select
     End Sub
 
-    Public MustOverride Async Function GetStockDataAsync() As Task(Of DataTable)
+    Public MustOverride Async Function GetStockDataAsync(ByVal startDate As Date, ByVal endDate As Date) As Task(Of DataTable)
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

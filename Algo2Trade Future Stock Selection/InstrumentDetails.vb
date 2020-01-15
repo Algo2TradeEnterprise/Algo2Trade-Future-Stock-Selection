@@ -9,11 +9,6 @@
     Public Property PreviousDayHigh As Decimal
     Public Property PreviousDayClose As Decimal
     Public Property Slab As Decimal
-    Public Property Supporting1 As String
-    Public Property Supporting2 As String
-    Public Property Supporting3 As String
-    Public Property Supporting4 As String
-    Public Property Supporting5 As String
     Public Property CurrentContractExpiry As Date
     Public Property PreviousContractTradingSymbol As String
     Public Property PreviousContractExpiry As Date

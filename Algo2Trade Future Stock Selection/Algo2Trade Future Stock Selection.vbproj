@@ -82,17 +82,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ATRStockSelection.vb" />
-    <Compile Include="CommonSettingsUC.Designer.vb">
-      <DependentUpon>CommonSettingsUC.vb</DependentUpon>
-    </Compile>
-    <Compile Include="CommonSettingsUC.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="frmMain.vb" />
-    <Compile Include="frmMain.Designer.vb">
-      <DependentUpon>frmMain.vb</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="BannedStockDataFetcher.vb" />
     <Compile Include="frmStockSelection.Designer.vb">
       <DependentUpon>frmStockSelection.vb</DependentUpon>
@@ -118,16 +107,9 @@
     </Compile>
     <Compile Include="Stock Selection Rules\HighATRStocks.vb" />
     <Compile Include="Stock Selection Rules\PreMarketStocks.vb" />
-    <Compile Include="StockListFromDatabase.vb" />
     <Compile Include="StockSelection.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CommonSettingsUC.resx">
-      <DependentUpon>CommonSettingsUC.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmMain.resx">
-      <DependentUpon>frmMain.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmStockSelection.resx">
       <DependentUpon>frmStockSelection.vb</DependentUpon>
     </EmbeddedResource>

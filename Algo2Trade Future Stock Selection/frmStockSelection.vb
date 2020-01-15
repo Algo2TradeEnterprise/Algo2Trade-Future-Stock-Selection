@@ -1,5 +1,4 @@
-﻿Imports System.IO
-Imports System.Threading
+﻿Imports System.Threading
 Imports Utilities.DAL
 Imports Algo2TradeBLL
 
@@ -218,7 +217,6 @@ Public Class frmStockSelection
 #End Region
 
     Private _canceller As CancellationTokenSource
-    Private _bannedStockFileName As String
 
     Private Sub frmStockSelection_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         SetObjectEnableDisable_ThreadSafe(btnStop, False)
@@ -310,48 +308,34 @@ Public Class frmStockSelection
             AddHandler cmn.DocumentRetryStatus, AddressOf OnDocumentRetryStatus
             AddHandler cmn.DocumentDownloadComplete, AddressOf OnDocumentDownloadComplete
 
-            Dim tradingDate As Date = startDate
-            While tradingDate <= endDate
-                _bannedStockFileName = Path.Combine(My.Application.Info.DirectoryPath, String.Format("Bannned Stocks {0}.csv", tradingDate.ToString("ddMMyyyy")))
-                For Each runningFile In Directory.GetFiles(My.Application.Info.DirectoryPath, "Bannned Stocks *.csv")
-                    If Not runningFile.Contains(tradingDate.ToString("ddMMyyyy")) Then File.Delete(runningFile)
-                Next
-                Dim bannedStockList As List(Of String) = Nothing
-                Using bannedStock As New BannedStockDataFetcher(_bannedStockFileName, _canceller)
-                    AddHandler bannedStock.Heartbeat, AddressOf OnHeartbeat
-                    bannedStockList = Await bannedStock.GetBannedStocksData(tradingDate).ConfigureAwait(False)
-                End Using
-
-                Dim stock As StockSelection = Nothing
-                Select Case procedureToRun
-                    Case 0
-                        Throw New NotImplementedException
-                        Dim instrumentNames As String = Nothing
-                        Dim instrumentList As Dictionary(Of String, Decimal()) = Nothing
-                        If procedureToRun = 0 Then
-                            instrumentNames = GetTextBoxText_ThreadSafe(txtInstrumentList)
-                            Dim instruments() As String = instrumentNames.Trim.Split(vbCrLf)
-                            For Each runningInstrument In instruments
-                                Dim instrument As String = runningInstrument.Trim
-                                If instrumentList Is Nothing Then instrumentList = New Dictionary(Of String, Decimal())
-                                instrumentList.Add(instrument.Trim.ToUpper, {0, 0})
-                            Next
-                            If instrumentList Is Nothing OrElse instrumentList.Count = 0 Then
-                                Throw New ApplicationException("No instrument available in user given list")
-                            End If
+            Dim stock As StockSelection = Nothing
+            Select Case procedureToRun
+                Case 0
+                    Throw New NotImplementedException
+                    Dim instrumentNames As String = Nothing
+                    Dim instrumentList As Dictionary(Of String, Decimal()) = Nothing
+                    If procedureToRun = 0 Then
+                        instrumentNames = GetTextBoxText_ThreadSafe(txtInstrumentList)
+                        Dim instruments() As String = instrumentNames.Trim.Split(vbCrLf)
+                        For Each runningInstrument In instruments
+                            Dim instrument As String = runningInstrument.Trim
+                            If instrumentList Is Nothing Then instrumentList = New Dictionary(Of String, Decimal())
+                            instrumentList.Add(instrument.Trim.ToUpper, {0, 0})
+                        Next
+                        If instrumentList Is Nothing OrElse instrumentList.Count = 0 Then
+                            Throw New ApplicationException("No instrument available in user given list")
                         End If
-                    Case 1
-                        stock = New HighATRStocks(_canceller, cmn, stockType, tradingDate, bannedStockList)
-                    Case 2
-                        stock = New PreMarketStocks(_canceller, cmn, stockType, tradingDate, bannedStockList)
-                End Select
-                AddHandler stock.Heartbeat, AddressOf OnHeartbeat
+                    End If
+                Case 1
+                    stock = New HighATRStocks(_canceller, cmn, stockType)
+                Case 2
+                    stock = New PreMarketStocks(_canceller, cmn, stockType)
+            End Select
+            AddHandler stock.Heartbeat, AddressOf OnHeartbeat
 
-                Dim dt As DataTable = Await stock.GetStockDataAsync().ConfigureAwait(False)
-                SetDatagridBindDatatable_ThreadSafe(dgrvMain, dt)
+            Dim dt As DataTable = Await stock.GetStockDataAsync(startDate.Date, endDate.Date).ConfigureAwait(False)
+            SetDatagridBindDatatable_ThreadSafe(dgrvMain, dt)
 
-                tradingDate = tradingDate.AddDays(1)
-            End While
         Catch oex As OperationCanceledException
             MsgBox(oex.Message)
         Catch ex As Exception

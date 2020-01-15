@@ -22,7 +22,9 @@ Partial Class frmStockSelection
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmStockSelection))
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.chkbFOStock = New System.Windows.Forms.CheckBox()
         Me.txtATRPercentage = New System.Windows.Forms.TextBox()
         Me.txtNumberOfStock = New System.Windows.Forms.TextBox()
         Me.lblATR = New System.Windows.Forms.Label()
@@ -39,7 +41,6 @@ Partial Class frmStockSelection
         Me.dtpckrFromDate = New System.Windows.Forms.DateTimePicker()
         Me.lblToDate = New System.Windows.Forms.Label()
         Me.lblFromDate = New System.Windows.Forms.Label()
-        Me.chkbFOStock = New System.Windows.Forms.CheckBox()
         Me.btnStart = New System.Windows.Forms.Button()
         Me.btnExport = New System.Windows.Forms.Button()
         Me.btnStop = New System.Windows.Forms.Button()
@@ -90,6 +91,16 @@ Partial Class frmStockSelection
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(1295, 76)
         Me.Panel1.TabIndex = 0
+        '
+        'chkbFOStock
+        '
+        Me.chkbFOStock.AutoSize = True
+        Me.chkbFOStock.Location = New System.Drawing.Point(896, 9)
+        Me.chkbFOStock.Name = "chkbFOStock"
+        Me.chkbFOStock.Size = New System.Drawing.Size(128, 21)
+        Me.chkbFOStock.TabIndex = 95
+        Me.chkbFOStock.Text = "Only FO Stocks"
+        Me.chkbFOStock.UseVisualStyleBackColor = True
         '
         'txtATRPercentage
         '
@@ -240,16 +251,6 @@ Partial Class frmStockSelection
         Me.lblFromDate.Size = New System.Drawing.Size(78, 17)
         Me.lblFromDate.TabIndex = 79
         Me.lblFromDate.Text = "From Date:"
-        '
-        'chkbFOStock
-        '
-        Me.chkbFOStock.AutoSize = True
-        Me.chkbFOStock.Location = New System.Drawing.Point(896, 9)
-        Me.chkbFOStock.Name = "chkbFOStock"
-        Me.chkbFOStock.Size = New System.Drawing.Size(128, 21)
-        Me.chkbFOStock.TabIndex = 95
-        Me.chkbFOStock.Text = "Only FO Stocks"
-        Me.chkbFOStock.UseVisualStyleBackColor = True
         '
         'btnStart
         '
@@ -464,8 +465,9 @@ Partial Class frmStockSelection
         Me.Controls.Add(Me.btnStart)
         Me.Controls.Add(Me.btnStop)
         Me.Controls.Add(Me.Panel1)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frmStockSelection"
-        Me.Text = "frmStockSelection"
+        Me.Text = "Screener"
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         CType(Me.dgrvMain, System.ComponentModel.ISupportInitialize).EndInit()

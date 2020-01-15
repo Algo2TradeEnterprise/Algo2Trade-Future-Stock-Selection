@@ -1,4 +1,5 @@
-﻿Imports System.Threading
+﻿Imports System.IO
+Imports System.Threading
 Imports Algo2TradeBLL
 
 Public Class HighATRStocks
@@ -6,13 +7,11 @@ Public Class HighATRStocks
 
     Public Sub New(ByVal canceller As CancellationTokenSource,
                    ByVal cmn As Common,
-                   ByVal stockType As Integer,
-                   ByVal tradingDate As Date,
-                   ByVal bannedStocks As List(Of String))
-        MyBase.New(canceller, cmn, stockType, tradingDate, bannedStocks)
+                   ByVal stockType As Integer)
+        MyBase.New(canceller, cmn, stockType)
     End Sub
 
-    Public Overrides Async Function GetStockDataAsync() As Task(Of DataTable)
+    Public Overrides Async Function GetStockDataAsync(ByVal startDate As Date, ByVal endDate As Date) As Task(Of DataTable)
         Await Task.Delay(0).ConfigureAwait(False)
         Dim ret As New DataTable
         ret.Columns.Add("Date")
@@ -30,27 +29,42 @@ Public Class HighATRStocks
         Using atrStock As New ATRStockSelection(_canceller)
             AddHandler atrStock.Heartbeat, AddressOf OnHeartbeat
 
-            Dim atrStockList As Dictionary(Of String, InstrumentDetails) = Await atrStock.GetATRStockData(_eodTable, _tradingDate, _bannedStocksList, False).ConfigureAwait(False)
-            If atrStockList IsNot Nothing AndAlso atrStockList.Count > 0 Then
-                Dim stockCounter As Integer = 0
-                For Each runningStock In atrStockList
-                    Dim row As DataRow = ret.NewRow
-                    row("Date") = _tradingDate.ToString("dd-MM-yyyy")
-                    row("Trading Symbol") = runningStock.Value.TradingSymbol
-                    row("Lot Size") = runningStock.Value.LotSize
-                    row("ATR %") = Math.Round(runningStock.Value.ATRPercentage, 4)
-                    row("Blank Candle %") = runningStock.Value.BlankCandlePercentage
-                    row("Day ATR") = Math.Round(runningStock.Value.DayATR, 4)
-                    row("Previous Day Open") = runningStock.Value.PreviousDayOpen
-                    row("Previous Day Low") = runningStock.Value.PreviousDayLow
-                    row("Previous Day High") = runningStock.Value.PreviousDayHigh
-                    row("Previous Day Close") = runningStock.Value.PreviousDayClose
-                    row("Slab") = runningStock.Value.Slab
-                    ret.Rows.Add(row)
-                    stockCounter += 1
-                    If stockCounter = My.Settings.NumberOfStockPerDay Then Exit For
+            Dim tradingDate As Date = startDate
+            While tradingDate <= endDate
+                _bannedStockFileName = Path.Combine(My.Application.Info.DirectoryPath, String.Format("Bannned Stocks {0}.csv", tradingDate.ToString("ddMMyyyy")))
+                For Each runningFile In Directory.GetFiles(My.Application.Info.DirectoryPath, "Bannned Stocks *.csv")
+                    If Not runningFile.Contains(tradingDate.ToString("ddMMyyyy")) Then File.Delete(runningFile)
                 Next
-            End If
+                Dim bannedStockList As List(Of String) = Nothing
+                Using bannedStock As New BannedStockDataFetcher(_bannedStockFileName, _canceller)
+                    AddHandler bannedStock.Heartbeat, AddressOf OnHeartbeat
+                    bannedStockList = Await bannedStock.GetBannedStocksData(tradingDate).ConfigureAwait(False)
+                End Using
+
+                Dim atrStockList As Dictionary(Of String, InstrumentDetails) = Await atrStock.GetATRStockData(_eodTable, tradingDate, bannedStockList, False).ConfigureAwait(False)
+                If atrStockList IsNot Nothing AndAlso atrStockList.Count > 0 Then
+                    Dim stockCounter As Integer = 0
+                    For Each runningStock In atrStockList
+                        Dim row As DataRow = ret.NewRow
+                        row("Date") = tradingDate.ToString("dd-MM-yyyy")
+                        row("Trading Symbol") = runningStock.Value.TradingSymbol
+                        row("Lot Size") = runningStock.Value.LotSize
+                        row("ATR %") = Math.Round(runningStock.Value.ATRPercentage, 4)
+                        row("Blank Candle %") = runningStock.Value.BlankCandlePercentage
+                        row("Day ATR") = Math.Round(runningStock.Value.DayATR, 4)
+                        row("Previous Day Open") = runningStock.Value.PreviousDayOpen
+                        row("Previous Day Low") = runningStock.Value.PreviousDayLow
+                        row("Previous Day High") = runningStock.Value.PreviousDayHigh
+                        row("Previous Day Close") = runningStock.Value.PreviousDayClose
+                        row("Slab") = runningStock.Value.Slab
+                        ret.Rows.Add(row)
+                        stockCounter += 1
+                        If stockCounter = My.Settings.NumberOfStockPerDay Then Exit For
+                    Next
+                End If
+
+                tradingDate = tradingDate.AddDays(1)
+            End While
         End Using
         Return ret
     End Function
