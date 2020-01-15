@@ -44,8 +44,6 @@ Partial Class frmMain
         Me.lblNumberOfStock = New System.Windows.Forms.Label()
         Me.pnlBtn = New System.Windows.Forms.Panel()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
-        Me.txtProcedureNumberOfStock = New System.Windows.Forms.TextBox()
-        Me.Label1 = New System.Windows.Forms.Label()
         Me.txtMinVolume = New System.Windows.Forms.TextBox()
         Me.lblMinVolume = New System.Windows.Forms.Label()
         Me.txtATRPercentage = New System.Windows.Forms.TextBox()
@@ -54,7 +52,6 @@ Partial Class frmMain
         Me.lblMaxPrice = New System.Windows.Forms.Label()
         Me.txtMinPrice = New System.Windows.Forms.TextBox()
         Me.lblMinPrice = New System.Windows.Forms.Label()
-        Me.chbImmediatePreviousDay = New System.Windows.Forms.CheckBox()
         Me.lblDescription = New System.Windows.Forms.Label()
         Me.pnlIntradayVolumeSpikeSettings = New System.Windows.Forms.Panel()
         Me.dtpkrVolumeSpikeChkTime = New System.Windows.Forms.DateTimePicker()
@@ -66,8 +63,6 @@ Partial Class frmMain
         Me.Label5 = New System.Windows.Forms.Label()
         Me.dtpkrTopGainerLosserChkTime = New System.Windows.Forms.DateTimePicker()
         Me.Label4 = New System.Windows.Forms.Label()
-        Me.cmbIndexType = New System.Windows.Forms.ComboBox()
-        Me.Label6 = New System.Windows.Forms.Label()
         CType(Me.dgrvMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlInstrumentList.SuspendLayout()
         Me.pnlBtn.SuspendLayout()
@@ -275,8 +270,6 @@ Partial Class frmMain
         '
         'GroupBox3
         '
-        Me.GroupBox3.Controls.Add(Me.txtProcedureNumberOfStock)
-        Me.GroupBox3.Controls.Add(Me.Label1)
         Me.GroupBox3.Controls.Add(Me.txtMinVolume)
         Me.GroupBox3.Controls.Add(Me.lblMinVolume)
         Me.GroupBox3.Controls.Add(Me.txtATRPercentage)
@@ -285,7 +278,6 @@ Partial Class frmMain
         Me.GroupBox3.Controls.Add(Me.lblMaxPrice)
         Me.GroupBox3.Controls.Add(Me.txtMinPrice)
         Me.GroupBox3.Controls.Add(Me.lblMinPrice)
-        Me.GroupBox3.Controls.Add(Me.chbImmediatePreviousDay)
         Me.GroupBox3.Location = New System.Drawing.Point(3, 76)
         Me.GroupBox3.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.GroupBox3.Name = "GroupBox3"
@@ -294,25 +286,6 @@ Partial Class frmMain
         Me.GroupBox3.TabIndex = 49
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Stock Selection Settings"
-        '
-        'txtProcedureNumberOfStock
-        '
-        Me.txtProcedureNumberOfStock.Location = New System.Drawing.Point(401, 57)
-        Me.txtProcedureNumberOfStock.Margin = New System.Windows.Forms.Padding(4)
-        Me.txtProcedureNumberOfStock.Name = "txtProcedureNumberOfStock"
-        Me.txtProcedureNumberOfStock.Size = New System.Drawing.Size(69, 22)
-        Me.txtProcedureNumberOfStock.TabIndex = 42
-        Me.txtProcedureNumberOfStock.Tag = "Number Of Stock"
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(212, 59)
-        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(186, 17)
-        Me.Label1.TabIndex = 43
-        Me.Label1.Text = "Procedure Number Of Stock"
         '
         'txtMinVolume
         '
@@ -389,17 +362,6 @@ Partial Class frmMain
         Me.lblMinPrice.Size = New System.Drawing.Size(66, 17)
         Me.lblMinPrice.TabIndex = 35
         Me.lblMinPrice.Text = "Min Price"
-        '
-        'chbImmediatePreviousDay
-        '
-        Me.chbImmediatePreviousDay.AutoSize = True
-        Me.chbImmediatePreviousDay.Location = New System.Drawing.Point(483, 59)
-        Me.chbImmediatePreviousDay.Margin = New System.Windows.Forms.Padding(4)
-        Me.chbImmediatePreviousDay.Name = "chbImmediatePreviousDay"
-        Me.chbImmediatePreviousDay.Size = New System.Drawing.Size(182, 21)
-        Me.chbImmediatePreviousDay.TabIndex = 44
-        Me.chbImmediatePreviousDay.Text = "Immediate Previous Day"
-        Me.chbImmediatePreviousDay.UseVisualStyleBackColor = True
         '
         'lblDescription
         '
@@ -504,34 +466,11 @@ Partial Class frmMain
         Me.Label4.TabIndex = 4
         Me.Label4.Text = "Check Till Time:"
         '
-        'cmbIndexType
-        '
-        Me.cmbIndexType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cmbIndexType.FormattingEnabled = True
-        Me.cmbIndexType.Items.AddRange(New Object() {"None", "NIFTY50", "NIFTYNEXT50", "NIFTY100", "NIFTY200", "NIFTYAUTO", "NIFTYBANK", "NIFTYENERGY", "NIFTYFINSERV", "NIFTYFMCG", "NIFTYIT", "NIFTYMEDIA", "NIFTYMETAL", "NIFTYMNC", "NIFTYPHARMA", "NIFTYPSUBANK", "NIFTYREALTY", "NIFTYCOMMODITIES", "NIFTYCONSUMPTION", "NIFTYINFRA", "NIFTYPSE", "NIFTYSERVSECTOR", "NIFTYPVTBANK"})
-        Me.cmbIndexType.Location = New System.Drawing.Point(531, 47)
-        Me.cmbIndexType.Margin = New System.Windows.Forms.Padding(4)
-        Me.cmbIndexType.Name = "cmbIndexType"
-        Me.cmbIndexType.Size = New System.Drawing.Size(120, 24)
-        Me.cmbIndexType.TabIndex = 60
-        '
-        'Label6
-        '
-        Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(444, 50)
-        Me.Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(81, 17)
-        Me.Label6.TabIndex = 59
-        Me.Label6.Text = "Index Type:"
-        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1213, 636)
-        Me.Controls.Add(Me.cmbIndexType)
-        Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.pnlTopGainerLooserSettings)
         Me.Controls.Add(Me.cmbStockType)
         Me.Controls.Add(Me.Label2)
@@ -593,8 +532,6 @@ Partial Class frmMain
     Friend WithEvents lblNumberOfStock As Label
     Friend WithEvents pnlBtn As Panel
     Friend WithEvents GroupBox3 As GroupBox
-    Friend WithEvents txtProcedureNumberOfStock As TextBox
-    Friend WithEvents Label1 As Label
     Friend WithEvents txtMinVolume As TextBox
     Friend WithEvents lblMinVolume As Label
     Friend WithEvents txtATRPercentage As TextBox
@@ -603,7 +540,6 @@ Partial Class frmMain
     Friend WithEvents lblMaxPrice As Label
     Friend WithEvents txtMinPrice As TextBox
     Friend WithEvents lblMinPrice As Label
-    Friend WithEvents chbImmediatePreviousDay As CheckBox
     Friend WithEvents lblDescription As Label
     Friend WithEvents pnlIntradayVolumeSpikeSettings As Panel
     Friend WithEvents dtpkrVolumeSpikeChkTime As DateTimePicker
@@ -615,6 +551,4 @@ Partial Class frmMain
     Friend WithEvents Label4 As Label
     Friend WithEvents txtTopGainerLosserNiftyChangePercentage As TextBox
     Friend WithEvents Label5 As Label
-    Friend WithEvents cmbIndexType As ComboBox
-    Friend WithEvents Label6 As Label
 End Class

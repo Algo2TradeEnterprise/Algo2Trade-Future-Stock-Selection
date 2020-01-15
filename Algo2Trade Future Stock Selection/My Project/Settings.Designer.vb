@@ -15,7 +15,7 @@ Option Explicit On
 Namespace My
     
     <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
-     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0"),  _
+     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0"),  _
      Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
     Partial Friend NotInheritable Class MySettings
         Inherits Global.System.Configuration.ApplicationSettingsBase
@@ -56,19 +56,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("40")>  _
-        Public Property ProcedureNumberOfRecords() As Integer
-            Get
-                Return CType(Me("ProcedureNumberOfRecords"),Integer)
-            End Get
-            Set
-                Me("ProcedureNumberOfRecords") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("80")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("100")>  _
         Public Property MinClose() As Decimal
             Get
                 Return CType(Me("MinClose"),Decimal)
@@ -80,7 +68,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("1500")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("3000")>  _
         Public Property MaxClose() As Decimal
             Get
                 Return CType(Me("MaxClose"),Decimal)
@@ -99,30 +87,6 @@ Namespace My
             End Get
             Set
                 Me("ATRPercentage") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("300000")>  _
-        Public Property PotentialAmount() As Decimal
-            Get
-                Return CType(Me("PotentialAmount"),Decimal)
-            End Get
-            Set
-                Me("PotentialAmount") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0.01")>  _
-        Public Property MinCapPercentage() As Decimal
-            Get
-                Return CType(Me("MinCapPercentage"),Decimal)
-            End Get
-            Set
-                Me("MinCapPercentage") = value
             End Set
         End Property
         
@@ -150,19 +114,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
-        Public Property ComboBoxIndex() As Integer
-            Get
-                Return CType(Me("ComboBoxIndex"),Integer)
-            End Get
-            Set
-                Me("ComboBoxIndex") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("15")>  _
         Public Property MaxBlankCandlePercentage() As Decimal
             Get
                 Return CType(Me("MaxBlankCandlePercentage"),Decimal)
@@ -186,7 +138,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("100")>  _
         Public Property NumberOfStockPerDay() As Integer
             Get
                 Return CType(Me("NumberOfStockPerDay"),Integer)
@@ -211,12 +163,24 @@ Namespace My
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
-        Public Property IndexType() As Integer
+        Public Property ProcedureNumber() As Integer
             Get
-                Return CType(Me("IndexType"),Integer)
+                Return CType(Me("ProcedureNumber"),Integer)
             End Get
             Set
-                Me("IndexType") = value
+                Me("ProcedureNumber") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property OnlyFOStocks() As Boolean
+            Get
+                Return CType(Me("OnlyFOStocks"),Boolean)
+            End Get
+            Set
+                Me("OnlyFOStocks") = value
             End Set
         End Property
     End Class

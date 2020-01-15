@@ -81,14 +81,25 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="frmMain.vb">
-      <SubType>Form</SubType>
+    <Compile Include="ATRStockSelection.vb" />
+    <Compile Include="CommonSettingsUC.Designer.vb">
+      <DependentUpon>CommonSettingsUC.vb</DependentUpon>
     </Compile>
+    <Compile Include="CommonSettingsUC.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="frmMain.vb" />
     <Compile Include="frmMain.Designer.vb">
       <DependentUpon>frmMain.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="BannedStockDataFetcher.vb" />
+    <Compile Include="frmStockSelection.Designer.vb">
+      <DependentUpon>frmStockSelection.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmStockSelection.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="InstrumentDetails.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -105,11 +116,20 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Stock Selection Rules\HighATRStocks.vb" />
+    <Compile Include="Stock Selection Rules\PreMarketStocks.vb" />
     <Compile Include="StockListFromDatabase.vb" />
+    <Compile Include="StockSelection.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CommonSettingsUC.resx">
+      <DependentUpon>CommonSettingsUC.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmStockSelection.resx">
+      <DependentUpon>frmStockSelection.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -143,5 +163,6 @@
   <ItemGroup>
     <Content Include="algo2tradericon 24x24.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
