@@ -95,7 +95,7 @@ Public Class ATRStockSelection
                                  .PreviousDayHigh = stockList(stock).PreviousDayHigh,
                                  .PreviousDayClose = stockList(stock).PreviousDayClose,
                                  .Slab = CalculateSlab(.PreviousDayClose, .ATRPercentage)}
-                                atrStockList.Add(tradingSymbol, instrumentData)
+                                atrStockList.Add(stock, instrumentData)
                             End If
                         End If
                     End If
@@ -113,7 +113,6 @@ Public Class ATRStockSelection
                                 If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
                                     stockData.Value.BlankCandlePercentage = CalculateBlankVolumePercentage(stockPayload)
                                 Else
-                                    If Not immediatePreviousDay Then Throw New ApplicationException(String.Format("Check volume checking for {0} on {1}", stockData.Key, tradingDate))
                                     stockData.Value.IsTradable = False
                                     stockData.Value.BlankCandlePercentage = Decimal.MinValue
                                 End If
@@ -518,9 +517,6 @@ Public Class ATRStockSelection
                 End If
                 _cts.Token.ThrowIfCancellationRequested()
                 Dim rawInstrumentName As String = stock
-                If stock.ToUpper.Contains("FUT") Then
-                    rawInstrumentName = stock.Remove(stock.Count - 8)
-                End If
                 _cts.Token.ThrowIfCancellationRequested()
                 Dim cm As MySqlCommand = Nothing
                 Select Case tableType
@@ -558,7 +554,7 @@ Public Class ATRStockSelection
                         If Regex.Matches(instrumentData.TradingSymbol, pattern).Count <= 1 Then
                             If activeInstruments Is Nothing Then activeInstruments = New List(Of ActiveInstrumentData)
                             activeInstruments.Add(instrumentData)
-                            If instrumentData.TradingSymbol = stock Then
+                            If instrumentData.TradingSymbol = stockList(stock).TradingSymbol Then
                                 stockList(stock).InstrumentIdentifier = instrumentData.Token
                                 stockList(stock).CurrentContractExpiry = instrumentData.Expiry
                             End If
