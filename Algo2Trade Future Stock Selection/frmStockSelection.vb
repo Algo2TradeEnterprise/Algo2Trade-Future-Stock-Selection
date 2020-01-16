@@ -338,6 +338,8 @@ Public Class frmStockSelection
                     stock = New TouchPreviousDayLastCandle(_canceller, cmn, stockType)
                 Case 6
                     stock = New TopGainerTopLosser(_canceller, cmn, stockType, GetDateTimePickerValue_ThreadSafe(dtpkrVolumeSpikeChkTime), GetTextBoxText_ThreadSafe(txtTopGainerLosserNiftyChangePercentage))
+                Case 7
+                    stock = New HighLowGapStock(_canceller, cmn, stockType)
             End Select
             AddHandler stock.Heartbeat, AddressOf OnHeartbeat
 
