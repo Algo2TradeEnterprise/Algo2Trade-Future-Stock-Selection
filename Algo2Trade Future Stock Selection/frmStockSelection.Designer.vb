@@ -467,6 +467,7 @@ Partial Class frmStockSelection
         Me.Controls.Add(Me.Panel1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frmStockSelection"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Screener"
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()

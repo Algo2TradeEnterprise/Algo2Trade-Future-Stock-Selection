@@ -57,11 +57,6 @@ Public Class ATRStockSelection
         Public Property CashInstrumentName As String
         Public Property CashInstrumentToken As String
     End Class
-
-    'Enum TypeOfData
-    '    Intraday = 1
-    '    EOD
-    'End Enum
 #End Region
 
     Public Async Function GetATRStockData(ByVal eodTableType As Common.DataBaseTable,
@@ -249,12 +244,12 @@ Public Class ATRStockSelection
                                                                                                                    _cts.Token.ThrowIfCancellationRequested()
                                                                                                                    Dim eodHistoricalData As Dictionary(Of Date, Payload) = Await _common.GetHistoricalDataAsync(Common.DataBaseTable.EOD_Cash, x.CashInstrumentName, previousTradingDay.AddDays(-300), previousTradingDay).ConfigureAwait(False)
                                                                                                                    _cts.Token.ThrowIfCancellationRequested()
-                                                                                                                   If eodHistoricalData IsNot Nothing AndAlso eodHistoricalData.Count > 0 Then
+                                                                                                                   If eodHistoricalData IsNot Nothing AndAlso eodHistoricalData.Count > 100 Then
                                                                                                                        _cts.Token.ThrowIfCancellationRequested()
                                                                                                                        Dim ATRPayload As Dictionary(Of Date, Decimal) = Nothing
                                                                                                                        Indicator.ATR.CalculateATR(14, eodHistoricalData, ATRPayload)
                                                                                                                        _cts.Token.ThrowIfCancellationRequested()
-                                                                                                                       If ATRPayload IsNot Nothing AndAlso ATRPayload.Count > 100 Then
+                                                                                                                       If ATRPayload IsNot Nothing AndAlso ATRPayload.Count > 0 Then
                                                                                                                            Dim lastDayClosePrice As Decimal = eodHistoricalData.LastOrDefault.Value.Close
                                                                                                                            Dim atrPercentage As Decimal = (ATRPayload(eodHistoricalData.LastOrDefault.Key) / lastDayClosePrice) * 100
                                                                                                                            If atrPercentage >= My.Settings.ATRPercentage Then
@@ -403,12 +398,12 @@ Public Class ATRStockSelection
                                                                                                                    _cts.Token.ThrowIfCancellationRequested()
                                                                                                                    Dim eodHistoricalData As Dictionary(Of Date, Payload) = Await _common.GetHistoricalDataAsync(Common.DataBaseTable.EOD_Cash, x.CashInstrumentName, previousTradingDay.AddDays(-300), previousTradingDay).ConfigureAwait(False)
                                                                                                                    _cts.Token.ThrowIfCancellationRequested()
-                                                                                                                   If eodHistoricalData IsNot Nothing AndAlso eodHistoricalData.Count > 0 Then
+                                                                                                                   If eodHistoricalData IsNot Nothing AndAlso eodHistoricalData.Count > 100 Then
                                                                                                                        _cts.Token.ThrowIfCancellationRequested()
                                                                                                                        Dim ATRPayload As Dictionary(Of Date, Decimal) = Nothing
                                                                                                                        Indicator.ATR.CalculateATR(14, eodHistoricalData, ATRPayload)
                                                                                                                        _cts.Token.ThrowIfCancellationRequested()
-                                                                                                                       If ATRPayload IsNot Nothing AndAlso ATRPayload.Count > 100 Then
+                                                                                                                       If ATRPayload IsNot Nothing AndAlso ATRPayload.Count > 0 Then
                                                                                                                            Dim lastDayClosePrice As Decimal = eodHistoricalData.LastOrDefault.Value.Close
                                                                                                                            Dim atrPercentage As Decimal = (ATRPayload(eodHistoricalData.LastOrDefault.Key) / lastDayClosePrice) * 100
                                                                                                                            If atrPercentage >= My.Settings.ATRPercentage Then
