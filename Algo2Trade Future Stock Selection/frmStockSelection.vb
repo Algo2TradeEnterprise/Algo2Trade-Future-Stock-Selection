@@ -336,6 +336,8 @@ Public Class frmStockSelection
                     stock = New OHLStocks(_canceller, cmn, stockType)
                 Case 5
                     stock = New TouchPreviousDayLastCandle(_canceller, cmn, stockType)
+                Case 6
+                    stock = New TopGainerTopLosser(_canceller, cmn, stockType, GetDateTimePickerValue_ThreadSafe(dtpkrVolumeSpikeChkTime), GetTextBoxText_ThreadSafe(txtTopGainerLosserNiftyChangePercentage))
             End Select
             AddHandler stock.Heartbeat, AddressOf OnHeartbeat
 
@@ -367,6 +369,7 @@ Public Class frmStockSelection
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Return ATR Stocks with Pre market change% and previous close")
             Case 3
+                dtpkrVolumeSpikeChkTime.Value = New Date(Now.Year, Now.Month, Now.Day, 9, 18, 0)
                 LoadSettings(pnlIntradayVolumeSpikeSettings)
                 lblDescription.Text = String.Format("Return ATR stocks with volume change% till checking time compare to Previous 5 days average volume till checking time")
             Case 4
@@ -376,6 +379,8 @@ Public Class frmStockSelection
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Return High ATR Stocks which touch the previous day last candle on first minute")
             Case 6
+                dtpkrTopGainerLosserChkTime.Value = New Date(Now.Year, Now.Month, Now.Day, 9, 19, 0)
+                txtTopGainerLosserNiftyChangePercentage.Text = 0
                 LoadSettings(pnlTopGainerLooserSettings)
                 lblDescription.Text = String.Format("Return ATR stocks with change% till checking time compare to Previous day close")
             Case 7

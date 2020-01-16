@@ -363,6 +363,7 @@ Partial Class frmStockSelection
         Me.txtTopGainerLosserNiftyChangePercentage.Name = "txtTopGainerLosserNiftyChangePercentage"
         Me.txtTopGainerLosserNiftyChangePercentage.Size = New System.Drawing.Size(100, 22)
         Me.txtTopGainerLosserNiftyChangePercentage.TabIndex = 7
+        Me.txtTopGainerLosserNiftyChangePercentage.Text = "0"
         '
         'Label5
         '
