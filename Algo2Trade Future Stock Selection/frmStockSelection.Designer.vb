@@ -378,6 +378,7 @@ Partial Class frmStockSelection
         Me.dtpkrTopGainerLosserChkTime.Format = System.Windows.Forms.DateTimePickerFormat.Time
         Me.dtpkrTopGainerLosserChkTime.Location = New System.Drawing.Point(118, 11)
         Me.dtpkrTopGainerLosserChkTime.Name = "dtpkrTopGainerLosserChkTime"
+        Me.dtpkrTopGainerLosserChkTime.ShowUpDown = True
         Me.dtpkrTopGainerLosserChkTime.Size = New System.Drawing.Size(110, 22)
         Me.dtpkrTopGainerLosserChkTime.TabIndex = 5
         Me.dtpkrTopGainerLosserChkTime.Value = New Date(2019, 12, 8, 0, 0, 0, 0)
@@ -405,6 +406,7 @@ Partial Class frmStockSelection
         Me.dtpkrVolumeSpikeChkTime.Format = System.Windows.Forms.DateTimePickerFormat.Time
         Me.dtpkrVolumeSpikeChkTime.Location = New System.Drawing.Point(118, 11)
         Me.dtpkrVolumeSpikeChkTime.Name = "dtpkrVolumeSpikeChkTime"
+        Me.dtpkrVolumeSpikeChkTime.ShowUpDown = True
         Me.dtpkrVolumeSpikeChkTime.Size = New System.Drawing.Size(110, 22)
         Me.dtpkrVolumeSpikeChkTime.TabIndex = 5
         Me.dtpkrVolumeSpikeChkTime.Value = New Date(2019, 12, 8, 0, 0, 0, 0)

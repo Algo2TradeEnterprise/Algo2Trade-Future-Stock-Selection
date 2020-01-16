@@ -76,6 +76,7 @@ Public Class PreMarketStocks
                             For Each runningStock In tempStockList.OrderByDescending(Function(x)
                                                                                          Return Math.Abs(x.Value(0))
                                                                                      End Function)
+                                _canceller.Token.ThrowIfCancellationRequested()
                                 Dim row As DataRow = ret.NewRow
                                 row("Date") = tradingDate.ToString("dd-MM-yyyy")
                                 row("Trading Symbol") = atrStockList(runningStock.Key).TradingSymbol

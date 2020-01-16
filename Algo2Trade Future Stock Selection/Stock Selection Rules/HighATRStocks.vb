@@ -45,6 +45,7 @@ Public Class HighATRStocks
                 If atrStockList IsNot Nothing AndAlso atrStockList.Count > 0 Then
                     Dim stockCounter As Integer = 0
                     For Each runningStock In atrStockList
+                        _canceller.Token.ThrowIfCancellationRequested()
                         Dim row As DataRow = ret.NewRow
                         row("Date") = tradingDate.ToString("dd-MM-yyyy")
                         row("Trading Symbol") = runningStock.Value.TradingSymbol

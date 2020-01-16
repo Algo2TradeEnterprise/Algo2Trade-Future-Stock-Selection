@@ -106,6 +106,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Stock Selection Rules\HighATRStocks.vb" />
+    <Compile Include="Stock Selection Rules\IntradayVolumeSpike.vb" />
     <Compile Include="Stock Selection Rules\PreMarketStocks.vb" />
     <Compile Include="StockSelection.vb" />
   </ItemGroup>
