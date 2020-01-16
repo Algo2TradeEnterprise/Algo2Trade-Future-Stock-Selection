@@ -128,30 +128,32 @@ Public Class TopGainerTopLosser
                             stockCounter += 1
                             If stockCounter = My.Settings.NumberOfStockPerDay Then Exit For
                         Next
-                        stockCounter = 0
-                        For Each runningStock In tempStockList.OrderBy(Function(x)
-                                                                           Return CDec(x.Value(0))
-                                                                       End Function)
-                            _canceller.Token.ThrowIfCancellationRequested()
-                            Dim row As DataRow = ret.NewRow
-                            row("Date") = tradingDate.ToString("dd-MM-yyyy")
-                            row("Trading Symbol") = atrStockList(runningStock.Key).TradingSymbol
-                            row("Lot Size") = atrStockList(runningStock.Key).LotSize
-                            row("ATR %") = Math.Round(atrStockList(runningStock.Key).ATRPercentage, 4)
-                            row("Blank Candle %") = atrStockList(runningStock.Key).BlankCandlePercentage
-                            row("Day ATR") = Math.Round(atrStockList(runningStock.Key).DayATR, 4)
-                            row("Previous Day Open") = atrStockList(runningStock.Key).PreviousDayOpen
-                            row("Previous Day Low") = atrStockList(runningStock.Key).PreviousDayLow
-                            row("Previous Day High") = atrStockList(runningStock.Key).PreviousDayHigh
-                            row("Previous Day Close") = atrStockList(runningStock.Key).PreviousDayClose
-                            row("Slab") = atrStockList(runningStock.Key).Slab
-                            row("Gain Loss %") = runningStock.Value(0)
-                            row("Nifty Gain Loss %") = runningStock.Value(1)
+                        If My.Settings.NumberOfStockPerDay > tempStockList.Count Then
+                            stockCounter = 0
+                            For Each runningStock In tempStockList.OrderBy(Function(x)
+                                                                               Return CDec(x.Value(0))
+                                                                           End Function)
+                                _canceller.Token.ThrowIfCancellationRequested()
+                                Dim row As DataRow = ret.NewRow
+                                row("Date") = tradingDate.ToString("dd-MM-yyyy")
+                                row("Trading Symbol") = atrStockList(runningStock.Key).TradingSymbol
+                                row("Lot Size") = atrStockList(runningStock.Key).LotSize
+                                row("ATR %") = Math.Round(atrStockList(runningStock.Key).ATRPercentage, 4)
+                                row("Blank Candle %") = atrStockList(runningStock.Key).BlankCandlePercentage
+                                row("Day ATR") = Math.Round(atrStockList(runningStock.Key).DayATR, 4)
+                                row("Previous Day Open") = atrStockList(runningStock.Key).PreviousDayOpen
+                                row("Previous Day Low") = atrStockList(runningStock.Key).PreviousDayLow
+                                row("Previous Day High") = atrStockList(runningStock.Key).PreviousDayHigh
+                                row("Previous Day Close") = atrStockList(runningStock.Key).PreviousDayClose
+                                row("Slab") = atrStockList(runningStock.Key).Slab
+                                row("Gain Loss %") = runningStock.Value(0)
+                                row("Nifty Gain Loss %") = runningStock.Value(1)
 
-                            ret.Rows.Add(row)
-                            stockCounter += 1
-                            If stockCounter = My.Settings.NumberOfStockPerDay Then Exit For
-                        Next
+                                ret.Rows.Add(row)
+                                stockCounter += 1
+                                If stockCounter = My.Settings.NumberOfStockPerDay Then Exit For
+                            Next
+                        End If
                     End If
                 End If
 
