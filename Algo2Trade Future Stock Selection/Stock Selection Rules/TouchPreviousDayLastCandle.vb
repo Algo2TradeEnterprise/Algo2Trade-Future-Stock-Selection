@@ -56,7 +56,6 @@ Public Class TouchPreviousDayLastCandle
                             End If
                             If currentDayFirstCandle IsNot Nothing AndAlso currentDayFirstCandle.PreviousCandlePayload IsNot Nothing Then
                                 Dim buffer As Decimal = CalculateBuffer(currentDayFirstCandle.Open, Utilities.Numbers.NumberManipulation.RoundOfType.Floor)
-                                Dim atrPer As Decimal = atrStockList(runningStock).ATRPercentage
                                 If currentDayFirstCandle.Open < currentDayFirstCandle.PreviousCandlePayload.Close Then
                                     If currentDayFirstCandle.High + buffer >= currentDayFirstCandle.PreviousCandlePayload.Low Then
                                         If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
