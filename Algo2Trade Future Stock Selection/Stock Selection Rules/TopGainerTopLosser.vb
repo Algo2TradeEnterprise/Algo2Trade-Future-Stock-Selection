@@ -99,7 +99,7 @@ Public Class TopGainerTopLosser
                                 Dim previousClose As Decimal = atrStockList(runningStock).PreviousDayClose
                                 Dim gainLossPercentage As Decimal = ((candleToCheck.Close - previousClose) / previousClose) * 100
                                 If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
-                                tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), niftyGainLossPercentage})
+                                tempStockList.Add(runningStock, {Math.Round(gainLossPercentage, 4), Math.Round(niftyGainLossPercentage, 4)})
                             End If
                         End If
                     Next
