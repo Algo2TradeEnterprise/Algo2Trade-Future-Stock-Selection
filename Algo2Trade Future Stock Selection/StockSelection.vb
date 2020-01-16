@@ -53,6 +53,13 @@ Public MustInherit Class StockSelection
 
     Public MustOverride Async Function GetStockDataAsync(ByVal startDate As Date, ByVal endDate As Date) As Task(Of DataTable)
 
+    Protected Function CalculateBuffer(ByVal price As Decimal, ByVal floorOrCeiling As Utilities.Numbers.RoundOfType) As Decimal
+        Dim bufferPrice As Decimal = Nothing
+        'Assuming 1% target, we can afford to have buffer as 2.5% of that 1% target
+        bufferPrice = Utilities.Numbers.NumberManipulation.ConvertFloorCeling(price * 0.01 * 0.025, 0.05, floorOrCeiling)
+        Return bufferPrice
+    End Function
+
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls
 

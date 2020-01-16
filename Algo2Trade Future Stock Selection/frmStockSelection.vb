@@ -332,6 +332,10 @@ Public Class frmStockSelection
                     stock = New PreMarketStocks(_canceller, cmn, stockType)
                 Case 3
                     stock = New IntradayVolumeSpike(_canceller, cmn, stockType, GetDateTimePickerValue_ThreadSafe(dtpkrVolumeSpikeChkTime))
+                Case 4
+                    stock = New OHLStocks(_canceller, cmn, stockType)
+                Case 5
+                    stock = New TouchPreviousDayLastCandle(_canceller, cmn, stockType)
             End Select
             AddHandler stock.Heartbeat, AddressOf OnHeartbeat
 

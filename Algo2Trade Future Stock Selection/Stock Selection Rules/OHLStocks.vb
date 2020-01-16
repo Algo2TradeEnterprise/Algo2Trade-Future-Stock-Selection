@@ -2,16 +2,13 @@
 Imports System.Threading
 Imports Algo2TradeBLL
 
-Public Class IntradayVolumeSpike
+Public Class OHLStocks
     Inherits StockSelection
 
-    Private _checkingTime As Date
     Public Sub New(ByVal canceller As CancellationTokenSource,
                    ByVal cmn As Common,
-                   ByVal stockType As Integer,
-                   ByVal checkingTime As Date)
+                   ByVal stockType As Integer)
         MyBase.New(canceller, cmn, stockType)
-        _checkingTime = checkingTime
     End Sub
 
     Public Overrides Async Function GetStockDataAsync(ByVal startDate As Date, ByVal endDate As Date) As Task(Of DataTable)
@@ -28,7 +25,7 @@ Public Class IntradayVolumeSpike
         ret.Columns.Add("Previous Day High")
         ret.Columns.Add("Previous Day Close")
         ret.Columns.Add("Slab")
-        ret.Columns.Add("Volume Change %")
+        ret.Columns.Add("Direction")
 
         Using atrStock As New ATRStockSelection(_canceller)
             AddHandler atrStock.Heartbeat, AddressOf OnHeartbeat
@@ -48,49 +45,30 @@ Public Class IntradayVolumeSpike
                 Dim atrStockList As Dictionary(Of String, InstrumentDetails) = Await atrStock.GetATRStockData(_eodTable, tradingDate, bannedStockList, False).ConfigureAwait(False)
                 If atrStockList IsNot Nothing AndAlso atrStockList.Count > 0 Then
                     _canceller.Token.ThrowIfCancellationRequested()
-                    Dim tempStockList As Dictionary(Of String, Decimal()) = Nothing
+                    Dim tempStockList As Dictionary(Of String, String()) = Nothing
+                    Dim previousTradingDay As Date = _cmn.GetPreviousTradingDay(_eodTable, tradingDate)
                     For Each runningStock In atrStockList.Keys
                         _canceller.Token.ThrowIfCancellationRequested()
-                        Dim intradayPayload As Dictionary(Of Date, Payload) = _cmn.GetRawPayload(Common.DataBaseTable.Intraday_Cash, runningStock, tradingDate.AddDays(-15), tradingDate)
-                        If intradayPayload IsNot Nothing AndAlso intradayPayload.Count > 0 Then
-                            Dim signalCheckStartTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, 9, 15, 0)
-                            Dim signalCheckEndTime As Date = New Date(tradingDate.Year, tradingDate.Month, tradingDate.Day, _checkingTime.Hour, _checkingTime.Minute, _checkingTime.Second)
-                            Dim currentDayVolumeSum As Long = 0
-                            Dim previousDaysVolumeSum As Long = 0
-                            Dim counter As Integer = 0
-                            Dim lastCalculatedDate As Date = Date.MinValue
-                            For Each runningPayload In intradayPayload.Keys.OrderByDescending(Function(x)
-                                                                                                  Return x
-                                                                                              End Function)
-                                Dim signalStart As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, signalCheckStartTime.Hour, signalCheckStartTime.Minute, signalCheckStartTime.Second)
-                                Dim signalEnd As Date = New Date(runningPayload.Year, runningPayload.Month, runningPayload.Day, signalCheckEndTime.Hour, signalCheckEndTime.Minute, signalCheckEndTime.Second)
-                                If runningPayload.Date = tradingDate.Date Then
-                                    If runningPayload >= signalStart AndAlso runningPayload <= signalEnd Then
-                                        currentDayVolumeSum += intradayPayload(runningPayload).Volume
-                                    End If
-                                ElseIf runningPayload.Date < tradingDate.Date Then
-                                    If runningPayload >= signalStart AndAlso runningPayload <= signalEnd Then
-                                        If lastCalculatedDate.Date <> runningPayload.Date Then
-                                            lastCalculatedDate = runningPayload
-                                            counter += 1
-                                            If counter = 5 + 1 Then Exit For
-                                        End If
-                                        previousDaysVolumeSum += intradayPayload(runningPayload).Volume
-                                    End If
-                                End If
-                            Next
-                            If currentDayVolumeSum <> 0 AndAlso previousDaysVolumeSum <> 0 Then
-                                Dim changePer As Decimal = ((currentDayVolumeSum / (previousDaysVolumeSum / 5)) - 1) * 100
-                                If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, Decimal())
-                                tempStockList.Add(runningStock, {changePer})
+                        Dim eodPayload As Dictionary(Of Date, Payload) = _cmn.GetRawPayload(_eodTable, runningStock, previousTradingDay, previousTradingDay)
+                        If eodPayload IsNot Nothing AndAlso eodPayload.Count > 0 Then
+                            Dim open As Decimal = eodPayload.FirstOrDefault.Value.Open
+                            Dim low As Decimal = eodPayload.FirstOrDefault.Value.Low
+                            Dim high As Decimal = eodPayload.FirstOrDefault.Value.High
+                            Dim direction As String = Nothing
+                            If open = low Then
+                                direction = "BUY"
+                            ElseIf open = high Then
+                                direction = "SELL"
+                            End If
+                            If direction IsNot Nothing Then
+                                If tempStockList Is Nothing Then tempStockList = New Dictionary(Of String, String())
+                                tempStockList.Add(runningStock, {direction})
                             End If
                         End If
                     Next
                     If tempStockList IsNot Nothing AndAlso tempStockList.Count > 0 Then
                         Dim stockCounter As Integer = 0
-                        For Each runningStock In tempStockList.OrderByDescending(Function(x)
-                                                                                     Return Math.Abs(x.Value(0))
-                                                                                 End Function)
+                        For Each runningStock In tempStockList
                             _canceller.Token.ThrowIfCancellationRequested()
                             Dim row As DataRow = ret.NewRow
                             row("Date") = tradingDate.ToString("dd-MM-yyyy")
@@ -104,7 +82,7 @@ Public Class IntradayVolumeSpike
                             row("Previous Day High") = atrStockList(runningStock.Key).PreviousDayHigh
                             row("Previous Day Close") = atrStockList(runningStock.Key).PreviousDayClose
                             row("Slab") = atrStockList(runningStock.Key).Slab
-                            row("Volume Change %") = runningStock.Value(0)
+                            row("Direction") = runningStock.Value(0)
 
                             ret.Rows.Add(row)
                             stockCounter += 1
