@@ -113,6 +113,7 @@
     <Compile Include="Stock Selection Rules\PreMarketStocks.vb" />
     <Compile Include="Stock Selection Rules\SpotFutureArbritrage.vb" />
     <Compile Include="Stock Selection Rules\TopGainerTopLosser.vb" />
+    <Compile Include="Stock Selection Rules\TopGainerTopLosserEveryMinute.vb" />
     <Compile Include="Stock Selection Rules\TouchPreviousDayLastCandle.vb" />
     <Compile Include="StockSelection.vb" />
   </ItemGroup>

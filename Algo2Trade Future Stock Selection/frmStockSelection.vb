@@ -344,6 +344,8 @@ Public Class frmStockSelection
                     stock = New SpotFutureArbritrage(_canceller, cmn, stockType, 1)
                 Case 9
                     stock = New HighTurnoverStock(_canceller, cmn, stockType)
+                Case 10
+                    stock = New TopGainerTopLosserEveryMinute(_canceller, cmn, stockType)
             End Select
             AddHandler stock.Heartbeat, AddressOf OnHeartbeat
 
