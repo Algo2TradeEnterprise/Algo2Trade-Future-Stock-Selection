@@ -128,7 +128,7 @@ Public Class TopGainerTopLosser
                             stockCounter += 1
                             If stockCounter = My.Settings.NumberOfStockPerDay Then Exit For
                         Next
-                        If My.Settings.NumberOfStockPerDay > tempStockList.Count Then
+                        If My.Settings.NumberOfStockPerDay < tempStockList.Count Then
                             stockCounter = 0
                             For Each runningStock In tempStockList.OrderBy(Function(x)
                                                                                Return CDec(x.Value(0))
