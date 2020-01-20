@@ -587,8 +587,9 @@ Public Class Common
 
         Select Case tableName
             Case DataBaseTable.Intraday_Cash, DataBaseTable.EOD_Cash, DataBaseTable.EOD_POSITIONAL
-                cm = New MySqlCommand("SELECT DISTINCT(`INSTRUMENT_TOKEN`),`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_cash` WHERE `TRADING_SYMBOL` = @trd AND `AS_ON_DATE`<=@sd", conn)
+                cm = New MySqlCommand("SELECT DISTINCT(`INSTRUMENT_TOKEN`),`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_cash` WHERE `TRADING_SYMBOL` = @trd AND `AS_ON_DATE`<=@sd AND `AS_ON_DATE`>=@ed", conn)
                 cm.Parameters.AddWithValue("@trd", String.Format("{0}", rawInstrumentName))
+                cm.Parameters.AddWithValue("@ed", tradingDate.AddDays(-15).ToString("yyyy-MM-dd"))
             Case DataBaseTable.Intraday_Currency, DataBaseTable.EOD_Currency
                 cm = New MySqlCommand("SELECT `INSTRUMENT_TOKEN`,`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_currency` WHERE `TRADING_SYMBOL` REGEXP @trd AND `SEGMENT`='CDS-FUT' AND `AS_ON_DATE`=@sd", conn)
                 cm.Parameters.AddWithValue("@trd", String.Format("^{0}[0-9][0-9]*", rawInstrumentName))
