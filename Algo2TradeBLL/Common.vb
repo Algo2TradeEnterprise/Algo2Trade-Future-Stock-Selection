@@ -531,7 +531,7 @@ Public Class Common
         dt = New DataTable()
         adapter.Fill(dt)
         _cts.Token.ThrowIfCancellationRequested()
-        If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+        If dt IsNot Nothing AndAlso dt.Rows.Count > 0 AndAlso Not IsDBNull(dt.Rows(0).Item(0)) Then
             ret = dt.Rows(0).Item(0)
         End If
         _cts.Token.ThrowIfCancellationRequested()

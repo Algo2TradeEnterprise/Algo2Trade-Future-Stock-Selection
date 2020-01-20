@@ -335,7 +335,7 @@ Public Class ATRStockSelection
             End If
             _cts.Token.ThrowIfCancellationRequested()
             OnHeartbeat("Fetching all cash instrument")
-            Dim cm As MySqlCommand = New MySqlCommand("SELECT DISTINCT(`INSTRUMENT_TOKEN`),`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_cash` WHERE `AS_ON_DATE`=@sd", _conn)
+            Dim cm As MySqlCommand = New MySqlCommand("SELECT DISTINCT(`INSTRUMENT_TOKEN`),`TRADING_SYMBOL`,`EXPIRY` FROM `active_instruments_cash` WHERE `AS_ON_DATE`=@sd AND `SEGMENT`<>'INDICES'", _conn)
             cm.Parameters.AddWithValue("@sd", tradingDate.ToString("yyyy-MM-dd"))
             _cts.Token.ThrowIfCancellationRequested()
             Dim adapter As New MySqlDataAdapter(cm)
